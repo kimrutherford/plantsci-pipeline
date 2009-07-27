@@ -50,6 +50,7 @@ my %terms = (
               'fastq' => 'FastQ format file',
               'fs' => 'FASTA format with an empty description line',
               'fasta' => 'FASTA format',
+              'gff2' => 'GFF2 format',
               'gff3' => 'GFF3 format',
               'seq_offset_index' => 'An index of a GFF3 or FASTA format file',
               'text' => 'A human readable text file with summaries or statistics',
@@ -150,6 +151,8 @@ my %terms = (
                 'Align reads against a sequence database with SSAHA',
               'genome aligned reads filter' =>
                 'Filter a fasta file, creating a file containing only genome aligned reads',
+              'gff3 to gff2 converter' =>
+                'Convert a GFF3 file into a GFF2 file',
               'gff3 index' =>
                 'Create an index of GFF3 file',
               'fasta index' =>
@@ -292,7 +295,7 @@ $schema->txn_do(sub {
                                                   description => $ecotype->{description},
                                                   organism => $org_obj,
                                                 });
-                    my $ecotype_desc = 
+                    my $ecotype_desc =
                       $ecotype->{description} . ' ' . $ecotype->{org};
                     $ecotype_objs{$ecotype_desc} = $obj;
                   }
@@ -336,7 +339,7 @@ my %tissue_objs = ();
 $schema->txn_do(sub {
                   for my $tissue (@tissues) {
                     my $org_obj = $organism_objects{$tissue->{org}};
-                    
+
                     if (!defined $org_obj) {
                       croak "can't find organism for ", $tissue->{org}, "\n";
                     }
@@ -347,7 +350,7 @@ $schema->txn_do(sub {
                                                   description => $tissue->{description},
                                                   organism => $org_obj,
                                                 });
-                    my $tissue_desc = 
+                    my $tissue_desc =
                       $tissue->{description} . ' ' . $tissue->{org};
                     $tissue_objs{$tissue_desc} = $obj;
                   }
@@ -584,6 +587,15 @@ my @analyses = (
                      }
                    ]
                 },
+                {
+                 type_term_name => 'gff3 to gff2 converter',
+                 runable_name => 'SmallRNA::Runable::GFF3ToGFF2Runable',
+                 inputs => [
+                     {
+                       format_type => 'gff3',
+                     }
+                   ]
+                },
                 # {
                 #  type_term_name => 'ssaha alignment',
                 #  detail => 'versus: Arabidopsis tRNA+rRNA',
@@ -616,10 +628,16 @@ $schema->txn_do(sub {
 
     for my $input (@{$conf{inputs}}) {
       my %args = (
-        process_conf => $process_conf,
-        content_type => $cvterm_objs{$input->{content_type}},
-        format_type => $cvterm_objs{$input->{format_type}}
+        process_conf => $process_conf
       );
+
+      if (defined $input->{content_type}) {
+        $args{content_type} = $cvterm_objs{$input->{content_type}};
+      }
+
+      if (defined $input->{format_type}) {
+        $args{format_type} = $cvterm_objs{$input->{format_type}};
+      }
 
       if (defined $input->{ecotype_name}) {
         $args{ecotype} = $ecotype_objs{$input->{ecotype_name}};
