@@ -4,6 +4,7 @@ DROP TABLE process_conf CASCADE;
 DROP TABLE pipeprocess CASCADE;
 DROP TABLE pipedata CASCADE;
 DROP TABLE sample CASCADE;
+DROP TABLE sample_pipeproject CASCADE;
 DROP TABLE pipeprocess_in_pipedata CASCADE;
 DROP TABLE pipeproject CASCADE;
 DROP TABLE person CASCADE;
@@ -173,8 +174,8 @@ CREATE TABLE sample (
 CREATE TABLE sample_pipeproject (
        sample_pipeproject_id serial CONSTRAINT sample_pipeproject_id_pk PRIMARY KEY,
        sample integer REFERENCES sample(sample_id) NOT NULL,
-       pipeprocess integer REFERENCES pipeprocess(pipeprocess_id) NOT NULL,
-       CONSTRAINT sample_pipeproject_constraint UNIQUE(sample, pipeprocess)
+       pipeproject integer REFERENCES pipeproject(pipeproject_id) NOT NULL,
+       CONSTRAINT sample_pipeproject_constraint UNIQUE(sample, pipeproject)
 );
 CREATE TABLE pipedata (
        pipedata_id serial CONSTRAINT pipedata_id_pk PRIMARY KEY,
