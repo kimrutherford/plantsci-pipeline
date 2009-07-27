@@ -62,7 +62,7 @@ __PACKAGE__->has_many(
 # Created by DBIx::Class::Schema::Loader v0.04005
 # DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:Q9p5uJRu8gG/n3CYP4D4WQ
 
-__PACKAGE__->many_to_many('samples' => 'pipeproject_samples', 'sample');
+__PACKAGE__->many_to_many('samples' => 'sample_pipeprojects', 'sample');
 
 # You can replace this text with custom content, and it will be preserved on regeneration
 1;
