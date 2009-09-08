@@ -41,6 +41,8 @@ use strict;
 use Carp;
 use Params::Validate qw(:all);
 
+use Digest::MD5;
+
 =head2 new
 
  Usage   : my $loader = SmallRNA::DBLayer::Loader(schema => $schema);
