@@ -11,19 +11,22 @@
 #      a job with Torque and mark it as "queued" in the database
 # Repeat...
 
+# Usage:
+#   pipeserv.pl config_file.yaml
+
 use strict;
 
 use DateTime;
 use FindBin qw($Bin);
 
 use SmallRNA::DB;
+use SmallRNA::Config;
 use SmallRNA::DBLayer::Loader;
 use SmallRNA::ProcessManager;
 
-use SmallRNA::Web;
+my $config_file_name = shift;
 
-my $c = SmallRNA::Web->commandline();
-my $config = $c->config();
+my $config = SmallRNA::Config->new($config_file_name);
 
 my $schema = SmallRNA::DB->schema($config);
 my $pipedata_rs = $schema->resultset('Pipedata')->search();

@@ -12,11 +12,11 @@ use DateTime;
 
 use SmallRNA::DB;
 use SmallRNA::DBLayer::Loader;
+use SmallRNA::Config;
 
-use SmallRNA::Web;
+my $config_file_name = shift;
 
-my $c = SmallRNA::Web->commandline();
-my $config = $c->config();
+my $config = SmallRNA::Config->new($config_file_name);
 
 my $test_mode = 0;
 
