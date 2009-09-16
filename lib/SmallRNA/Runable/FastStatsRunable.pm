@@ -3,8 +3,8 @@ package SmallRNA::Runable::FastStatsRunable;
 =head1 NAME
 
 SmallRNA::Runable::FastStatsRunable - A Runable that summarises the content
-                                       and sequence ecomposition of a FASTQ or 
-                                       FASTA file
+                                      and sequence ecomposition of a FASTQ or
+                                      FASTA file
 
 =head1 SYNOPSIS
 
@@ -48,7 +48,7 @@ extends 'SmallRNA::Runable::SmallRNARunable';
 
 =head2
 
- Function: Create a file with summary/statistical information about a FASTQ or 
+ Function: Create a file with summary/statistical information about a FASTQ or
            FASTA file
  Returns : nothing - either succeeds or calls die()
 
@@ -87,15 +87,17 @@ sub run
                                                  "$data_dir/" . $input_file_name,
                                                output_file_name =>
                                                  "$data_dir/" . $out_file_name);
-    
+
     for my $prop_type_name (sort keys %$results) {
-      my $type_cvterm = $schema->find_with_type('Cvterm', name => $prop_type_name);
-      my $create_args = {
-        type => $type_cvterm,
-        value => $results->{$prop_type_name},
-        pipedata => $input_pipedata
-      };
-      $schema->create_with_type('PipedataProperty', $create_args);
+      my $type_cvterm = $schema->resultset('Cvterm')->find({name => $prop_type_name});
+      if (defined $type_cvterm) {
+        my $create_args = {
+          type => $type_cvterm,
+          value => $results->{$prop_type_name},
+          pipedata => $input_pipedata
+        };
+        $schema->create_with_type('PipedataProperty', $create_args);
+      }
     }
 
     my @samples = $input_pipedata->samples();
