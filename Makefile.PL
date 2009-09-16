@@ -2,22 +2,9 @@
 # expected.  you have been warned
 use inc::Module::Install;
 
-name 'SmallRNA-Web';
-all_from 'lib/SmallRNA/Web.pm';
+name 'SmallRNA-Pipeline';
+all_from 'lib/SmallRNA/DB.pm';
 
-requires 'Catalyst::Runtime' => '5.70000';
-requires 'Catalyst::Plugin::Authentication';
-requires 'Catalyst::Plugin::CommandLine';
-requires 'Catalyst::Plugin::ConfigLoader';
-requires 'Catalyst::Plugin::Session::State::Cookie';
-requires 'Catalyst::Plugin::Session::Store::FastMmap';
-requires 'Catalyst::Plugin::StackTrace';
-requires 'Catalyst::Plugin::Static::Simple';
-requires 'Catalyst::Action::RenderView';
-requires 'Catalyst::Controller::HTML::FormFu';
-requires 'Catalyst::Model::DBIC::Schema';
-requires 'Catalyst::View::Graphics::Primitive';
-requires 'Catalyst::View::Mason';
 requires 'Chart::Clicker';
 requires 'DBIx::Class::ResultSet::Data::Pageset';
 requires 'Params::Validate';
