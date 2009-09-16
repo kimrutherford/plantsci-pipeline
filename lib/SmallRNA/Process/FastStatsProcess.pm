@@ -45,6 +45,18 @@ use warnings;
 use YAML;
 use Tie::IxHash;
 
+my %positional_counts = ();
+
+sub _add_pos_counts
+{
+  my $sequence = shift;
+
+  for (my $i = 0; $i < length $sequence; $i++) {
+    my $base = substr $sequence, $i, 1;
+    $positional_counts{$base}[$i]++;
+  }
+}
+
 =head2
 
  Usage   : SmallRNA::Process::FastStatsProcess::run(input_file_name =>
@@ -83,12 +95,14 @@ sub run
 
   while (defined (my $seq_obj = $seqio->next_seq())) {
     my $sequence;
-
+    
     if ($format eq 'fastfastq') {
-      $sequence = $seq_obj->{sequence};
-    } else {
-      $sequence = $seq_obj->seq();
+       $sequence = $seq_obj->{sequence};
+     } else {
+       $sequence = $seq_obj->seq();
     }
+
+    _add_pos_counts($sequence);
 
     my $seq_len = length $sequence;
 
@@ -104,6 +118,14 @@ sub run
     $all_count++;
   }
   
+  for my $base (keys %positional_counts) {
+    for my $ent (@{$positional_counts{$base}}) {
+      if (!defined $ent) {
+        $ent = 0;
+      }
+    }
+  }
+
   my %out;
   tie %out, 'Tie::IxHash';
 
@@ -111,6 +133,7 @@ sub run
   $out{number_of_sequences} = $all_count;
   $out{total_bases} = $total_bases;
   $out{gc_bases} = $gc_count;
+  $out{positional_counts} = \%positional_counts;
 
   open my $out, '>', $params{output_file_name}
     or die "can't open $params{output_file_name} for writing: $!\n";
@@ -119,11 +142,11 @@ sub run
 
   close $out or die "can't close $params{output_file_name}: $!\n";
 
-  # this is for testing the stats
   return { 'sequence count' => $all_count, 
            'base count' => $total_bases,
            'gc content' => $gc_count,
-           'n content' => $n_count
+           'n content' => $n_count,
+           'positional counts' => \%positional_counts,
           };
 }
 
