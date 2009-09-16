@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 7;
+use Test::More tests => 9;
 use File::Temp qw(tempfile);
 use YAML qw(LoadFile);
 use Data::Compare;
@@ -38,4 +38,5 @@ for my $input (@inputs) {
   my $expected_yaml = LoadFile($input->{expected_file_name});
   my $actual_yaml = LoadFile($output_file_name);
   ok(Compare($actual_yaml, $expected_yaml), 'compare YAML');
+  ok(defined $res->{'positional counts'});
 }
