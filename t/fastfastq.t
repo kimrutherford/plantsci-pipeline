@@ -12,7 +12,7 @@ while (defined (my $seq = $seqio->next_seq())) {
   push @seqs, $seq;
 }
 
-ok(scalar @seqs == 8);
+ok(scalar @seqs == 9);
 
 my $lastseq = $seqs[-1];
 

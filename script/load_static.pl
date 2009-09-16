@@ -69,6 +69,8 @@ my %terms = (
                 'Summary information and statistics about a FASTA file',
               'fastq_stats' =>
                 'Summary information and statistics about a FASTQ file',
+              'n_mer_stats' =>
+                'Counts of each sequence, ordered by count',
               'genome_aligned_srna_reads' =>
                 'Small RNA reads that have been aligned against the genome',
               'genome_aligned_genomic_dna_reads' =>

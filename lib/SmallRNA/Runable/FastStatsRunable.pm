@@ -82,11 +82,18 @@ sub run
       $stats_term_name = 'fastq_stats';
     }
 
+    my $n_mer_file_name = $out_file_name;
+
+    $n_mer_file_name =~ s/\.fast[aq]_stats/.n-mer/;
+
     my $results =
       SmallRNA::Process::FastStatsProcess::run(input_file_name =>
                                                  "$data_dir/" . $input_file_name,
                                                output_file_name =>
-                                                 "$data_dir/" . $out_file_name);
+                                                 "$data_dir/" . $out_file_name,
+                                               n_mer_file_name =>
+                                                 "$data_dir/" .  $n_mer_file_name,
+                                               max_stats_n_mers => 10);
 
     for my $prop_type_name (sort keys %$results) {
       my $type_cvterm = $schema->resultset('Cvterm')->find({name => $prop_type_name});
@@ -107,6 +114,15 @@ sub run
                           format_type_name => 'text',
                           content_type_name => $stats_term_name,
                           samples => \@samples);
+
+    if (-e $n_mer_file_name) {
+      $self->store_pipedata(generating_pipeprocess => $self->pipeprocess(),
+                            file_name => $n_mer_file_name,
+                            format_type_name => 'text',
+                            content_type_name => 'n_mer_stats',
+                            samples => \@samples);
+
+    }
   };
 
   $self->schema->txn_do($code);

@@ -3003,6 +3003,7 @@ COPY cvterm (cvterm_id, cv_id, name, definition, dbxref_id, is_obsolete, is_rela
 91	18	admin	Admin user - full privileges	91	0	0
 92	18	external	External user - access only to selected data, no delete/edit privileges	92	0	0
 93	18	local	Local user - full access to all data but not full delete/edit privileges	93	0	0
+94	4	n_mer_stats	Summary information and statistics about a FASTQ file	23	0	0
 \.
 
 

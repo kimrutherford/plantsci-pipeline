@@ -16,8 +16,8 @@ my @inputs = ({ file_name => 't/data/reads_fasta_summary_test.fasta',
                 expected_file_name => 't/data/expected_fasta_stats.txt'
               },
               { file_name => 't/data/fastfastq.fq',
-                count => 8,
-                gc_count => 151,
+                count => 9,
+                gc_count => 171,
                 expected_file_name => 't/data/expected_fastq_stats.txt'
               });
 
@@ -26,10 +26,14 @@ for my $input (@inputs) {
 
   my ($fh, $output_file_name) =
     tempfile('/tmp/reads_fast_stats_test.XXXXXX', UNLINK => 0);
+  my ($fh_n_mer, $n_mer_file_name) =
+    tempfile('/tmp/reads_fast_stats_test_n_mer.XXXXXX', UNLINK => 0);
 
   my $res = SmallRNA::Process::FastStatsProcess::run(
     output_file_name => $output_file_name,
-    input_file_name => $input_file_name
+    input_file_name => $input_file_name,
+    n_mer_file_name => $n_mer_file_name,
+    max_stats_n_mers => 1
   );
 
   is($res->{'sequence count'}, $input->{count});
@@ -37,6 +41,11 @@ for my $input (@inputs) {
 
   my $expected_yaml = LoadFile($input->{expected_file_name});
   my $actual_yaml = LoadFile($output_file_name);
-  ok(Compare($actual_yaml, $expected_yaml), 'compare YAML');
+
+  use Data::Dumper;
+
+#  print Dumper([$expected_yaml, $actual_yaml]);
+
+  ok(Compare($actual_yaml, $expected_yaml), 'compare YAML for ' . $input->{expected_file_name});
   ok(defined $res->{'positional counts'});
 }
