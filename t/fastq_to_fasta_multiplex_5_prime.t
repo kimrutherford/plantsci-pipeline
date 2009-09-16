@@ -15,7 +15,6 @@ use SmallRNA::Config;
 use SmallRNA::DB;
 use SmallRNATest;
 
-#my $in_fastq_file = 't/data/SL285.090720.42L77AAXX.s_7.fq';
 my $in_fastq_file = 't/data/SL283_H3.090805.42L0HAAXX.s_3.fq';
 
 my $tempdir = tempdir("/tmp/remove_adapters_test_$$.XXXXX", CLEANUP => 0);
