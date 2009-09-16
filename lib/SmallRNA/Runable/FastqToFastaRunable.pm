@@ -3,7 +3,7 @@ package SmallRNA::Runable::FastqToFastaRunable;
 =head1 NAME
 
 SmallRNA::Runable::FastqToFasta - a runable that reads a fastq file, removes
-                                    adapters and writes fasta output files
+  adapters and/or trims reads and writes fasta output files
 
 =head1 SYNOPSIS
 
@@ -222,7 +222,10 @@ sub run
 
     my $barcode_set = _find_barcode_set($pipeprocess);
 
-    if (defined $barcode_set) {
+    my $trim_offset = 0;
+
+    if (defined $barcode_set && $trim_offset == 0) {
+      # do de-multiplexing
       $fasta_output_term_name = $multiplexed_srna_reads;
 
       my $barcode_position = $barcode_set->position_in_read()->name();
@@ -235,7 +238,8 @@ sub run
                                                       input_file_name => $input_file_name,
                                                       processing_type => $processing_type,
                                                       barcodes => \%barcodes_map,
-                                                      barcode_position => $barcode_position
+                                                      barcode_position => $barcode_position,
+                                                      trim_offset => $trim_offset
                                                      );
 
       for my $code (keys %{$output}) {

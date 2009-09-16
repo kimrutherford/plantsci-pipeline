@@ -78,8 +78,9 @@ sub _get_file_for_code
 =head2 run
 
  Usage   : my $res = SmallRNA::Process::FastqToFastaProcess->new(input_file_name => $input,
-                                                                   output_dir_name => $out_dir,
-                                                                   barcodes => $barcodes_map);
+                                                                 output_dir_name => $out_dir,
+                                                                 processing_type => $type,
+                                                                 barcodes => $barcodes_map);
  Function: Remove adapters and optionally de-multiplex
  Args    : input_file_name - a fastq file name
            output_dir_name - a directory to write output files to
@@ -88,7 +89,13 @@ sub _get_file_for_code
                    - 'trim' will trim reads to 25 bases (by default)
                    - 'passthrough' will do no processing apart from (optional)
                       de-multiplexing, just produce a FASTA file or files
-           trim_bases - the maximum number of bases to output, default 25
+           trim_bases - the maximum number of bases to output when trimming,
+                        default 25
+           trim_offset - offset from start of read to start trimming, eg. with
+                         trim_bases set to 25 a value of 5 for trim_offset will
+                         return bases 5..24 - base numbering starts at 0.
+                         If non-zero any 5' barcode will be ignored. 
+                         default: 0
            barcodes - a map from barcode sequence to barcode id (TACCT => 'A',
                       TACGA => 'B', ...)
 
@@ -115,12 +122,14 @@ sub run
 {
   my %params = validate(@_, { input_file_name => 1, output_dir_name => 1,
                               processing_type => 1, trim_bases => 0,
+                              trim_offset => 0,
                               barcodes => 0, barcode_position => 0 });
 
   my $input_file_name = $params{input_file_name};
   my $output_dir_name = $params{output_dir_name};
   my $processing_type = $params{processing_type};
   my $trim_bases = $params{trim_bases} || 25;
+  my $trim_offset = $params{trim_offset} || 0;
   my $barcodes_map_ref = $params{barcodes};
   my $barcode_position = $params{barcode_position};
 
@@ -165,7 +174,7 @@ sub run
   my $default_out_file_name = "$output_file_base.fasta";
   my $default_out_file;
 
-  if (!$multiplexed) {
+  if (!$multiplexed || $trim_offset > 0) {
     if (-e $default_out_file_name) {
       croak "can't open $default_out_file_name for writing: file exists\n";
     }
@@ -184,7 +193,7 @@ sub run
 
   my $five_prime_code_re = '';
   my $three_prime_code_re = '';
-  if ($multiplexed) {
+  if ($multiplexed && $trim_offset == 0) {
     my $code_re = join '|', keys %$barcodes_map_ref;
     if ($barcode_position eq '5-prime') {
       $five_prime_code_re = $code_re;
@@ -199,7 +208,11 @@ sub run
     $process_re =  qr/^($five_prime_code_re)(.+)($three_prime_code_re)($adapter_start.*)/;
   } else {
     if ($processing_type eq 'trim') {
-      $process_re = qr/^($five_prime_code_re)(.{$trim_bases})/;
+      if ($trim_offset > 0) {
+        $process_re = qr/^(.{$trim_offset})(.{$trim_bases})/;
+      } else {
+        $process_re = qr/^($five_prime_code_re)(.{$trim_bases})/;
+      }
     } else {
       if ($processing_type eq 'passthrough') {
         $process_re =  qr/^($five_prime_code_re)(.+)($three_prime_code_re)/;
@@ -221,7 +234,7 @@ sub run
       my $trimmed_seq = $2;
       my $code_from_seq;
 
-      if ($multiplexed) {
+      if ($multiplexed && $trim_offset == 0) {
         if ($barcode_position eq '5-prime') {
           $code_from_seq = $1;
         } else {
@@ -242,7 +255,7 @@ sub run
         print $rej_file "$sequence\tIs too short ($seq_len)\n";
       } else {
         if ($trimmed_seq =~ m/^([ACGT]+$)/i) { # i.e. has no Ns
-          if ($multiplexed) {
+          if ($multiplexed && $trim_offset == 0) {
             if (length $trimmed_seq == 0) {
               print $rej_file "$sequence\tNo sequence after removing bar code $code_from_seq\n";
             } else {
@@ -304,7 +317,7 @@ sub run
   close $rej_file or croak "can't close $reject_file_name: $!\n";
   close $fasta_file or croak "can't close $fasta_file_name: $!\n";
 
-  if ($multiplexed) {
+  if ($multiplexed && $trim_offset == 0) {
     return ($_trim_file->($reject_file_name),
             $_trim_file->($fasta_file_name),
             {
