@@ -8,10 +8,10 @@ BEGIN {
 
 use strict;
 
-use SmallRNA::Web;
+use SmallRNA::Config;
 
-my $c = SmallRNA::Web->commandline();
-my $config = $c->config();
+my $config_file_name = shift;
+my $config = SmallRNA::Config->new($config_file_name);
 
 my @connect_info = @{$config->{"Model::SmallRNAModel"}{connect_info}};
 

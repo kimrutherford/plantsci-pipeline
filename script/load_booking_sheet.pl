@@ -14,18 +14,15 @@ use SmallRNA::DB;
 use SmallRNA::DBLayer::Loader;
 use SmallRNA::Config;
 
-my $config_file_name = shift;
-
-my $config = SmallRNA::Config->new($config_file_name);
-
 my $test_mode = 0;
 
-if (@ARGV == 2) {
-  if ($ARGV[0] eq '-test') {
-    $test_mode = 1;
-    shift;
-  }
+if ($ARGV[0] eq '-test') {
+  $test_mode = 1;
+  shift;
 }
+
+my $config_file_name = shift;
+my $config = SmallRNA::Config->new($config_file_name);
 
 my $file = shift;
 
