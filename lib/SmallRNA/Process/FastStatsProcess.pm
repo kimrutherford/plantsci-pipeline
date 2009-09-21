@@ -149,7 +149,7 @@ sub run
   my @sorted_mer_keys =
     sort { $mers_hash{$b} <=> $mers_hash{$a} } keys %mers_hash;
 
-  if ($mers_hash{$sorted_mer_keys[0]} == 1) {
+  if (@sorted_mer_keys == 0 || $mers_hash{$sorted_mer_keys[0]} == 1) {
     # don't bother if all sequences occur just once
   } else {
     open my $mers_file, '>', $params{n_mer_file_name} or
