@@ -278,7 +278,8 @@ sub run
                               file_name => $new_file_name,
                               format_type_name => 'fasta',
                               content_type_name => $content_type_name,
-                              samples => [@samples]);
+                              samples => [@samples],
+                              properties => { 'multiplexing code' => $code_name });
       }
     } else {
       $fasta_output_term_name = $raw_srna_reads;
