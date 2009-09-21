@@ -252,12 +252,14 @@ sub run
       }
 
       if (length $trimmed_seq < 15) {
-        print $rej_file "$sequence\tIs too short ($seq_len)\n";
+        print $rej_file ">$id Is too short ($seq_len)\n";
+        print $rej_file "$sequence\n";
       } else {
         if ($trimmed_seq =~ m/^([ACGT]+$)/i) { # i.e. has no Ns
           if ($multiplexed && $trim_offset == 0) {
             if (length $trimmed_seq == 0) {
-              print $rej_file "$sequence\tNo sequence after removing bar code $code_from_seq\n";
+              print $rej_file ">$id No sequence after removing bar code $code_from_seq\n";
+              print $rej_file "$sequence\n";
             } else {
               if (length $trimmed_seq > 0) {
                 my $out_file_fasta = _get_file_for_code($out_files_by_code,
@@ -270,11 +272,12 @@ sub run
                   print $out_file_fasta "$trimmed_seq\n";
                   $good_sequence_count++;
                 } else {
-                  print $rej_file "$sequence\tDoes not match any barcodes, code: \t$code_from_seq\n";
+                  print $rej_file ">$id Does not match any barcodes, code: $code_from_seq\n";
+                  print $rej_file "$sequence\n";
                 }
-
               } else {
-                print $rej_file "$sequence\tIs zero length after removing the adapter and bar code ($code_from_seq)\n";
+                print $rej_file ">$id Is zero length after removing the adapter and bar code ($code_from_seq)\n";
+                print $rej_file "$sequence\n";
               }
             }
           } else {
@@ -284,20 +287,25 @@ sub run
           }
         } else {
           $reject_count++;
-          print $rej_file "$sequence\tContains Ns\n";
+          print $rej_file ">$id Contains Ns\n";
+          print $rej_file "$sequence\n";
         }
       }
     } else {
       $reject_count++;
+      my $message = undef;
       if ($processing_type eq 'remove_adapters') {
         if ($multiplexed) {
-          print $rej_file "$sequence\tDoes not match the barcode or does not match the adapter\n";
+          $message = "Does not match the barcode or does not match the adapter";
         } else {
-          print $rej_file "$sequence\tDoes not match the adapter\n";
+          $message = "Does not match the adapter";
         }
       } else {
-        print $rej_file "$sequence\tDoes not match the barcode\n";
+        $message = "Does not match the barcode";
       }
+
+      print $rej_file ">$id $message\n";
+      print $rej_file "$sequence\n";
     }
 
     if ($ENV{'SMALLRNA_PIPELINE_TEST'} &&
