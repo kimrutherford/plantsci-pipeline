@@ -225,16 +225,13 @@ sub add_sequencingrun_pipedata
       $process_conf = $self->_find('ProcessConf',
                                    detail => 'Sainsbury');
     } else {
-      if ($seq_centre_name eq 'BGI') {
+      if ($seq_centre_name eq 'BGI' ||
+          $seq_centre_name eq 'CSHL' ||
+          $seq_centre_name eq 'Edinburgh') {
         $process_conf = $self->_find('ProcessConf',
-                                     detail => 'BGI');
+                                     detail => $seq_centre_name);
       } else {
-        if ($seq_centre_name eq 'CSHL') {
-          $process_conf = $self->_find('ProcessConf',
-                                       detail => 'CSHL');
-        } else {
-          croak "unknown sequencing centre name: $seq_centre_name\n";
-        }
+        croak "unknown sequencing centre name: $seq_centre_name\n";
       }
     }
   }

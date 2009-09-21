@@ -564,14 +564,12 @@ sub process
           if ($sheet_seq_centre_name eq 'Norwich') {
             $seq_centre_name = 'Sainsbury';
           } else {
-            if ($sheet_seq_centre_name eq 'BGI') {
+            if ($sheet_seq_centre_name eq 'BGI' ||
+                $sheet_seq_centre_name eq 'CSHL' ||
+                $sheet_seq_centre_name eq 'Edinburgh') {
               $seq_centre_name = $sheet_seq_centre_name;
             } else {
-              if ($sheet_seq_centre_name eq 'CSHL') {
-                $seq_centre_name = $sheet_seq_centre_name;
-              } else {
-                croak "unknown sequencing centre name: $sheet_seq_centre_name\n";
-              }
+              croak "unknown sequencing centre name: $sheet_seq_centre_name\n";
             }
           }
         }

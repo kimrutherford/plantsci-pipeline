@@ -376,3 +376,5 @@ SL1007.rmks01_2.non_redundant_small_rna.fasta,SL1007,,NO,,CSHL,Slotkin et al. 20
 SL1008.rmks02_2.non_redundant_small_rna.fasta,SL1008,,NO,,CSHL,Slotkin et al. 2009 - nr_rmks02_2,Arabidopsis thaliana,,Becky M,Guest,,,,,,smallRNA,,,,,,,,,,,,,,,
 SL1009.rmks03_2.non_redundant_small_rna.fasta,SL1009,,NO,,CSHL,Slotkin et al. 2009 - nr_rmks03_2,Arabidopsis thaliana,,Becky M,Guest,,,,,,smallRNA,,,,,,,,,,,,,,,
 SL1010.rmks49_1.non_redundant_small_rna.fasta,SL1010,,NO,,CSHL,Slotkin et al. 2009 - nr_rmks49_1,Arabidopsis thaliana,,Becky M,Guest,,,,,,smallRNA,,,,,,,,,,,,,,,
+SL1011.reads_090824_E.fq.gz,SL1011,,NO,,Edinburgh,FY11429 = wt + GFP HP,Schizosaccharomyces pombe,,Becky M,Guest,,,,,,smallRNA,,,,,,,,,,,,,,,
+SL1012.reads_090824_I.fq.gz,SL1012,,NO,,Edinburgh,FY12077 = rdp1delta + GFP HP,Schizosaccharomyces pombe,,Becky M,Guest,,,,,,,,,,,,,,,,,,,,,

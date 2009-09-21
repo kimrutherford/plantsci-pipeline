@@ -310,6 +310,8 @@ my @orgs = ({ name => "DCB",
               description => 'Beijing Genomics Institute' },
             { name => 'CSHL',
               description => 'Cold Spring Harbor Laboratory' },
+            { name => 'Edinburgh',
+              description => 'The University of Edinburgh' },
            );
 
 $schema->txn_do(sub {
@@ -545,6 +547,11 @@ my @analyses = (
                 {
                  type_term_name => 'non-multiplexed sequencing run',
                  detail => 'CSHL',
+                 inputs => []
+                },
+                {
+                 type_term_name => 'non-multiplexed sequencing run',
+                 detail => 'Edinburgh',
                  inputs => []
                 },
                 {
