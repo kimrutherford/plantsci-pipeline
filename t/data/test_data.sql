@@ -3004,6 +3004,7 @@ COPY cvterm (cvterm_id, cv_id, name, definition, dbxref_id, is_obsolete, is_rela
 92	18	external	External user - access only to selected data, no delete/edit privileges	92	0	0
 93	18	local	Local user - full access to all data but not full delete/edit privileges	93	0	0
 94	4	n_mer_stats	Summary information and statistics about a FASTQ file	23	0	0
+95	9	multiplexing code	The barcode found on the reads in this file	94	0	0
 \.
 
 
@@ -3122,6 +3123,7 @@ COPY dbxref (dbxref_id, db_id, accession, version, description) FROM stdin;
 91	1	admin		\N
 92	1	external		\N
 93	1	local		\N
+94	1	multiplexing code		\N
 \.
 
 
