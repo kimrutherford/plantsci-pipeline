@@ -357,13 +357,7 @@ sub create_new_pipeprocesses
 
   my $code = sub {
     push @retlist, _process_sample_pipedata($schema);
-    warn scalar(@retlist);
-
-    system "pg_dump -c pipeline-test > /tmp/dump.before";
-    warn "fin\n";
     push @retlist, _process_non_sample_pipedata($schema);
-    warn scalar(@retlist);
-    system "pg_dump -c pipeline-test > /tmp/dump.after";
   };
 
   $schema->txn_do($code);
