@@ -316,6 +316,11 @@ sub _process_non_sample_pipedata
 
     if (@inputs == 1) {
       my $pipedata_constraint = _make_pipedata_constraint($process_conf, $inputs[0]);
+      # ignore pipedatas that have a sample - those are handled by
+      # _process_sample_pipedata()
+      $pipedata_constraint .= qq{
+ AND pipedata_id NOT IN (SELECT pipedata FROM sample_pipedata)
+      };
       my $constraint = { where => $pipedata_constraint };
       my $rs = $schema->resultset('Pipedata')->search({}, $constraint);
 
