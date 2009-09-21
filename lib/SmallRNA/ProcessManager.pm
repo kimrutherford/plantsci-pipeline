@@ -63,12 +63,10 @@ sub new
   return $self;
 }
 
-# Create a bit of SQL that constrains a Sample to have inputs that
-# match the given ProcessConfInput and which don't already have a Pipeprocess
-# that uses the given ProcessConf
-sub _make_bit
+sub _make_pipedata_constraint
 {
   my ($conf, $input) = validate_pos(@_, 1, 1);
+
   my $content_type = $input->content_type();
   my $format_type = $input->format_type();
   my $content_type_id = undef;
@@ -80,6 +78,36 @@ sub _make_bit
     $format_type_id = $format_type->cvterm_id();
   }
   my $conf_id = $conf->process_conf_id();
+
+  my $content_constraint = '';
+  my $format_constraint = '';
+
+  if (defined $content_type_id) {
+    $content_constraint = "AND pipedata.content_type = $content_type_id"
+  }
+
+  if (defined $format_type_id) {
+    $format_constraint = "AND pipedata.format_type = $format_type_id";
+  }
+
+  return qq{
+   NOT pipedata.pipedata_id IN (
+           SELECT pipeprocess_in_pipedata.pipedata
+             FROM pipeprocess_in_pipedata, pipeprocess
+            WHERE pipeprocess_in_pipedata.pipeprocess = pipeprocess.pipeprocess_id
+              AND pipeprocess.process_conf = $conf_id
+         )
+$format_constraint
+$content_constraint
+  }
+}
+
+# Create a bit of SQL that constrains a Sample to have inputs that
+# match the given ProcessConfInput and which don't already have a Pipeprocess
+# that uses the given ProcessConf
+sub _make_bit
+{
+  my ($conf, $input) = validate_pos(@_, 1, 1);
 
   # samples where there is a pipedata of the appropriate type for this
   # input, but there isn't an existing pipeprocess for the process_conf
@@ -96,36 +124,25 @@ sub _make_bit
             AND organism.genus || ' ' || organism.species = '$organism_full_name')";
   }
 
-  my $content_constraint = '';
-  my $format_constraint = '';
-
-  if (defined $content_type_id) {
-    $content_constraint = "AND pipedata.content_type = $content_type_id"
-  }
-
-  if (defined $format_type_id) {
-    $format_constraint = "AND pipedata.format_type = $format_type_id";
-  }
+  my $pipedata_constraint = _make_pipedata_constraint($conf, $input);
 
   return qq{
     me.sample_id in (
       SELECT sample_pipedata.sample
         FROM sample_pipedata, pipedata
        WHERE sample_pipedata.pipedata = pipedata.pipedata_id
-$format_constraint
-$content_constraint
-$org_constraint
-         AND NOT pipedata.pipedata_id IN (
-           SELECT pipeprocess_in_pipedata.pipedata
-             FROM pipeprocess_in_pipedata, pipeprocess
-            WHERE pipeprocess_in_pipedata.pipeprocess = pipeprocess.pipeprocess_id
-              AND pipeprocess.process_conf = $conf_id
-         )
+         AND $pipedata_constraint
+         $org_constraint
     )
   };
 }
 
-# find the sets of pipedatas from the sample that can be input for the process
+# Find the sets of pipedatas from the sample that can be input for the given
+# process_conf.  The pipedatas are returned as a list of lists containing
+# all combinations of pipedatas that can be input for the process.  For example
+# if the process_conf needs two inputs one of type X and one Y, and we have
+# two pipedatas of type X and two Ys in the sample: x1, x2, y1, y2 then this
+# function will return ((x1, y1), (x1, y2), (x2, y1), (x1, y2)).
 sub _find_pipedata
 {
   my ($sample, $process_conf) = @_;
@@ -168,7 +185,43 @@ sub _find_pipedata
   }
 }
 
-# Create a all missing Pipeprocesses for the given sample
+sub _make_pipeprocess
+{
+  my ($schema, $process_conf, $input_pipedatas_ref) =
+    validate_pos(@_, 1,1,1);
+
+  my @input_pipedatas = @$input_pipedatas_ref;
+
+  my $process_conf_name = $process_conf->type()->name();
+  my $not_started_status = $schema->find_with_type('Cvterm', name => 'not_started');
+  my $description = "processing with conf: $process_conf_name";
+
+  if (defined $process_conf->detail()) {
+    $description .= ', ' . $process_conf->detail();
+  }
+
+  my %pipeprocess_args = (
+    description => $description,
+    process_conf => $process_conf,
+    status => $not_started_status
+   );
+
+  my $pipeprocess = $schema->create_with_type('Pipeprocess',
+                                                {
+                                                  %pipeprocess_args
+                                                 }
+                                               );
+
+  for my $pipe_data (@input_pipedatas) {
+    $pipeprocess->add_to_input_pipedatas($pipe_data);
+  }
+
+  $pipeprocess->update();
+
+  return $pipeprocess;
+}
+
+# Create a all missing Pipeprocesses for the given process_conf and sample
 sub _create_sample_proc
 {
   my ($schema, $sample, $process_conf, $existing_processes) =
@@ -176,12 +229,12 @@ sub _create_sample_proc
 
   my @retlist = ();
 
-  my @input_pipedata = _find_pipedata($sample, $process_conf);
+  my @input_pipedata_sets = _find_pipedata($sample, $process_conf);
 
-  for my $input_pipedata_ref (@input_pipedata) {
-    my @input_pipedata = @{$input_pipedata_ref};
+  for my $input_pipedatas_ref (@input_pipedata_sets) {
+    my @input_pipedatas = @{$input_pipedatas_ref};
 
-    my $key = (join '_', map { $_->pipedata_id() } @input_pipedata) . '_'
+    my $key = (join '_', map { $_->pipedata_id() } @input_pipedatas) . '_'
       . $process_conf->process_conf_id();
 
     if (exists $existing_processes->{$key}) {
@@ -193,33 +246,51 @@ sub _create_sample_proc
       $existing_processes->{$key} = 1;
     }
 
-    my $process_conf_name = $process_conf->type()->name();
-    my $not_started_status = $schema->find_with_type('Cvterm', name => 'not_started');
-    my $description = "processing with conf: $process_conf_name";
+    push @retlist, _make_pipeprocess($schema, $process_conf, \@input_pipedatas);
+  }
 
-    if (defined $process_conf->detail()) {
-      $description .= ', ' . $process_conf->detail();
+  return @retlist;
+}
+
+# Create pipeprocess entries for pipedatas that have a sample (via the
+# sample_pipedata table).  We look at the problem sample by sample because if
+# a process_conf has two inputs configured, they both must come from the same
+# sample.
+sub _process_sample_pipedata
+{
+  my $schema = shift;
+
+  my $needs_processing_term =
+    $schema->find_with_type('Cvterm', name => 'needs processing');
+
+  my $process_conf_rs = $schema->resultset('ProcessConf');
+
+  my @retlist = ();
+
+  while (defined (my $process_conf = $process_conf_rs->next())) {
+    my @inputs = $process_conf->process_conf_inputs();
+
+    next unless @inputs > 0;
+
+    my @where_bits = map {
+      _make_bit($process_conf, $_);
+    } @inputs;
+
+    my $where = join ' AND ', @where_bits;
+    $where .= ' AND processing_requirement = ' . $needs_processing_term->cvterm_id();
+
+    my $rs = $schema->resultset('Sample')->search({}, { where => $where });
+
+    # keep a map so we don't create the same process twice, for example when
+    # a fastq file contains more than one sample - the query above will return
+    # all the samples for the sequencing run corresponding to the fastq file,
+    # all of which have the same fastq file as input
+    my %existing_processes = ();
+
+    while (my $sample = $rs->next()) {
+      push @retlist, _create_sample_proc($schema, $sample, $process_conf,
+                                         \%existing_processes);
     }
-
-    my %pipeprocess_args = (
-      description => $description,
-      process_conf => $process_conf,
-      status => $not_started_status
-    );
-
-    my $pipeprocess = $schema->create_with_type('Pipeprocess',
-                                                  {
-                                                    %pipeprocess_args
-                                                  }
-                                                );
-
-    for my $pipe_data (@input_pipedata) {
-      $pipeprocess->add_to_input_pipedatas($pipe_data);
-    }
-
-    $pipeprocess->update();
-
-    push @retlist, $pipeprocess;
   }
 
   return @retlist;
@@ -231,7 +302,7 @@ sub _create_sample_proc
  Function: Create new pipeprocess objects and return all pipeprocesses
            that can be run given the current process_conf table.  We create a
            new pipeprocess when there are pipedata objects that are valid inputs
-           for a ProcessConf and which don't have an existing pipe_process. 
+           for a ProcessConf and which don't have an existing pipe_process.
  Args    : none
 
 =cut
@@ -250,36 +321,7 @@ sub create_new_pipeprocesses
   #   - for each sample we found, create any pipeprocesses that are needed
 
   my $code = sub {
-    my $needs_processing_term = 
-      $schema->find_with_type('Cvterm', name => 'needs processing');
-
-    my $process_conf_rs = $schema->resultset('ProcessConf');
-
-    while (defined (my $process_conf = $process_conf_rs->next())) {
-      my @inputs = $process_conf->process_conf_inputs();
-
-      next unless @inputs > 0;
-
-      my @where_bits = map {
-        _make_bit($process_conf, $_);
-      } @inputs;
-
-      my $where = join ' AND ', @where_bits;
-      $where .= ' AND processing_requirement = ' . $needs_processing_term->cvterm_id();
-
-      my $rs = $schema->resultset('Sample')->search({}, { where => $where });
-
-      # keep a map so we don't create the same process twice, for example when
-      # a fastq file contains more than one sample - the query above will return
-      # all the samples for the sequencing run corresponding to the fastq file,
-      # all of which have the same fastq file as input
-      my %existing_processes = ();
-
-      while (my $sample = $rs->next()) {
-        push @retlist, _create_sample_proc($schema, $sample, $process_conf,
-                                           \%existing_processes);
-      }
-    }
+    push @retlist, _process_sample_pipedata($schema);
   };
 
   $schema->txn_do($code);
