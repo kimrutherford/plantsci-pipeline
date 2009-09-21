@@ -202,6 +202,7 @@ my %terms = (
                  'base count' => 'Total number of bases',
                  'gc content' => 'Total G+C bases',
                  'n content' => 'Total N bases',
+                 'multiplexing code' => 'The barcode found on the reads in this file',
                }
             );
 
