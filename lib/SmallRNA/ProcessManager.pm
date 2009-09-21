@@ -83,15 +83,15 @@ sub _make_pipedata_constraint
   my $format_constraint = '';
 
   if (defined $content_type_id) {
-    $content_constraint = "AND pipedata.content_type = $content_type_id"
+    $content_constraint = "AND content_type = $content_type_id"
   }
 
   if (defined $format_type_id) {
-    $format_constraint = "AND pipedata.format_type = $format_type_id";
+    $format_constraint = "AND format_type = $format_type_id";
   }
 
   return qq{
-   NOT pipedata.pipedata_id IN (
+     NOT pipedata_id IN (
            SELECT pipeprocess_in_pipedata.pipedata
              FROM pipeprocess_in_pipedata, pipeprocess
             WHERE pipeprocess_in_pipedata.pipeprocess = pipeprocess.pipeprocess_id
@@ -296,6 +296,41 @@ sub _process_sample_pipedata
   return @retlist;
 }
 
+# Create pipeprocess entries for pipedatas that do not have a sample (via the
+# sample_pipedata table).
+sub _process_non_sample_pipedata
+{
+  my $schema = shift;
+
+  my $needs_processing_term =
+    $schema->find_with_type('Cvterm', name => 'needs processing');
+
+  my $needs_processing_term_id = $needs_processing_term->cvterm_id();
+
+  my $process_conf_rs = $schema->resultset('ProcessConf');
+
+  my @retlist = ();
+
+  while (defined (my $process_conf = $process_conf_rs->next())) {
+    my @inputs = $process_conf->process_conf_inputs();
+
+    if (@inputs == 1) {
+      my $pipedata_constraint = _make_pipedata_constraint($process_conf, $inputs[0]);
+      my $constraint = { where => $pipedata_constraint };
+      my $rs = $schema->resultset('Pipedata')->search({}, $constraint);
+
+      while (defined (my $pipedata = $rs->next())) {
+        push @retlist, _make_pipeprocess($schema, $process_conf, [$pipedata]);
+      }
+    } else {
+      # a process_conf with more than one input must be for pipedatas that have
+      # a sample
+    }
+  }
+
+  return @retlist;
+}
+
 =head2 create_new_pipeprocesses
 
  Usage   : my @pipeprocess = $manager->create_new_pipeprocesses();
@@ -322,6 +357,13 @@ sub create_new_pipeprocesses
 
   my $code = sub {
     push @retlist, _process_sample_pipedata($schema);
+    warn scalar(@retlist);
+
+    system "pg_dump -c pipeline-test > /tmp/dump.before";
+    warn "fin\n";
+    push @retlist, _process_non_sample_pipedata($schema);
+    warn scalar(@retlist);
+    system "pg_dump -c pipeline-test > /tmp/dump.after";
   };
 
   $schema->txn_do($code);
