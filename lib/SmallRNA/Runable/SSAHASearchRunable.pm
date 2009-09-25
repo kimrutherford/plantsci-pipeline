@@ -133,7 +133,7 @@ sub run
         croak qq{file name ("$gff_file_name") doesn't contain the string "non_redundant"};
       }
 
-      my $genome_aligned_reads = 'genome_aligned_' . $1;
+      my $aligned_reads = $component . '_aligned_' . $1;
 
       SmallRNA::Process::SSAHASearchProcess::run(input_file_name =>
                                                    "$data_dir/" . $input_file_name,
@@ -147,7 +147,7 @@ sub run
       $self->store_pipedata(generating_pipeprocess => $self->pipeprocess(),
                             file_name => $gff_file_name,
                             format_type_name => 'gff3',
-                            content_type_name => $genome_aligned_reads);
+                            content_type_name => $aligned_reads);
 
     } else {
       croak ("can't understand detail: $1 for pipeprocess: ", $pipeprocess_id);
