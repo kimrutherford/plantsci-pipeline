@@ -120,7 +120,7 @@ sub run
     $gc_count += $sequence =~ tr/[gcGC]//;
     $n_count += $sequence =~ tr/[nN]//;
 
-    if ($ENV{'SMALLRNA_PIPELINE_TEST'} && $all_count > 1000) {
+    if ($ENV{'SMALLRNA_PIPELINE_TEST'} && $all_count > 15000) {
       last;
     }
 
