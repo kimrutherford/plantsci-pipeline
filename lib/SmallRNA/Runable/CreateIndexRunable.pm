@@ -93,7 +93,7 @@ sub run
                              index_file_name => $temp_index_file_name,
                              input_file_type => $input_format_type);
 
-      mv($temp_index_file_name, $output_file_name);
+      move($temp_index_file_name, $output_file_name);
 
       $self->store_pipedata(generating_pipeprocess => $self->pipeprocess(),
                             file_name => $output_file_name,
