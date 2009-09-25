@@ -104,7 +104,7 @@ sub create_index
   }
 
   while (defined (my $line = <$input_file>)) {
-    next if $line =~ /^#|^[atgcn]+$/i;
+    next if $line =~ /^#|^[atgcnx]+$/i;
 
     if ($line =~ $re) {
       my $name = $1;
