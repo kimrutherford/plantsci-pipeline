@@ -22,7 +22,7 @@ my $conf_manager = SmallRNA::ProcessManager->new(schema => $schema);
 
 my @processes = $conf_manager->create_new_pipeprocesses();
 
-is(scalar(@processes), 14, 'pipeprocess count');
+is(scalar(@processes), 15, 'pipeprocess count');
 my $process = $processes[0];
 ok(defined $process);
 
@@ -35,7 +35,7 @@ while (my $pipedata = $pipedata_rs->next()) {
        'processing with conf: remove adapters, action: remove_adapters');
   } else {
     if ($pipedata->file_name() =~ /SL234/) {
-      is(scalar($pipedata->next_pipeprocesses()), 1);
+      is(scalar($pipedata->next_pipeprocesses()), 2);
       is(($pipedata->next_pipeprocesses())[0]->description(),
          'processing with conf: remove adapters and de-multiplex, action: remove_adapters');
     }
