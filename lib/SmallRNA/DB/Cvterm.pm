@@ -85,11 +85,6 @@ __PACKAGE__->has_many(
   { "foreign.status" => "self.cvterm_id" },
 );
 __PACKAGE__->has_many(
-  "pipeprojects",
-  "SmallRNA::DB::Pipeproject",
-  { "foreign.type" => "self.cvterm_id" },
-);
-__PACKAGE__->has_many(
   "process_confs",
   "SmallRNA::DB::ProcessConf",
   { "foreign.type" => "self.cvterm_id" },
@@ -152,7 +147,7 @@ __PACKAGE__->has_many(
 
 
 # Created by DBIx::Class::Schema::Loader v0.04005
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:oAGi9CHNBGXuQw6IP744Dg
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:5zBg5koy+RiseBCUa1OaHQ
 
 __PACKAGE__->many_to_many(dbxrefs => 'cvterm_dbxrefs', 'dbxref');
 

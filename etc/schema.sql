@@ -332,7 +332,6 @@ CREATE TABLE pipeproject (
        created_stamp timestamp NOT NULL DEFAULT now(),
        name text NOT NULL,
        description text NOT NULL,
-       type integer REFERENCES cvterm(cvterm_id) NOT NULL,
        owner integer REFERENCES person(person_id) NOT NULL,
        funder integer REFERENCES organisation(organisation_id)
 );

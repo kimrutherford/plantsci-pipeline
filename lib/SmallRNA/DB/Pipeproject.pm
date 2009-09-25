@@ -36,8 +36,6 @@ __PACKAGE__->add_columns(
     is_nullable => 0,
     size => undef,
   },
-  "type",
-  { data_type => "integer", default_value => undef, is_nullable => 0, size => 4 },
   "owner",
   { data_type => "integer", default_value => undef, is_nullable => 0, size => 4 },
   "funder",
@@ -50,7 +48,6 @@ __PACKAGE__->belongs_to(
   "SmallRNA::DB::Organisation",
   { organisation_id => "funder" },
 );
-__PACKAGE__->belongs_to("type", "SmallRNA::DB::Cvterm", { cvterm_id => "type" });
 __PACKAGE__->belongs_to("owner", "SmallRNA::DB::Person", { person_id => "owner" });
 __PACKAGE__->has_many(
   "sample_pipeprojects",
@@ -60,7 +57,7 @@ __PACKAGE__->has_many(
 
 
 # Created by DBIx::Class::Schema::Loader v0.04005
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:Q9p5uJRu8gG/n3CYP4D4WQ
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:Lv7SOBa9/wLW0lbfmsg/Xg
 
 __PACKAGE__->many_to_many('samples' => 'sample_pipeprojects', 'sample');
 

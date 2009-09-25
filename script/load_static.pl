@@ -91,11 +91,6 @@ my %terms = (
               'non-multiplexed' => 'One sample per sequencing run',
               'multiplexed' => 'multiplexed sequencing run using barcodes',
              },
-             'tracking project types' =>
-             {
-              'small RNA sequencing' => 'Small RNA sequencing',
-              'DNA tag sequencing' => 'Sequencing of fragments of genomic DNA',
-             },
              'tracking molecule types' =>
              {
               'DNA' => 'Deoxyribonucleic acid',

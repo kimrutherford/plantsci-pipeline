@@ -145,24 +145,11 @@ sub get_project
 {
   my $project_name = shift;
   my $owner = shift;
-  my $molecule_type = shift;
 
   $project_name = 'P_' . $project_name;
 
-  my $project_type;
-
-  if ($molecule_type eq 'RNA') {
-    $project_type = find('Cvterm', name => 'small RNA sequencing');
-  } else {
-    $project_type = find('Cvterm', name => 'DNA tag sequencing');
-  }
-
   if (!defined $owner) {
     croak "no owner passed to get_project()\n";
-  }
-
-  if (!defined $project_type) {
-    croak "no project_type passed to get_project()\n";
   }
 
   if (!exists $projects{$project_name}) {
@@ -170,7 +157,6 @@ sub get_project
       create('Pipeproject', {
                              name => $project_name,
                              description => $project_name,
-                             type => $project_type,
                              owner => $owner
                            });
   }
@@ -525,7 +511,7 @@ sub process
         $is_replicate = 1;
       }
 
-      my $proj = get_project($solexa_library, $person_obj, $molecule_type);
+      my $proj = get_project($solexa_library, $person_obj);
 
       my $multiplexed;
 
