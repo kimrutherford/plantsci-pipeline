@@ -42,6 +42,9 @@ use Carp;
 
 use Moose;
 
+use File::Temp qw(tempfile);
+use File::Copy;
+
 use SmallRNA::Index::Manager;
 
 extends 'SmallRNA::Runable::SmallRNARunable';
@@ -83,9 +86,14 @@ sub run
     if ($output_file_name =~ s/\.$input_format_type$/.$output_type/) {
       my $manager = SmallRNA::Index::Manager->new();
 
+      my ($fh, $temp_index_file_name) =
+        tempfile('/tmp/create_index_runable_temp.XXXXXX', UNLINK => 0);
+
       $manager->create_index(input_file_name => $input_file_name,
-                             index_file_name => $output_file_name,
+                             index_file_name => $temp_index_file_name,
                              input_file_type => $input_format_type);
+
+      mv($temp_index_file_name, $output_file_name);
 
       $self->store_pipedata(generating_pipeprocess => $self->pipeprocess(),
                             file_name => $output_file_name,
