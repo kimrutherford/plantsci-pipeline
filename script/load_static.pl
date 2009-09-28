@@ -73,6 +73,8 @@ my %terms = (
                 'Counts of each sequence, ordered by count',
               'genome_aligned_srna_reads' =>
                 'Small RNA reads that have been aligned against the genome',
+              'trna_aligned_srna_reads' =>
+                'Small RNA reads that have been aligned against the tRNA sequences of an organism',
               'genome_aligned_genomic_dna_reads' =>
                 'DNA reads that have been aligned against the genome',
               'genome_aligned_genomic_dna_tags' =>
@@ -836,6 +838,18 @@ my @analyses = (
                 {
                  type_term_name => 'ssaha alignment',
                  detail => 'component: genome',
+                 runable_name => 'SmallRNA::Runable::SSAHASearchRunable',
+                 inputs => [
+                     {
+                       ecotype_name => 'unspecified Arabidopsis thaliana',
+                       format_type => 'fasta',
+                       content_type => 'non_redundant_srna_reads',
+                     }
+                    ]
+                },
+                {
+                 type_term_name => 'ssaha alignment',
+                 detail => 'component: trna',
                  runable_name => 'SmallRNA::Runable::SSAHASearchRunable',
                  inputs => [
                      {
