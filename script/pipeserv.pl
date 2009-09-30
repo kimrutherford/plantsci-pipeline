@@ -16,6 +16,7 @@
 
 use strict;
 
+use Carp;
 use DateTime;
 use FindBin qw($Bin);
 
@@ -39,47 +40,85 @@ warn "creating new Pipeprocess objects\n";
 
 my @pipeprocesses = $proc_manager->create_new_pipeprocesses();
 
-warn "created ", scalar(@pipeprocesses), "\n";
+warn "created ", scalar(@pipeprocesses), " pipeprocess entries\n";
 
 my $queued_status = $schema->find_with_type('Cvterm', name => 'queued');
 
 my $not_started_status = $schema->find_with_type('Cvterm', name => 'not_started');
-my $conf_rs = 
+my $conf_rs =
   $schema->resultset('Pipeprocess')->search({ status => $not_started_status->cvterm_id() });
 my $test_mode = $ENV{SMALLRNA_PIPELINE_TEST} || 0;
+my $pipework_path = "$Bin/pipework.pl";
+
+sub submit_torque_job
+{
+  my $pipeprocess_id = shift;
+
+  my $command =
+    "qsub -v PIPEPROCESS_ID=$pipeprocess_id,SMALLRNA_PIPELINE_TEST=$test_mode $pipework_path";
+
+  open my $qsub_handle, '-|', $command
+    or die "couldn't open pipe from qsub: $!\n";
+
+  my $qsub_jobid = <$qsub_handle>;
+
+  chomp $qsub_jobid;
+
+  if (!defined $qsub_handle) {
+    die "failed to read the job id from qsub command: $!\n";
+  }
+
+  chomp $qsub_handle;
+
+  # finish reading everything from the pipe so that qsub doesn't get a SIGPIPE
+  1 while (<$qsub_handle>);
+
+  warn "started job with pipeprocess_id: $pipeprocess_id and job id: $qsub_jobid\n";
+
+  close $qsub_handle or die "couldn't close pipe from qsub: $!\n";
+
+  return $qsub_jobid;
+}
+
+sub submit_local_job
+{
+  my $pipeprocess_id = shift;
+
+  my $pid = fork();
+
+  if (defined $pid) {
+    if ($pid) {
+      # parent
+      warn "started job for pipeprocess #$pipeprocess_id, job #$pid\n";
+    } else {
+      # wait for parent to finish writing to the pipeprocess table
+      sleep(1);
+      $ENV{PIPEPROCESS_ID} = $pipeprocess_id;
+      $ENV{SMALLRNA_PIPELINE_TEST} = $test_mode;
+      exec $pipework_path;
+    }
+  } else {
+    croak "fork() failed\n";
+  }
+
+  return $pid;
+}
 
 while (my $pipeprocess = $conf_rs->next()) {
   my $code = sub {
     my $pipeprocess_id = $pipeprocess->pipeprocess_id();
-    my $pipework_path = "$Bin/pipework.pl";
 
     $pipeprocess->time_queued(DateTime->now());
     $pipeprocess->status($queued_status);
 
-    my $command =
-      "qsub -v PIPEPROCESS_ID=$pipeprocess_id,SMALLRNA_PIPELINE_TEST=$test_mode $pipework_path";
-
-    open my $qsub_handle, '-|', $command
-      or die "couldn't open pipe from qsub: $!\n";
-
-    my $qsub_jobid = <$qsub_handle>;
-
-    chomp $qsub_jobid;
-
-    if (!defined $qsub_handle) {
-      die "failed to read the job id from qsub command: $!\n";
+    my $job_id;
+    if ($test_mode && $test_mode eq 'local') {
+      $job_id = submit_local_job($pipeprocess_id);
+    } else {
+      $job_id = submit_torque_job($pipeprocess_id);
     }
 
-    chomp $qsub_handle;
-
-    # finish reading everything from the pipe so that qsub doesn't get a SIGPIPE
-    1 while (<$qsub_handle>);
-
-    warn "started job with pipeprocess_id: $pipeprocess_id and job id: $qsub_jobid\n";
-
-    close $qsub_handle or die "couldn't close pipe from qsub: $!\n";
-
-    $pipeprocess->job_identifier($qsub_jobid);
+    $pipeprocess->job_identifier($job_id);
     $pipeprocess->update();
   };
 
@@ -98,7 +137,7 @@ while (my $pipeprocess = $conf_rs->next()) {
       close PIPE or die "can't close pipe to qstat: $?\n";
 
       if ($count >= $ENV{'PIPESERV_MAX_JOBS'}) {
-        warn "$count - sleeping\n";
+        warn "$count jobs running - sleeping\n";
         sleep (20);
       } else {
         last;
