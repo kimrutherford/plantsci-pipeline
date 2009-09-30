@@ -146,6 +146,8 @@ my %terms = (
                 'Filter a fasta file, creating a file containing only genome aligned reads',
               'gff3 to gff2 converter' =>
                 'Convert a GFF3 file into a GFF2 file',
+              'gff3 to sam converter' =>
+                'Convert a GFF3 file into a SAM file',
               'gff3 index' =>
                 'Create an index of GFF3 file',
               'fasta index' =>
@@ -970,6 +972,16 @@ my @analyses = (
                      {
                        format_type => 'gff3',
                        content_type => 'genome_aligned_genomic_dna_reads'
+                     }
+                   ]
+                },
+                {
+                 type_term_name => 'gff3 to sam converter',
+                 runable_name => 'SmallRNA::Runable::GFF3ToSAMRunable',
+                 inputs => [
+                     {
+                       format_type => 'gff3',
+                       content_type => 'genome_aligned_srna_reads'
                      }
                    ]
                 },
