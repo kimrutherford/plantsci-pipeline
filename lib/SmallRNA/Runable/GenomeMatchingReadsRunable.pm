@@ -2,8 +2,8 @@ package SmallRNA::Runable::GenomeMatchingReadsRunable;
 
 =head1 NAME
 
-SmallRNA::Runable::GenomeMatchingReadsRunable - Create a file containing only
-                                                genome matching reads
+SmallRNA::Runable::GenomeMatchingReadsRunable - Read a GFF3 file and create a 
+                                   file containing only genome matching reads
 
 =head1 SYNOPSIS
 
