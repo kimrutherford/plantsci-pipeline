@@ -5,8 +5,8 @@ use File::Temp qw(tempdir);
 
 BEGIN {
   unshift @INC, 't';
-  use_ok 'SmallRNA::Process::FastqToFastaProcess';
-  use_ok 'SmallRNA::Runable::FastqToFastaRunable';
+  use_ok 'SmallRNA::Process::TrimProcess';
+  use_ok 'SmallRNA::Runable::TrimRunable';
 }
 
 use SmallRNA::Config;
@@ -22,11 +22,11 @@ my $schema = SmallRNA::DB->schema($config);
 SmallRNATest::setup($schema, $config);
 
 my %barcodes_map =
-  SmallRNA::Runable::FastqToFastaRunable::_get_barcodes($schema,
+  SmallRNA::Runable::TrimRunable::_get_barcodes($schema,
                                                         'DCB small RNA barcode set');
 
 my ($reject_file_name, $fasta_file_name, $output) =
-  SmallRNA::Process::FastqToFastaProcess::run(
+  SmallRNA::Process::TrimProcess::run(
     output_dir_name => $tempdir,
     input_file_name => $in_fastq_file,
     processing_type => 'remove_adapters',

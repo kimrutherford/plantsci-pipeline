@@ -1,9 +1,9 @@
-package SmallRNA::Process::FastqToFastaProcess;
+package SmallRNA::Process::TrimProcess;
 
 =head1 NAME
 
-SmallRNA::Process::FastqToFasta - Code for removing adapters and
-                                    de-muliplexing fastq sequence
+SmallRNA::Process::TrimProcess - Code for removing adapters and
+                                  de-muliplexing fastq sequence
 
 =head1 SYNOPSIS
 
@@ -19,7 +19,7 @@ Please report any bugs or feature requests to C<kmr44@cam.ac.uk>.
 
 You can find documentation for this module with the perldoc command.
 
-    perldoc SmallRNA::Process::FastqToFasta
+    perldoc SmallRNA::Process::TrimProcess
 
 You can also look for information at:
 
@@ -77,10 +77,10 @@ sub _get_file_for_code
 
 =head2 run
 
- Usage   : my $res = SmallRNA::Process::FastqToFastaProcess->new(input_file_name => $input,
-                                                                 output_dir_name => $out_dir,
-                                                                 processing_type => $type,
-                                                                 barcodes => $barcodes_map);
+ Usage   : my $res = SmallRNA::Process::TrimProcess->new(input_file_name => $input,
+                                                         output_dir_name => $out_dir,
+                                                         processing_type => $type,
+                                                         barcodes => $barcodes_map);
  Function: Remove adapters and optionally de-multiplex
  Args    : input_file_name - a fastq file name
            output_dir_name - a directory to write output files to

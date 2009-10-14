@@ -1,8 +1,8 @@
-package SmallRNA::Runable::FastqToFastaRunable;
+package SmallRNA::Runable::TrimRunable;
 
 =head1 NAME
 
-SmallRNA::Runable::FastqToFasta - a runable that reads a fastq file, removes
+SmallRNA::Runable::TrimRunable - a runable that reads a fastq file, removes
   adapters and/or trims reads and writes fasta output files
 
 =head1 SYNOPSIS
@@ -19,7 +19,7 @@ Please report any bugs or feature requests to C<kmr44@cam.ac.uk>.
 
 You can find documentation for this module with the perldoc command.
 
-    perldoc SmallRNA::Runable::FastqToFasta
+    perldoc SmallRNA::Runable::TrimRunable
 
 You can also look for information at:
 
@@ -48,7 +48,7 @@ use File::Temp qw(tempdir);
 use File::Path;
 use File::Copy;
 
-use SmallRNA::Process::FastqToFastaProcess;
+use SmallRNA::Process::TrimProcess;
 
 extends 'SmallRNA::Runable::SmallRNARunable';
 
@@ -143,7 +143,7 @@ sub _check_terms
 
 =head2
 
- Function: Run FastqToFastaProcess for this Runable/pipeprocess and store the
+ Function: Run TrimRunableProcess for this Runable/pipeprocess and store the
            name of the resulting files in the pipedata table.
  Returns : nothing - either succeeds or calls die()
 
@@ -233,7 +233,7 @@ sub run
       my %barcodes_map = _get_barcodes($schema, $barcode_set->name());
 
       ($reject_file_name, $fasta_file_name, $output) =
-        SmallRNA::Process::FastqToFastaProcess::run(
+        SmallRNA::Process::TrimRunableProcess::run(
                                                       output_dir_name => $temp_output_dir,
                                                       input_file_name => $input_file_name,
                                                       processing_type => $processing_type,
@@ -285,7 +285,7 @@ sub run
       $fasta_output_term_name = $raw_srna_reads;
 
       ($reject_file_name, $fasta_file_name, $output) =
-        SmallRNA::Process::FastqToFastaProcess::run(
+        SmallRNA::Process::TrimRunableProcess::run(
                                                       output_dir_name => $temp_output_dir,
                                                       input_file_name => $input_file_name,
                                                       processing_type => $processing_type,
@@ -297,7 +297,7 @@ sub run
       my $temp_dir_output_file_name = "$temp_output_dir/$output";
 
       if (!-f $temp_dir_output_file_name) {
-        croak "output file $temp_dir_output_file_name missing from FastqToFastaProcess->run()\n";
+        croak "output file $temp_dir_output_file_name missing from TrimProcess->run()\n";
       }
 
       # the directory is just the sample name
