@@ -72,9 +72,11 @@ my %terms = (
               'n_mer_stats' =>
                 'Counts of each sequence, ordered by count',
               'genome_aligned_srna_reads' =>
-                'Small RNA reads that have been aligned against the genome',
+                'Small RNA reads that align against the genome',
+              'redundant_genome_aligned_srna_reads' =>
+                'Redundant Small RNA reads that align against the genome - one FASTA record for each read from the original redundant sRNA file that matches the genome',
               'non_genome_aligned_srna_reads' =>
-                'Small RNA reads that did not align against the genome',
+                'Small RNA reads that do not align against the genome',
               'trna_aligned_srna_reads' =>
                 'Small RNA reads that have been aligned against the tRNA sequences of an organism',
               'genome_aligned_genomic_dna_reads' =>
@@ -802,6 +804,16 @@ my @analyses = (
                      {
                        format_type => 'fasta',
                        content_type => 'genome_aligned_srna_reads',
+                     }
+                    ]
+                },
+                {
+                 type_term_name => 'summarise fasta first base',
+                 runable_name => 'SmallRNA::Runable::FirstBaseCompSummaryRunable',
+                 inputs => [
+                     {
+                       format_type => 'fasta',
+                       content_type => 'redundant_genome_aligned_srna_reads',
                      }
                     ]
                 },

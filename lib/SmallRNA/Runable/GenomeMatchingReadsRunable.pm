@@ -52,6 +52,7 @@ sub run
 
   my $code = sub {
     my $out_content_type = 'genome_aligned_srna_reads';
+    my $redundant_out_content_type = 'redundant_genome_aligned_srna_reads';
     my $fasta_term_name = 'fasta';
     my $tsv_term_name = 'tsv';
     my $pipeprocess = $self->pipeprocess();
@@ -72,12 +73,16 @@ sub run
     my $gff_format_type = $gff_data->format_type()->name();
 
     my $fasta_out_file_name = $gff_file_name;
+    my $redundant_fasta_out_file_name = $gff_file_name;
     my $tsv_out_file_name = $gff_file_name;
 
     my $old_suffix = ".$gff_format_type";
 
     my $new_suffix = ".$out_content_type.$fasta_term_name";
     $fasta_out_file_name =~ s/(\Q$old_suffix\E)?$/$new_suffix/;
+
+    $new_suffix = ".$redundant_out_content_type.$fasta_term_name";
+    $redundant_fasta_out_file_name =~ s/(\Q$old_suffix\E)?$/$new_suffix/;
 
     $new_suffix = ".$out_content_type.$tsv_term_name";
     $tsv_out_file_name =~ s/(\Q$old_suffix\E)?$/$new_suffix/;
@@ -113,6 +118,9 @@ sub run
     open my $fasta_out_file, '>', $fasta_out_file_name
       or die "can't open $fasta_out_file_name: $!\n";
 
+    open my $redundant_fasta_out_file, '>', $redundant_fasta_out_file_name
+      or die "can't open $redundant_fasta_out_file_name: $!\n";
+
     open my $tsv_out_file, '>', $tsv_out_file_name
       or die "can't open $tsv_out_file_name: $!\n";
 
@@ -124,15 +132,28 @@ sub run
 $sequence
 END
       print $tsv_out_file "$sequence\t$count\n";
+
+      for (my $i = 0; $i < $count; $i++) {
+        print $redundant_fasta_out_file <<"END";
+>$sequence-$i
+$sequence
+END
+      }
     }
 
     close $fasta_out_file or die "can't close $fasta_out_file_name: $!\n";
+    close $redundant_fasta_out_file or die "can't close $redundant_fasta_out_file_name: $!\n";
     close $tsv_out_file or die "can't close $tsv_out_file_name: $!\n";
 
     $self->store_pipedata(generating_pipeprocess => $self->pipeprocess(),
                           file_name => $fasta_out_file_name,
                           format_type_name => $fasta_term_name,
                           content_type_name => $out_content_type);
+
+    $self->store_pipedata(generating_pipeprocess => $self->pipeprocess(),
+                          file_name => $redundant_fasta_out_file_name,
+                          format_type_name => $fasta_term_name,
+                          content_type_name => $redundant_out_content_type);
 
     $self->store_pipedata(generating_pipeprocess => $self->pipeprocess(),
                           file_name => $tsv_out_file_name,
