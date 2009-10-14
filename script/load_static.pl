@@ -1087,6 +1087,18 @@ my @analyses = (
                     ]
                 },
                 {
+                 type_term_name => 'ssaha alignment',
+                 detail => 'component: genome',
+                 runable_name => 'SmallRNA::Runable::SSAHASearchRunable',
+                 inputs => [
+                     {
+                       ecotype_name => 'unspecified Arabidopsis thaliana',
+                       format_type => 'fasta',
+                       content_type => 'non_redundant_genomic_dna_tags',
+                     }
+                    ]
+                },
+                {
                  type_term_name => 'bwa alignment',
                  detail => 'component: genome',
                  runable_name => 'SmallRNA::Runable::BWASearchRunable',
