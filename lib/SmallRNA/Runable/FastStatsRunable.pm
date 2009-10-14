@@ -72,19 +72,13 @@ sub run
     my $input_file_name = $input_pipedata->file_name();
     my $out_file_name = $input_file_name;
 
-    my $stats_term_name;
+    my $stats_term_name = 'fast_stats';
 
-    if ($input_pipedata->format_type()->name() eq 'fasta') {
-      $out_file_name =~ s/(\.(fasta|fa))?$/.fasta_stats/i;
-      $stats_term_name = 'fasta_stats';
-    } else {
-      $out_file_name =~ s/(\.(fastq|fq))?$/.fastq_stats/i;
-      $stats_term_name = 'fastq_stats';
-    }
+    $out_file_name =~ s/(\.(fast[aq]|f[aq]))?$/.fast_stats/i;
 
     my $n_mer_file_name = $out_file_name;
 
-    $n_mer_file_name =~ s/\.fast[aq]_stats/.n-mer/;
+    $n_mer_file_name =~ s/\.fast_stats/.n-mer/;
 
     my $results =
       SmallRNA::Process::FastStatsProcess::run(input_file_name =>

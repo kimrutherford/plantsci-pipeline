@@ -65,10 +65,8 @@ my %terms = (
                 'Small RNA sequence reads that were rejected by the remove adapters step because they did not match an expected barcode',
               'first_base_summary' =>
                 'A summary of the first base composition of sequences from a fasta file',
-              'fasta_stats' =>
-                'Summary information and statistics about a FASTA file',
-              'fastq_stats' =>
-                'Summary information and statistics about a FASTQ file',
+              'fast_stats' =>
+                'Summary information and statistics about a FASTA or FASTQ file',
               'n_mer_stats' =>
                 'Counts of each sequence, ordered by count',
               'genome_aligned_srna_reads' =>
