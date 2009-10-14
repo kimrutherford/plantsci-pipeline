@@ -345,7 +345,7 @@ sub fix_name
 
 my %dir_files = ();
 
-for my $sub_dir (qw(fastq SL4 SL9 SL11 SL12 SL18 SL19 SL21 SL22 SL1000 SL1001 SL1002 SL1007 SL1008 SL1009 SL1010)) {
+for my $sub_dir (qw(fastq T1 T2 SL4 SL9 SL11 SL12 SL18 SL19 SL21 SL22 SL1000 SL1001 SL1002 SL1007 SL1008 SL1009 SL1010)) {
   my $dir_name = $config->data_directory() . "/$sub_dir";
   opendir my $dir, $dir_name or die "can't open directory $dir_name: $!\n";
   while (my $ent = readdir $dir) {
@@ -443,7 +443,7 @@ sub process_row
     }
 
     if ($solexa_library !~ /SL11$|SL234_BCF|SL236|SL5[45]|SL165_1|SL285/ && $test_mode) {
-      next;
+      return;
     }
 
     my @file_names = split m|/|, $file_names_column;
@@ -457,7 +457,7 @@ sub process_row
 
     if (!defined $org_obj) {
       warn "unknown organism: '$organism_name' from line: @columns\n";
-      next;
+      return;
     }
 
     my $ecotype = get_ecotype_by_org($org_obj);
@@ -473,11 +473,11 @@ sub process_row
 
     if (!defined $person_obj) {
       warn qq{ignoring row - unknown submitter "$submitter" for '@file_names'\n};
-      next;
+      return;
     }
 
     # match SL + (_num)? + (_letters)?
-    if ($solexa_library =~ /(SL\d+)(?:_([A-Z]+))?(?:_(\d+))?/) {
+    if ($solexa_library =~ /((?:T|SL)\d+)(?:_([A-Z]+))?(?:_(\d+))?/) {
       my $sample_prefix = $1;
       my $barcodes = $2;
 
@@ -524,20 +524,20 @@ sub process_row
       for my $file_name (@file_names) {
         if ($file_name =~ /unusable/) {
           warn "skipping: $file_name\n";
-          next;
+          return;
         }
 
         $file_name =~ s/\s+$//;
         $file_name =~ s/^\s+//;
 
         if (length $file_name == 0) {
-          next;
+          return;
         }
 
         $file_name = find_real_file_name($config, $file_name);
 
         if (!defined $file_name) {
-          next;
+          return;
         }
 
         die "$file_name\n" unless -e $config->data_directory() . '/' . $file_name;
@@ -564,7 +564,7 @@ sub process_row
 
         if (run_exists($sequencing_run_identifier)) {
           warn "a sequencingrun entry exists for $solexa_library - skipping\n";
-          next;
+          return;
         }
 
         my $sequencing_sample = create_sequencing_sample($solexa_library);
@@ -640,7 +640,7 @@ sub process_row
         $pipeprocess->update();
       }
     } else {
-      die "unknown pattern library identifier: $solexa_library\n";
+      die "library identifier doesn't match expected: $solexa_library\n";
     }
 }
 
@@ -652,28 +652,9 @@ sub process
 }
 
 # test data
-process_row(
-'T1.test_data.fasta',
-'T1',
-'',
-'NO',
-'',
-'CRI',
-'Test data',
-'Arabidosis thaliana',
-'',
-'Kim Rutherford'
-'DCB',
-'',
-'',
-'',
-'',
-'',
-'smallRNA',
-'',
-'',
-'');
-
+process_row('T1.test_data.fasta', 'T1', '', 'NO', '', 'CRI', 'Test data', 'Arabidosis thaliana', '', 'Kim Rutherford', 'DCB', '', '', '', '', '', 'smallRNA', '', '', '');
+process_row('T2.test_data.fasta', 'T2', '', 'NO', '', 'CRI', 'Test data', 'Arabidosis thaliana', '', 'Kim Rutherford', 'DCB', '', '', '', '', '', 'smallRNA', '', '', '');
+ 
 eval {
   $schema->txn_do(\&process);
 };
