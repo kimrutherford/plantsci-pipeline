@@ -1020,6 +1020,18 @@ my @analyses = (
                  runable_name => 'SmallRNA::Runable::SSAHASearchRunable',
                  inputs => [
                      {
+                       ecotype_name => 'unspecified Solanum lycopersicon',
+                       format_type => 'fasta',
+                       content_type => 'non_redundant_srna_reads',
+                     }
+                    ]
+                },
+                {
+                 type_term_name => 'ssaha alignment',
+                 detail => 'component: genome',
+                 runable_name => 'SmallRNA::Runable::SSAHASearchRunable',
+                 inputs => [
+                     {
                        ecotype_name => 'unspecified Carmovirus turnip crinkle virus',
                        format_type => 'fasta',
                        content_type => 'non_redundant_srna_reads',
