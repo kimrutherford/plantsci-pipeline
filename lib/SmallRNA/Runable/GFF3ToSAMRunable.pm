@@ -91,7 +91,7 @@ sub run
 
     my $output_file_name = $input_file_name;
 
-    if ($output_file_name =~ s/\.$input_format_type$/.$output_type/) {
+    if ($output_file_name =~ s/\.($input_format_type)$/.$1.$output_type/) {
       SmallRNA::Process::GFF3ToSAMProcess::run(input_file_name => $input_file_name,
                                                output_file_name => $output_file_name,
                                                sample_name => $sample_name);
