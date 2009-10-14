@@ -127,13 +127,24 @@ sub run
       my $input_file_name = $input_pipedata->file_name();
       my $gff_file_name = $input_file_name;
 
-      my $new_suffix = ".v_${org_full_name}_$component.gff3";
+      my $org_text = ".v_${org_full_name}_$component";
 
-      if(! ($gff_file_name =~ s/\.non_redundant_(\w+)\.fasta/$new_suffix/)) {
+      if(! ($gff_file_name =~ s/\.non_redundant_(\w+)\.fasta/$org_text.gff3/)) {
         croak qq{file name ("$gff_file_name") doesn't contain the string "non_redundant"};
       }
 
-      my $aligned_reads = $component . '_aligned_' . $1;
+      my $content_desc = $1;
+
+      my $non_aligned_file_name = $input_file_name;
+
+      $non_aligned_file_name =~ s/\.non_redundant_(\w+)\.fasta/$org_text.non_aligned_$content_desc.fasta/;
+
+      my @non_aligned_args = ();
+
+      if ($component eq 'genome') {
+        @non_aligned_args =
+          (non_aligned_file_name => "$data_dir/$non_aligned_file_name");
+      }
 
       SmallRNA::Process::SSAHASearchProcess::run(input_file_name =>
                                                    "$data_dir/" . $input_file_name,
@@ -142,13 +153,23 @@ sub run
                                                  output_gff_file_name =>
                                                    "$data_dir/" . $gff_file_name,
                                                  database_file_name =>
-                                                   $db_file_name);
+                                                   $db_file_name,
+                                                 @non_aligned_args);
+
+      my $aligned_reads_term_name = $component . '_aligned_' . $content_desc;
+      my $non_aligned_reads_term_name = 'non_' . $component . '_aligned_' . $content_desc;
 
       $self->store_pipedata(generating_pipeprocess => $self->pipeprocess(),
                             file_name => $gff_file_name,
                             format_type_name => 'gff3',
-                            content_type_name => $aligned_reads);
+                            content_type_name => $aligned_reads_term_name);
 
+      if ($component eq 'genome') {
+        $self->store_pipedata(generating_pipeprocess => $self->pipeprocess(),
+                              file_name => $non_aligned_file_name,
+                              format_type_name => 'fasta',
+                              content_type_name => $non_aligned_reads_term_name);
+      }
     } else {
       croak ("can't understand detail: $1 for pipeprocess: ", $pipeprocess_id);
     }

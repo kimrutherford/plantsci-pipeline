@@ -80,6 +80,8 @@ sub _write
                                                  ssaha_path => $ssah_path,
                                                  gff_source_name =>
                                                    $source_name,
+                                                 non_aligned_file_name =>
+                                                   $non_aligned_file_name,
                                                  database_file_name =>
                                                    $database_file_name);
  Function: Run a SSAHA search for the given input file against a fasta database
@@ -88,6 +90,8 @@ sub _write
            ssaha_path - full path to the SSAHA executable
            gff_source_name - the value to use for the source field in the ouuput
            database_file_name - the full path to the target database
+           non_aligned_file_name - a fasta file of sequences that don't align
+              to the target
  Returns : nothing - either succeeds or calls die()
 
 =cut
@@ -98,6 +102,7 @@ sub run
                               database_file_name => 1,
                               gff_source_name => 1,
                               output_gff_file_name => 1,
+                              non_aligned_file_name => 0
                             });
 
   my $in_file = $params{input_file_name};
@@ -112,6 +117,8 @@ sub run
       $fasta_counts{$seq->id()} = $1;
     }
   }
+
+  my %matching_sequences = ();
 
   open my $output_gff_file, '>', $params{output_gff_file_name}
     or die "can't open $params{output_gff_file_name} for writing: $!\n";
@@ -137,6 +144,11 @@ sub run
     if ($match->{qstart} != 1 || $match->{qend} != $seq_length) {
       next;
     }
+    
+    if ($params{non_aligned_file_name}) {
+      $matching_sequences{$match->{qid}}++;
+    }
+
     _write($output_gff_file, $params{gff_source_name},
            $match, $fasta_counts{$match->{qid}});
   }
@@ -145,6 +157,20 @@ sub run
 
   if (defined $output_gff_file) {
     close $output_gff_file;
+  }
+
+  if ($params{non_aligned_file_name}) {
+    open my $non_aligned_file, '>', $params{non_aligned_file_name}
+      or die "can't open $params{non_aligned_file_name} for writing: $!";
+
+    for my $sequence (sort keys %fasta_counts) {
+      if (!exists $matching_sequences{$sequence}) {
+        print $non_aligned_file ">$sequence count:$fasta_counts{$sequence}\n";
+        print $non_aligned_file "$sequence\n";
+      }
+    }
+
+    close $non_aligned_file or die "failed to close file $params{non_aligned_file_name}: $!";
   }
 }
 

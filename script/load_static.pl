@@ -73,12 +73,18 @@ my %terms = (
                 'Counts of each sequence, ordered by count',
               'genome_aligned_srna_reads' =>
                 'Small RNA reads that have been aligned against the genome',
+              'non_genome_aligned_srna_reads' =>
+                'Small RNA reads that did not align against the genome',
               'trna_aligned_srna_reads' =>
                 'Small RNA reads that have been aligned against the tRNA sequences of an organism',
               'genome_aligned_genomic_dna_reads' =>
                 'DNA reads that have been aligned against the genome',
+              'non_genome_aligned_genomic_dna_reads' =>
+                'DNA reads that did not align against the genome',
               'genome_aligned_genomic_dna_tags' =>
                 'DNA tags that have been aligned against the genome',
+              'non_genome_aligned_genomic_dna_tags' =>
+                'DNA tags that did not align against the genome',
               'gff3_index' =>
                 'An index of a gff3 file that has the read sequence as the key',
               'fasta_index' =>
