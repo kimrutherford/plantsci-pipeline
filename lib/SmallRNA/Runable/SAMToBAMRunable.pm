@@ -86,8 +86,6 @@ sub run
     my $c = $self->config()->{programs}{samtools};
     my $samtools_path = $c->{path};
 
-    warn "SAMToBAMRunable: ", $pipeprocess->pipeprocess_id(), "\n";
-
     if ($output_file_name =~ s/\.($input_format_type)$/.$1.$output_type/) {
       SmallRNA::Process::SAMToBAMProcess::run(input_file_name => $input_file_name,
                                               output_file_name => $output_file_name,
