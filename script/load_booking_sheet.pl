@@ -580,7 +580,11 @@ sub process_row
             if ($solexa_library =~ /^(SL28[345])/) {
               $barcode_set_name = "Dmitry's barcode set";
             } else {
-              $barcode_set_name = "DCB small RNA barcode set";
+              if ($solexa_library =~ /^(SL322)/) {
+                $barcode_set_name = "Natasha's barcode set";
+              } else {
+                $barcode_set_name = "DCB small RNA barcode set";
+              }
             }
 
             my $barcode_set = find('BarcodeSet', name => $barcode_set_name);
