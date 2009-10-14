@@ -148,6 +148,8 @@ my %terms = (
                 'Convert a GFF3 file into a GFF2 file',
               'gff3 to sam converter' =>
                 'Convert a GFF3 file into a SAM file',
+              'sam to bam converter' =>
+                'Convert a SAM file into a BAM file',
               'gff3 index' =>
                 'Create an index of GFF3 file',
               'fasta index' =>
@@ -986,11 +988,68 @@ my @analyses = (
                    ]
                 },
                 {
+                 type_term_name => 'gff3 to sam converter',
+                 runable_name => 'SmallRNA::Runable::GFF3ToSAMRunable',
+                 inputs => [
+                     {
+                       format_type => 'gff3',
+                       content_type => 'genome_aligned_genomic_dna_reads'
+                     }
+                   ]
+                },
+                {
+                 type_term_name => 'gff3 to sam converter',
+                 runable_name => 'SmallRNA::Runable::GFF3ToSAMRunable',
+                 inputs => [
+                     {
+                       format_type => 'gff3',
+                       content_type => 'genome_aligned_genomic_dna_tags'
+                     }
+                   ]
+                },
+                {
                  type_term_name => 'gff3 to gff2 converter',
                  runable_name => 'SmallRNA::Runable::GFF3ToGFF2Runable',
                  inputs => [
                      {
                        format_type => 'gff3',
+                       content_type => 'genome_aligned_srna_reads'
+                     }
+                   ]
+                },
+                {
+                 type_term_name => 'sam to bam converter',
+                 runable_name => 'SmallRNA::Runable::SAMToBAMRunable',
+                 detail => 'component: genome',
+                 inputs => [
+                     {
+                       format_type => 'sam',
+                       content_type => 'genome_aligned_srna_reads',
+                       ecotype_name => 'unspecified Arabidopsis thaliana',
+                     }
+                   ]
+                },
+                {
+                 type_term_name => 'sam to bam converter',
+                 runable_name => 'SmallRNA::Runable::SAMToBAMRunable',
+                 detail => 'component: genome',
+                 inputs => [
+                     {
+                       format_type => 'sam',
+                       content_type => 'genome_aligned_genomic_dna_reads',
+                       ecotype_name => 'unspecified Arabidopsis thaliana',
+                     }
+                   ]
+                },
+                {
+                 type_term_name => 'sam to bam converter',
+                 runable_name => 'SmallRNA::Runable::SAMToBAMRunable',
+                 detail => 'component: genome',
+                 inputs => [
+                     {
+                       format_type => 'sam',
+                       content_type => 'genome_aligned_genomic_dna_tags',
+                       ecotype_name => 'unspecified Arabidopsis thaliana',
                      }
                    ]
                 },

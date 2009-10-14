@@ -156,6 +156,72 @@ sub store_pipedata
   return $pipedata;
 }
 
+sub get_pipeprocess_details
+{
+  my $self = shift;
+  my $pipeprocess = shift;
+
+  my @input_pipedatas = $pipeprocess->input_pipedatas();
+  my $pipeprocess_id = $pipeprocess->pipeprocess_id();
+
+  if (@input_pipedatas > 1) {
+    croak ("pipeprocess ", $pipeprocess_id,
+           " has more than one input pipedata\n");
+  }
+
+  my $input_pipedata = $input_pipedatas[0];
+
+  my @samples = $input_pipedata->samples();
+
+  if (@samples != 1) {
+    croak("pipedata has more than one sample, can't continue: ",
+          $input_pipedata->file_name(), "\n");
+  }
+
+  my $sample = $samples[0];
+
+  my $process_conf = $pipeprocess->process_conf();
+  my $detail = $process_conf->detail();
+
+  my @process_conf_inputs = $process_conf->process_conf_inputs();
+
+  if (@process_conf_inputs != 1) {
+    croak("process conf for process #", $pipeprocess_id,
+          " has more than one input configured\n");
+  }
+
+  my $target_organism = $process_conf_inputs[0]->ecotype()->organism();
+
+  my $org_full_name = $target_organism->full_name();
+  $org_full_name =~ s/ /_/g;
+
+  my $database_conf = $self->config()->{databases};
+
+  my $org_config = $database_conf->{organisms}{$org_full_name};
+
+  if (!defined $org_config) {
+    croak("no configuration found for $org_full_name for process #",
+          $pipeprocess_id, "\n");
+  }
+
+  if (!defined $org_config) {
+    croak "can't find organism configuration for ", $sample->name(), "\n";
+  }
+
+  if ($detail =~ /component: (\S+)/) {
+    my $component = $1;
+
+    if (!defined $org_config->{database_files}{$component}) {
+      die "can't find configuration for component: $component\n";
+    }
+
+    return ($org_full_name, $component,
+            $database_conf->{root} . '/' . $org_config->{database_files}{$component});
+  } else {
+    croak ("can't understand detail: $1 for pipeprocess: ", $pipeprocess_id);
+  }
+}
+
 sub run
 {
   croak "you must implement this method\n";
