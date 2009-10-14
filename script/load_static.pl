@@ -758,6 +758,36 @@ my @analyses = (
                     ]
                 },
                 {
+                 type_term_name => 'calculate fasta or fastq file statistics',
+                 runable_name => 'SmallRNA::Runable::FastStatsRunable',
+                 inputs => [
+                     {
+                       format_type => 'fasta',
+                       content_type => 'non_genome_aligned_srna_reads',
+                     }
+                    ]
+                },
+                {
+                 type_term_name => 'calculate fasta or fastq file statistics',
+                 runable_name => 'SmallRNA::Runable::FastStatsRunable',
+                 inputs => [
+                     {
+                       format_type => 'fasta',
+                       content_type => 'non_genome_aligned_genomic_dna_tags',
+                     }
+                    ]
+                },
+                {
+                 type_term_name => 'calculate fasta or fastq file statistics',
+                 runable_name => 'SmallRNA::Runable::FastStatsRunable',
+                 inputs => [
+                     {
+                       format_type => 'fasta',
+                       content_type => 'non_genome_aligned_genomic_dna_reads'
+                     }
+                    ]
+                },
+                {
                  type_term_name => 'summarise fasta first base',
                  runable_name => 'SmallRNA::Runable::FirstBaseCompSummaryRunable',
                  inputs => [
