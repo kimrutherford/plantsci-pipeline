@@ -43,8 +43,12 @@ my %terms = (
                 'Raw DNA sequence reads with quality scores',
               'srna_reads' =>
                 'Small RNA sequence reads that have been processed to remove adapters',
+              'filtered_srna_reads' =>
+                'Small RNA sequence reads that have been processed to remove adapters and filtered by size',
               'non_redundant_srna_reads' =>
                 'Small RNA sequence reads without adapters with redundant sequences removed',
+              'non_redundant_srna_reads' =>
+                'Small RNA sequence reads without adapters with redundant sequences removed and filtered by size',
               'genomic_dna_reads' =>
                 'Genomic DNA reads',
               'non_redundant_genomic_dna_reads' =>
@@ -141,6 +145,8 @@ my %terms = (
                 'Read a fasta file of short sequences and summarise the first base composition',
               'calculate fasta or fastq file statistics' =>
                 'Get sequence composition statistics from a FASTA or FASTQ file',
+              'filter sequences by size' =>
+                'Filter sequences from a FASTA file by size',
               'remove redundant reads' =>
                 'Read a fasta file of short sequences, remove redundant reads '
                   . 'and add a count to the header',
@@ -712,6 +718,16 @@ my @analyses = (
                  inputs => [
                      {
                        format_type => 'fasta',
+                       content_type => 'filtered_srna_reads',
+                     }
+                    ]
+                },
+                {
+                 type_term_name => 'calculate fasta or fastq file statistics',
+                 runable_name => 'SmallRNA::Runable::FastStatsRunable',
+                 inputs => [
+                     {
+                       format_type => 'fasta',
                        content_type => 'non_redundant_srna_reads',
                      }
                     ]
@@ -857,6 +873,39 @@ my @analyses = (
                     ]
                 },
                 {
+                 type_term_name => 'filter sequences by size',
+                 runable_name => 'SmallRNA::Runable::SizeFilterRunable',
+                 detail => 'min_size: 15',
+                 inputs => [
+                     {
+                       format_type => 'fasta',
+                       content_type => 'srna_reads'
+                     }
+                    ]
+                },
+                {
+                 type_term_name => 'filter sequences by size',
+                 runable_name => 'SmallRNA::Runable::SizeFilterRunable',
+                 detail => 'min_size: 15',
+                 inputs => [
+                     {
+                       format_type => 'fasta',
+                       content_type => 'genomic_dna_tags'
+                     }
+                    ]
+                },
+                {
+                 type_term_name => 'filter sequences by size',
+                 runable_name => 'SmallRNA::Runable::SizeFilterRunable',
+                 detail => 'min_size: 15',
+                 inputs => [
+                     {
+                       format_type => 'fasta',
+                       content_type => 'genomic_dna_reads'
+                     }
+                    ]
+                },
+                {
                  type_term_name => 'summarise fasta first base',
                  runable_name => 'SmallRNA::Runable::FirstBaseCompSummaryRunable',
                  inputs => [
@@ -873,6 +922,16 @@ my @analyses = (
                      {
                        format_type => 'fasta',
                        content_type => 'srna_reads',
+                     }
+                    ]
+                },
+                {
+                 type_term_name => 'summarise fasta first base',
+                 runable_name => 'SmallRNA::Runable::FirstBaseCompSummaryRunable',
+                 inputs => [
+                     {
+                       format_type => 'fasta',
+                       content_type => 'filtered_srna_reads',
                      }
                     ]
                 },
@@ -952,7 +1011,7 @@ my @analyses = (
                  inputs => [
                      {
                        format_type => 'fasta',
-                       content_type => 'srna_reads',
+                       content_type => 'filtered_srna_reads',
                      }
                     ]
                 },
@@ -1103,6 +1162,18 @@ my @analyses = (
                  inputs => [
                      {
                        ecotype_name => 'unspecified Arabidopsis thaliana',
+                       format_type => 'fasta',
+                       content_type => 'non_redundant_srna_reads',
+                     }
+                    ]
+                },
+                {
+                 type_term_name => 'ssaha alignment',
+                 detail => 'component: genome, target: "Arabidopsis thaliana"',
+                 runable_name => 'SmallRNA::Runable::SSAHASearchRunable',
+                 inputs => [
+                     {
+                       ecotype_name => 'unspecified Cleome gynandra',
                        format_type => 'fasta',
                        content_type => 'non_redundant_srna_reads',
                      }

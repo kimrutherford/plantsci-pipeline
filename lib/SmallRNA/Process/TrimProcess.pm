@@ -251,11 +251,7 @@ sub run
           . " barcode position: $barcode_position\n";
       }
 
-      if (length $trimmed_seq < 15) {
-        print $rej_file ">$id Is too short ($seq_len)\n";
-        print $rej_file "$sequence\n";
-      } else {
-        if ($trimmed_seq =~ m/^([ACGT]+$)/i) { # i.e. has no Ns
+        if ($trimmed_seq =~ m/^([ACGT]*$)/i) { # i.e. has no Ns
           if ($multiplexed && $trim_offset == 0) {
             if (length $trimmed_seq == 0) {
               print $rej_file ">$id No sequence after removing bar code $code_from_seq\n";
@@ -290,7 +286,6 @@ sub run
           print $rej_file ">$id Contains Ns\n";
           print $rej_file "$sequence\n";
         }
-      }
     } else {
       $reject_count++;
       my $message = undef;

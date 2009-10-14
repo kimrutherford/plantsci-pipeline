@@ -43,7 +43,7 @@ use Bio::SeqIO;
 use Params::Validate qw(:all);
 use warnings;
 
-my $MIN_SIZE = 15;
+my $MIN_SIZE = 0;
 my @BASES = qw(a c g t);
 my $LINE_FORMAT = "%-6s%8d %8d %8d %8d %8d  %6.2f %6.2f %6.2f %6.2f\n";
 

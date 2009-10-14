@@ -72,6 +72,9 @@ sub run
 
     my $input_type = $input_pipedata->content_type()->name();
     my $output_type = 'non_redundant_' . $input_type;
+
+    $output_type =~ s/_filtered_/_/;
+
     my $data_dir = $self->config()->data_directory();
 
     my $input_file_name = $input_pipedata->file_name();
