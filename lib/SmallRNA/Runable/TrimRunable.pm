@@ -233,7 +233,7 @@ sub run
       my %barcodes_map = _get_barcodes($schema, $barcode_set->name());
 
       ($reject_file_name, $fasta_file_name, $output) =
-        SmallRNA::Process::TrimRunableProcess::run(
+        SmallRNA::Process::TrimProcess::run(
                                                       output_dir_name => $temp_output_dir,
                                                       input_file_name => $input_file_name,
                                                       processing_type => $processing_type,
@@ -285,7 +285,7 @@ sub run
       $fasta_output_term_name = $raw_srna_reads;
 
       ($reject_file_name, $fasta_file_name, $output) =
-        SmallRNA::Process::TrimRunableProcess::run(
+        SmallRNA::Process::TrimProcess::run(
                                                       output_dir_name => $temp_output_dir,
                                                       input_file_name => $input_file_name,
                                                       processing_type => $processing_type,
