@@ -418,7 +418,8 @@ sub process_row
 {
     my @columns = @_;
 
-    my ($file_names_column, $solexa_library, $do_processing,
+    my ($file_names_column, $solexa_library, 
+        $project_desc, $do_processing,
         $dcb_validated, $funding,
         $sheet_seq_centre_name,
         $description, $organism_name, $genotype, $submitter, $institution,
@@ -652,8 +653,8 @@ sub process
 }
 
 # test data
-process_row('T1.test_data.fasta', 'T1', '', 'NO', '', 'CRI', 'Test data', 'Arabidosis thaliana', '', 'Kim Rutherford', 'DCB', '', '', '', '', '', 'smallRNA', '', '', '');
-process_row('T2.test_data.fasta', 'T2', '', 'NO', '', 'CRI', 'Test data', 'Arabidosis thaliana', '', 'Kim Rutherford', 'DCB', '', '', '', '', '', 'smallRNA', '', '', '');
+process_row('T1.test_data.fasta', 'T1', '', '', 'NO', '', 'CRI', 'Test data', 'Arabidosis thaliana', '', 'Kim Rutherford', 'DCB', '', '', '', '', '', 'smallRNA', '', '', '');
+process_row('T2.test_data.fasta', 'T2', '', '', 'NO', '', 'CRI', 'Test data', 'Arabidosis thaliana', '', 'Kim Rutherford', 'DCB', '', '', '', '', '', 'smallRNA', '', '', '');
  
 eval {
   $schema->txn_do(\&process);
