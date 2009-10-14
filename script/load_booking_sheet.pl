@@ -414,10 +414,10 @@ sub create_sequencing_sample
   return create('SequencingSample', { name => "CRI_$solexa_library_name" });
 }
 
-sub process
+sub process_row
 {
-  while (my $columns_ref = $csv->getline($io)) {
-    my @columns = @$columns_ref;
+    my @columns = @_;
+
     my ($file_names_column, $solexa_library, $do_processing,
         $dcb_validated, $funding,
         $sheet_seq_centre_name,
@@ -642,8 +642,37 @@ sub process
     } else {
       die "unknown pattern library identifier: $solexa_library\n";
     }
+}
+
+sub process
+{
+  while (my $columns_ref = $csv->getline($io)) {
+    process_row(@$columns_ref);
   }
 }
+
+# test data
+process_row(
+'T1.test_data.fasta',
+'T1',
+'',
+'NO',
+'',
+'CRI',
+'Test data',
+'Arabidosis thaliana',
+'',
+'Kim Rutherford'
+'DCB',
+'',
+'',
+'',
+'',
+'',
+'smallRNA',
+'',
+'',
+'');
 
 eval {
   $schema->txn_do(\&process);
