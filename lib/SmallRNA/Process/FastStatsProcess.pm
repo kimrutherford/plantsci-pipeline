@@ -179,7 +179,8 @@ sub run
            'gc content' => $gc_count,
            'n content' => $n_count,
            'positional counts' => \%positional_counts,
-           'n-mers' => \%mers_hash
+           'n-mers' => \%mers_hash,
+           'top-n-mers' => \%top_mers
           };
 }
 

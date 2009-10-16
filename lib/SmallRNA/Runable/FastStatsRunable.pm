@@ -109,7 +109,7 @@ sub run
                           content_type_name => $stats_term_name,
                           samples => \@samples);
 
-    if (-e $n_mer_file_name) {
+    if (keys %{$results->{top-n-mers}}) {
       $self->store_pipedata(generating_pipeprocess => $self->pipeprocess(),
                             file_name => $n_mer_file_name,
                             format_type_name => 'text',
