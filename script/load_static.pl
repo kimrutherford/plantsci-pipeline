@@ -246,6 +246,19 @@ $schema->txn_do(sub {
   }
 });
 
+sub _get_cvterm
+{
+  my $term_name = shift;
+
+  my $obj = $cvterm_objs{$term_name};
+
+  if (defined $obj) {
+    return $obj;
+  } else {
+    croak "no cvterm for term name: $term_name\n";
+  }
+}
+
 my %barcode_sets = (
   "DCB small RNA barcode set" =>
     { code_position => "3-prime",
@@ -894,28 +907,7 @@ my @analyses = (
                      }
                     ]
                 },
-                {
-                 type_term_name => 'filter sequences by size',
-                 runable_name => 'SmallRNA::Runable::SizeFilterRunable',
-                 detail => 'min_size: 15',
-                 inputs => [
-                     {
-                       format_type => 'fasta',
-                       content_type => 'genomic_dna_tags'
-                     }
-                    ]
-                },
-                {
-                 type_term_name => 'filter sequences by size',
-                 runable_name => 'SmallRNA::Runable::SizeFilterRunable',
-                 detail => 'min_size: 15',
-                 inputs => [
-                     {
-                       format_type => 'fasta',
-                       content_type => 'genomic_dna_reads'
-                     }
-                    ]
-                },
+
                 {
                  type_term_name => 'summarise fasta first base',
                  runable_name => 'SmallRNA::Runable::FirstBaseCompSummaryRunable',
@@ -996,6 +988,109 @@ my @analyses = (
                      }
                     ]
                 },
+
+                {
+                 type_term_name => 'summarise fasta first base',
+                 runable_name => 'SmallRNA::Runable::FirstBaseCompSummaryRunable',
+                 inputs => [
+                     {
+                       format_type => 'fasta',
+                       content_type => 'non_genome_aligned_genomic_dna_tags',
+                     }
+                    ]
+                },
+                {
+                 type_term_name => 'summarise fasta first base',
+                 runable_name => 'SmallRNA::Runable::FirstBaseCompSummaryRunable',
+                 inputs => [
+                     {
+                       format_type => 'fasta',
+                       content_type => 'genomic_dna_tags',
+                     }
+                    ]
+                },
+                {
+                 type_term_name => 'summarise fasta first base',
+                 runable_name => 'SmallRNA::Runable::FirstBaseCompSummaryRunable',
+                 inputs => [
+                     {
+                       format_type => 'fasta',
+                       content_type => 'non_redundant_genomic_dna_tags',
+                     }
+                    ]
+                },
+                {
+                 type_term_name => 'summarise fasta first base',
+                 runable_name => 'SmallRNA::Runable::FirstBaseCompSummaryRunable',
+                 inputs => [
+                     {
+                       format_type => 'fasta',
+                       content_type => 'raw_genomic_dna_tags',
+                     }
+                    ]
+                },
+                {
+                 type_term_name => 'summarise fasta first base',
+                 runable_name => 'SmallRNA::Runable::FirstBaseCompSummaryRunable',
+                 inputs => [
+                     {
+                       format_type => 'fasta',
+                       content_type => 'genome_aligned_genomic_dna_tags',
+                     }
+                    ]
+                },
+
+                {
+                 type_term_name => 'summarise fasta first base',
+                 runable_name => 'SmallRNA::Runable::FirstBaseCompSummaryRunable',
+                 inputs => [
+                     {
+                       format_type => 'fasta',
+                       content_type => 'non_genome_aligned_genomic_dna_reads',
+                     }
+                    ]
+                },
+                {
+                 type_term_name => 'summarise fasta first base',
+                 runable_name => 'SmallRNA::Runable::FirstBaseCompSummaryRunable',
+                 inputs => [
+                     {
+                       format_type => 'fasta',
+                       content_type => 'genomic_dna_reads',
+                     }
+                    ]
+                },
+                {
+                 type_term_name => 'summarise fasta first base',
+                 runable_name => 'SmallRNA::Runable::FirstBaseCompSummaryRunable',
+                 inputs => [
+                     {
+                       format_type => 'fasta',
+                       content_type => 'non_redundant_genomic_dna_reads',
+                     }
+                    ]
+                },
+                {
+                 type_term_name => 'summarise fasta first base',
+                 runable_name => 'SmallRNA::Runable::FirstBaseCompSummaryRunable',
+                 inputs => [
+                     {
+                       format_type => 'fasta',
+                       content_type => 'raw_genomic_dna_reads',
+                     }
+                    ]
+                },
+                {
+                 type_term_name => 'summarise fasta first base',
+                 runable_name => 'SmallRNA::Runable::FirstBaseCompSummaryRunable',
+                 inputs => [
+                     {
+                       format_type => 'fasta',
+                       content_type => 'genome_aligned_genomic_dna_reads',
+                     }
+                    ]
+                },
+
                 {
                  type_term_name => 'remove redundant reads',
                  runable_name => 'SmallRNA::Runable::NonRedundantFastaRunable',
@@ -1167,6 +1262,18 @@ my @analyses = (
                     ]
                 },
                 {
+                 type_term_name => 'ssaha alignment',
+                 detail => 'component: genome',
+                 runable_name => 'SmallRNA::Runable::SSAHASearchRunable',
+                 inputs => [
+                     {
+                       ecotype_name => 'unspecified Arabidopsis thaliana',
+                       format_type => 'fasta',
+                       content_type => 'non_redundant_genomic_dna_reads',
+                     }
+                    ]
+                },
+                {
                  type_term_name => 'bwa alignment',
                  detail => 'component: genome',
                  runable_name => 'SmallRNA::Runable::BWASearchRunable',
@@ -1332,11 +1439,11 @@ $schema->txn_do(sub {
       );
 
       if (defined $input->{content_type}) {
-        $args{content_type} = $cvterm_objs{$input->{content_type}};
+        $args{content_type} = _get_cvterm($input->{content_type});
       }
 
       if (defined $input->{format_type}) {
-        $args{format_type} = $cvterm_objs{$input->{format_type}};
+        $args{format_type} = _get_cvterm($input->{format_type});
       }
 
       if (defined $input->{ecotype_name}) {
