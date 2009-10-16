@@ -166,11 +166,11 @@ sub run
     $self->pipeprocess();
   $self->{_conf} = $pipeprocess->process_conf();
 
-  my $processing_type;
+  my $processing_type = 'passthrough';
 
   my $detail = $self->{_conf}->detail();
 
-  if ($detail =~ /^action: (.*)/) {
+  if (defined $detail && $detail =~ /^action: (.*)/) {
     $processing_type = $1;
   }
 
