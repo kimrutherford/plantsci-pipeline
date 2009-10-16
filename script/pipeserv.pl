@@ -25,6 +25,13 @@ use SmallRNA::Config;
 use SmallRNA::DBLayer::Loader;
 use SmallRNA::ProcessManager;
 
+my $run_locally = 0;
+
+if (@ARGV && $ARGV[0] eq '-l') {
+  $run_locally = 1;
+  shift;
+}
+
 my $config_file_name = shift;
 
 my $config = SmallRNA::Config->new($config_file_name);
@@ -112,7 +119,7 @@ while (my $pipeprocess = $conf_rs->next()) {
     $pipeprocess->status($queued_status);
 
     my $job_id;
-    if ($test_mode && $test_mode eq 'local') {
+    if ($run_locally) {
       $job_id = submit_local_job($pipeprocess_id);
     } else {
       $job_id = submit_torque_job($pipeprocess_id);
