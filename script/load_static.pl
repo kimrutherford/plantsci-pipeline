@@ -85,10 +85,14 @@ my %terms = (
                 'Small RNA reads that have been aligned against the tRNA sequences of an organism',
               'genome_aligned_genomic_dna_reads' =>
                 'DNA reads that have been aligned against the genome',
+              'redundant_genome_aligned_genomic_dna_reads' =>
+                'Redundant DNA reads that have been aligned against the genome - one FASTA record for each read from the original redundant file that matches the genome',
               'non_genome_aligned_genomic_dna_reads' =>
                 'DNA reads that did not align against the genome',
               'genome_aligned_genomic_dna_tags' =>
                 'DNA tags that have been aligned against the genome',
+              'redundant_genome_aligned_genomic_dna_reads' =>
+                'Redundant DNA tags that have been aligned against the genome - one FASTA record for each read from the original redundant file that matches the genome',
               'non_genome_aligned_genomic_dna_tags' =>
                 'DNA tags that did not align against the genome',
               'gff3_index' =>
