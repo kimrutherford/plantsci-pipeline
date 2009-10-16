@@ -44,7 +44,7 @@ use Bio::SeqIO;
 
 use SmallRNA::Parse::SSAHA;
 
-my $SSAHA_ARGS = "-qf fasta -sf hash -wl 10 -sl 1 -da 0 -mp 18";
+my $SSAHA_ARGS = "-qf fasta -sf fasta -wl 10 -sl 1 -da 0 -mp 18";
 
 sub _write
 {
