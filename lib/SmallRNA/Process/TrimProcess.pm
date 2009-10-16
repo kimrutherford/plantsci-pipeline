@@ -304,7 +304,7 @@ sub run
     }
 
     if ($ENV{'SMALLRNA_PIPELINE_TEST'} &&
-          ($good_sequence_count > 10000 || $reject_count > 10000)) {
+          ($good_sequence_count >= 10000 || $reject_count >= 10000)) {
       last;
     }
   }
