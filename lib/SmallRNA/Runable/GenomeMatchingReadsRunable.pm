@@ -51,8 +51,6 @@ sub run
   my $schema = $self->schema();
 
   my $code = sub {
-    my $out_content_type = 'genome_aligned_srna_reads';
-    my $redundant_out_content_type = 'redundant_genome_aligned_srna_reads';
     my $fasta_term_name = 'fasta';
     my $tsv_term_name = 'tsv';
     my $pipeprocess = $self->pipeprocess();
@@ -71,6 +69,9 @@ sub run
 
     my $gff_content_type = $gff_data->content_type()->name();
     my $gff_format_type = $gff_data->format_type()->name();
+
+    my $out_content_type = $gff_content_type;
+    my $redundant_out_content_type = "redundant_$gff_content_type";
 
     my $fasta_out_file_name = $gff_file_name;
     my $redundant_fasta_out_file_name = $gff_file_name;
