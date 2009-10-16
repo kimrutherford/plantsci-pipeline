@@ -41,6 +41,8 @@ my %terms = (
                 'Raw small RNA sequence reads from a multiplexed sequencing run, before any processing',
               'raw_genomic_dna_reads' =>
                 'Raw DNA sequence reads with quality scores',
+              'raw_genomic_dna_tags' =>
+                'Raw DNA sequence tags with quality scores',
               'srna_reads' =>
                 'Small RNA sequence reads that have been processed to remove adapters',
               'filtered_srna_reads' =>
@@ -136,7 +138,6 @@ my %terms = (
                 'This pseudo-analysis generates raw sequence files, ' .
                 'with quality scores, and uses multiplexing/barcodes',
               'remove adapters' => 'Read FastQ files, process each read to remove the adapter',
-              'trim reads' => 'Read FastQ files, process each read and trim to a fixed length',
               'remove adapters and de-multiplex' =>
                 'Read FastQ files, process each read to remove the adapter and split the result based on the barcode',
               'trim reads' =>
@@ -642,6 +643,16 @@ my @analyses = (
                 {
                  type_term_name => 'trim reads',
                  detail => 'action: trim',
+                 runable_name => 'SmallRNA::Runable::TrimRunable',
+                 inputs => [
+                     {
+                       format_type => 'fastq',
+                       content_type => 'raw_genomic_dna_tags',
+                     }
+                    ]
+                },
+                {
+                 type_term_name => 'trim reads',
                  runable_name => 'SmallRNA::Runable::TrimRunable',
                  inputs => [
                      {
@@ -1331,6 +1342,7 @@ $schema->txn_do(sub {
       if (defined $input->{ecotype_name}) {
         $args{ecotype} = $ecotype_objs{$input->{ecotype_name}};
       }
+
       $schema->create_with_type('ProcessConfInput', { %args });
     }
   }
