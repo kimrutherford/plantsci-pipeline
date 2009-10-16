@@ -157,11 +157,6 @@ sub run
   my $reject_term_name = 'remove_adapter_rejects';
   my $unknown_barcode_term_name = 'remove_adapter_unknown_barcode';
 
-  my $raw_srna_reads = 'raw_srna_reads';
-  my $multiplexed_srna_reads = 'multiplexed_srna_reads';
-
-  my $fasta_output_term_name;
-
   my $pipeprocess =
     $self->pipeprocess();
   $self->{_conf} = $pipeprocess->process_conf();
@@ -182,23 +177,27 @@ sub run
   }
 
   my $input_pipedata = $input_pipedatas[0];
-
   my $kept_term_name;
+  my $raw_reads;
 
   if ($input_pipedata->content_type()->name() eq 'raw_genomic_dna_reads') {
     if ($processing_type eq 'trim') {
+      $raw_reads = 'raw_genomic_dna_tags';
       $kept_term_name = 'genomic_dna_tags';
     } else {
+      $raw_reads = 'raw_genomic_dna_reads';
       $kept_term_name = 'genomic_dna_reads';
     }
   } else {
+    $raw_reads = 'raw_srna_reads';
     $kept_term_name = 'srna_reads';
   }
 
   _check_terms($schema, $kept_term_name, $reject_term_name,
-               $unknown_barcode_term_name, $raw_srna_reads,
-               $multiplexed_srna_reads);
+               $unknown_barcode_term_name, $raw_reads);
 
+
+  my $fasta_output_term_name = $raw_reads;
 
   my $sequencingrun = _find_sequencingrun_from_pipedata($input_pipedata);
 
@@ -226,8 +225,6 @@ sub run
 
     if (defined $barcode_set && $trim_offset == 0) {
       # do de-multiplexing
-      $fasta_output_term_name = $multiplexed_srna_reads;
-
       my $barcode_position = $barcode_set->position_in_read()->name();
 
       my %barcodes_map = _get_barcodes($schema, $barcode_set->name());
@@ -282,8 +279,6 @@ sub run
                               properties => { 'multiplexing code' => $code_name });
       }
     } else {
-      $fasta_output_term_name = $raw_srna_reads;
-
       ($reject_file_name, $fasta_file_name, $output) =
         SmallRNA::Process::TrimProcess::run(
                                                       output_dir_name => $temp_output_dir,
