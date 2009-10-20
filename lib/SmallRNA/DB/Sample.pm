@@ -126,4 +126,69 @@ __PACKAGE__->many_to_many('pipedatas' => 'sample_pipedatas', 'pipedata');
 __PACKAGE__->many_to_many('ecotypes' => 'sample_ecotypes', 'ecotype');
 __PACKAGE__->many_to_many('pipeprojects' => 'sample_pipeprojects', 'pipeproject');
 
+my %_fasta_counts_cache = ();
+
+sub _populate_fasta_counts_cache
+{
+  my $schema = shift;
+
+  my $query = <<"END";
+SELECT sample.name AS sample_name,
+       pipedata_content_type.name AS pipedata_content_type_name,
+       property_type_cvterm.name AS property_type_name,
+       pipedata_property.value AS prop_value
+  FROM sample
+  LEFT JOIN sample_pipedata on sample_pipedata.sample = sample.sample_id
+  LEFT JOIN pipedata on sample_pipedata.pipedata = pipedata.pipedata_id
+  LEFT JOIN pipedata_property
+               ON pipedata_property.pipedata = pipedata.pipedata_id,
+            cvterm pipedata_content_type, cvterm property_type_cvterm
+      WHERE property_type_cvterm.cvterm_id = pipedata_property.type
+        AND pipedata_content_type.cvterm_id = pipedata.content_type
+END
+
+  my $start_time = time();
+
+  my $dbh = $schema->storage()->dbh();
+  my $sth = $dbh->prepare($query) || die $dbh->errstr;
+  $sth->execute() || die $sth->errstr;
+
+  while (my $r = $sth->fetchrow_hashref()) {
+    my $sample_name = $r->{sample_name};
+    my $pipedata_content_type_name = $r->{pipedata_content_type_name};
+    my $property_type_name = $r->{property_type_name};
+    my $prop_value = $r->{prop_value};
+
+    next unless $sample_name =~ /SL107|SL113/;
+
+    $_fasta_counts_cache{$sample_name}{$pipedata_content_type_name}{$property_type_name} = $prop_value;
+  }
+}
+
+=head2 get_pipedata_property
+
+ Function: Get a pipedata_property of a pipedata of a Sample
+ Args    : $sample - the Sample object
+           $pipedata_content_type_name - the content type of the pipedata whose
+              properties interest us
+           $property_type_name - the property type to find
+ Returns : the property value, or undef
+
+=cut
+sub get_pipedata_property
+{
+  my $sample = shift;
+  my $pipedata_content_type_name = shift;
+  my $property_type_name = shift;
+
+  my $sample_name = $sample->name();
+
+  if (!exists $_fasta_counts_cache{$sample_name}) {
+    my $schema = $sample->result_source->schema();
+    _populate_fasta_counts_cache($schema);
+  }
+
+  return $_fasta_counts_cache{$sample_name}{$pipedata_content_type_name}{$property_type_name};
+}
+
 1;
