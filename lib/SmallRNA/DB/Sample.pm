@@ -148,8 +148,6 @@ SELECT sample.name AS sample_name,
                ON property_type_cvterm.cvterm_id = pipedata_property.type
 END
 
-  warn "executing: $query\n";
-
   my $start_time = time();
 
   my $dbh = $schema->storage()->dbh();
@@ -165,8 +163,10 @@ END
     if (defined $pipedata_content_type_name && defined $property_type_name) {
       $_fasta_counts_cache{$sample_name}{$pipedata_content_type_name}{$property_type_name} = $prop_value;
     } else {
-      # placeholder so that we know we've queried for this sample before
-      $_fasta_counts_cache{$sample_name} = undef;
+      if (!exists $_fasta_counts_cache{$sample_name}) {
+        # placeholder so that we know we've queried for this sample before
+        $_fasta_counts_cache{$sample_name} = undef;
+      }
     }
   }
 }
