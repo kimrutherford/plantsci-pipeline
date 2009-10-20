@@ -141,11 +141,14 @@ SELECT sample.name AS sample_name,
   LEFT JOIN sample_pipedata on sample_pipedata.sample = sample.sample_id
   LEFT JOIN pipedata on sample_pipedata.pipedata = pipedata.pipedata_id
   LEFT JOIN pipedata_property
-               ON pipedata_property.pipedata = pipedata.pipedata_id,
-            cvterm pipedata_content_type, cvterm property_type_cvterm
-      WHERE property_type_cvterm.cvterm_id = pipedata_property.type
-        AND pipedata_content_type.cvterm_id = pipedata.content_type
+               ON pipedata_property.pipedata = pipedata.pipedata_id
+  LEFT JOIN cvterm pipedata_content_type
+               ON pipedata_content_type.cvterm_id = pipedata.content_type
+  LEFT JOIN cvterm property_type_cvterm
+               ON property_type_cvterm.cvterm_id = pipedata_property.type
 END
+
+  warn "executing: $query\n";
 
   my $start_time = time();
 
@@ -159,9 +162,12 @@ END
     my $property_type_name = $r->{property_type_name};
     my $prop_value = $r->{prop_value};
 
-    next unless $sample_name =~ /SL107|SL113/;
-
-    $_fasta_counts_cache{$sample_name}{$pipedata_content_type_name}{$property_type_name} = $prop_value;
+    if (defined $pipedata_content_type_name && defined $property_type_name) {
+      $_fasta_counts_cache{$sample_name}{$pipedata_content_type_name}{$property_type_name} = $prop_value;
+    } else {
+      # placeholder so that we know we've queried for this sample before
+      $_fasta_counts_cache{$sample_name} = undef;
+    }
   }
 }
 
