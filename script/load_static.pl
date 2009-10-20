@@ -17,7 +17,7 @@ my $config = SmallRNA::Config->new($config_file_name);
 my $schema = SmallRNA::DB->schema($config);
 my $loader = SmallRNA::DBLayer::Loader->new(schema => $schema);
 
-my $pipeline_db = $schema->create_with_type('Db', { name => 'SmallRNA pipeline database' });
+my $pipeline_db = $schema->find_or_create_with_type('Db', { name => 'SmallRNA pipeline database' });
 
 my %terms = (
              'tracking file format types' =>
@@ -229,18 +229,18 @@ my %cvterm_objs = ();
 $schema->txn_do(sub {
   for my $term_cv_name (sort keys %terms) {
     my $cv_rs = $schema->resultset('Cv');
-    my $cv = $cv_rs->create({ name => $term_cv_name});
+    my $cv = $cv_rs->find_or_create({ name => $term_cv_name});
 
     my %cvterms = %{$terms{$term_cv_name}};
 
     for my $cvterm_name (sort keys %cvterms) {
-      my $dbxref = $schema->create_with_type('Dbxref', 
+      my $dbxref = $schema->find_or_create_with_type('Dbxref', 
                                              { accession => $cvterm_name,
                                                db => $pipeline_db });
 
       my $definition = $cvterms{$cvterm_name};
       my $rs = $schema->resultset('Cvterm');
-      my $obj = $rs->create({name => $cvterm_name,
+      my $obj = $rs->find_or_create({name => $cvterm_name,
                              definition => $definition,
                              cv => $cv,
                              dbxref => $dbxref});
@@ -382,12 +382,12 @@ $schema->txn_do(sub {
       $position_cvterm_rs->find({ name => $barcode_position_string });
     my %codes = %{$set_info{codes}};
 
-    my $set = $set_rs->create({ name => $barcode_set_name,
+    my $set = $set_rs->find_or_create({ name => $barcode_set_name,
                                 position_in_read => $barcode_position });
 
     for my $barcode_identifier (sort keys %codes) {
       my $rs = $schema->resultset('Barcode');
-      $rs->create({
+      $rs->find_or_create({
         identifier => $barcode_identifier,
         code => $codes{$barcode_identifier},
         barcode_set => $set
@@ -416,7 +416,7 @@ my @orgs = ({ name => "DCB",
 
 $schema->txn_do(sub {
                   for my $org (@orgs) {
-                    $schema->create_with_type('Organisation', $org);
+                    $schema->find_or_create_with_type('Organisation', $org);
                   }
                 });
 my @organisms = ({ genus => "Arabidopsis", species => "thaliana",
@@ -502,7 +502,7 @@ $schema->txn_do(sub {
                     }
 
                     my $obj =
-                      $schema->create_with_type('Ecotype',
+                      $schema->find_or_create_with_type('Ecotype',
                                                 {
                                                   description => $ecotype->{description},
                                                   organism => $org_obj,
@@ -557,7 +557,7 @@ $schema->txn_do(sub {
                     }
 
                     my $obj =
-                      $schema->create_with_type('Tissue',
+                      $schema->find_or_create_with_type('Tissue',
                                                 {
                                                   description => $tissue->{description},
                                                   organism => $org_obj,
@@ -1451,7 +1451,7 @@ $schema->txn_do(sub {
       die "can't find cvterm for $conf{type_term_name}\n";
     }
 
-    my $process_conf = $schema->create_with_type('ProcessConf', {
+    my $process_conf = $schema->find_or_create_with_type('ProcessConf', {
       type => $type_cvterm,
       detail => $conf{detail},
       runable_name => $conf{runable_name},
@@ -1474,7 +1474,7 @@ $schema->txn_do(sub {
         $args{ecotype} = $ecotype_objs{$input->{ecotype_name}};
       }
 
-      $schema->create_with_type('ProcessConfInput', { %args });
+      $schema->find_or_create_with_type('ProcessConfInput', { %args });
     }
   }
 });
@@ -1486,7 +1486,7 @@ my @protocols = (
 $schema->txn_do(sub {
   for my $protocol (@protocols) {
     my ($name, $description) = @$protocol;
-    $schema->create_with_type('Protocol',
+    $schema->find_or_create_with_type('Protocol',
                                 {
                                   name => $name,
                                   description => $description,

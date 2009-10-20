@@ -156,6 +156,46 @@ sub create_with_type
   }
 }
 
+=head2 find_or_create_with_type
+
+ Usage   : my $field_data = { first_name => 'Charles', last_name => 'Darwin',
+                              organisation => $organisation };
+           my $obj = $schema->find_or_create_with_type('Person', $field_data);
+ Function: Create an object of the given type, initialising with the
+           $field_data, or return the existing object that matches the primary
+           key
+ Args    : $type - an unqualified class name like 'Person'
+           $field_data - a hashref containing all the fields to initialise in
+           the new object
+ Returns : a reference to the new (or existing) object
+
+=cut
+sub find_or_create_with_type
+{
+  my $self = shift;
+  my ($type, $field_data) = validate_pos(@_, 1, 1);
+
+  my $rs = $self->resultset($type);
+
+  my $obj = undef;
+
+  eval {
+    $obj = $rs->find_or_create($field_data);
+  };
+  if ($@) {
+    my $data_string = '{' . (join ', ', map {
+      "'$_'" . ' => ' . "'" . $field_data->{$_} . "'"
+    } keys %$field_data) . '}';
+    croak "error while creating $type: $@ with args: $data_string\n";
+  }
+
+  if (defined $obj) {
+    return $obj;
+  } else {
+    croak "error: could not create a '$type'\n";
+  }
+}
+
 =head2 class_name_of_table
 
  Usage   : my $class_name = SmallRNA::DB::class_name_of_table($table_name);

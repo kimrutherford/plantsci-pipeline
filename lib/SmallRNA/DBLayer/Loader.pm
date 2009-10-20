@@ -85,7 +85,7 @@ sub add_organism
   my $common_name = $params{common_name};
 
   my $rs = $self->{schema}->resultset('Organism');
-  my $new_org = $rs->create({
+  my $new_org = $rs->find_or_create({
                              genus  => $genus,
                              species => $species,
                              abbreviation => $abbreviation,
@@ -111,7 +111,7 @@ sub add_person
                               organisation => 1, role => 1 });
 
   my $rs = $self->{schema}->resultset('Person');
-  return $rs->create({
+  return $rs->find_or_create({
                       first_name => $params{first_name},
                       last_name => $params{last_name},
                       username => $params{username},
