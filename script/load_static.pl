@@ -989,6 +989,16 @@ my @analyses = (
                      {
                        format_type => 'fasta',
                        content_type => 'redundant_genome_aligned_srna_reads',
+                      }
+                    ]
+                },
+                {
+                 type_term_name => 'calculate fasta or fastq file statistics',
+                 runable_name => 'SmallRNA::Runable::FastStatsRunable',
+                 inputs => [
+                     {
+                       format_type => 'fasta',
+                       content_type => 'redundant_genome_aligned_genomics_dna_reads',
                      }
                     ]
                 },
@@ -1040,6 +1050,16 @@ my @analyses = (
                      {
                        format_type => 'fasta',
                        content_type => 'genome_aligned_genomic_dna_tags',
+                     }
+                    ]
+                },
+                {
+                 type_term_name => 'calculate fasta or fastq file statistics',
+                 runable_name => 'SmallRNA::Runable::FastStatsRunable',
+                 inputs => [
+                     {
+                       format_type => 'fasta',
+                       content_type => 'redundant_genome_aligned_genomics_dna_tags',
                      }
                     ]
                 },
