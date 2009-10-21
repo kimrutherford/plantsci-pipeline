@@ -1441,6 +1441,8 @@ my @analyses = (
                );
 
 $schema->txn_do(sub {
+  my %seen = ();
+
   for my $analysis (@analyses) {
     my %conf = %$analysis;
 
@@ -1456,6 +1458,19 @@ $schema->txn_do(sub {
       detail => $conf{detail},
       runable_name => $conf{runable_name},
     });
+
+    my $key = "$type_cvterm " . ($conf{detail} || '') . ' ' .
+      ($conf{runable_name} || '') . " inputs:" . 
+      map {
+        ($_->{content_type} || '') . ' ' . ($_->{format_type} || '') .
+          ($_->{ecotype_name} || '');
+      } @{$conf{inputs}};
+    
+    if (exists $seen{$key}) {
+      die "already processed process_conf: $key\n";
+    } else {
+      $seen{$key} = 1;
+    }
 
     for my $input (@{$conf{inputs}}) {
       my %args = (
