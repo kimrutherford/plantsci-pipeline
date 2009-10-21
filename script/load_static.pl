@@ -644,7 +644,7 @@ my @analyses = (
                  inputs => [
                      {
                        format_type => 'fasta',
-                       content_type => 'raw_reads',
+                       content_type => 'trimmed_reads',
                      }
                     ]
                 },
