@@ -141,7 +141,7 @@ sub run
 
       my $non_aligned_file_name = $input_file_name;
 
-      $non_aligned_file_name =~ s/\.non_redundant_(\w+)\.fasta/$org_text.non_aligned_reads.fasta/;
+      $non_aligned_file_name =~ s/\.non_redundant_reads\.fasta/$org_text.non_aligned_reads.fasta/;
 
       my @non_aligned_args = ();
 
