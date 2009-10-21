@@ -83,11 +83,9 @@ sub run
 
     my $new_suffix = ".v_${org_full_name}_$component.sam";
 
-    if(! ($sam_file_name =~ s/\.non_redundant_(\w+)\.fasta/$new_suffix/)) {
+    if(! ($sam_file_name =~ s/\.non_redundant_reads\.fasta/$new_suffix/)) {
       croak qq{file name ("$sam_file_name") doesn't contain the string "non_redundant"};
     }
-
-    my $genome_aligned_reads = 'genome_aligned_' . $1;
 
     my $data_dir = $self->config()->data_directory();
 
@@ -102,7 +100,7 @@ sub run
     $self->store_pipedata(generating_pipeprocess => $self->pipeprocess(),
                           file_name => $sam_file_name,
                           format_type_name => 'sam',
-                          content_type_name => $genome_aligned_reads);
+                          content_type_name => 'aligned_reads');
   };
   $self->schema->txn_do($code);
 }

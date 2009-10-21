@@ -35,66 +35,30 @@ my %terms = (
              },
              'tracking file content types' =>
              {
-              'raw_srna_reads' =>
-                'Raw small RNA sequence reads from a non-multiplexed sequencing run, before any processing',
-              'multiplexed_srna_reads' =>
-                'Raw small RNA sequence reads from a multiplexed sequencing run, before any processing',
-              'raw_genomic_dna_reads' =>
-                'Raw DNA sequence reads with quality scores',
-              'raw_genomic_dna_tags' =>
-                'Raw DNA sequence tags with quality scores',
-              'srna_reads' =>
-                'Small RNA sequence reads that have been processed to remove adapters',
-              'filtered_srna_reads' =>
-                'Small RNA sequence reads that have been processed to remove adapters and filtered by size',
-              'non_redundant_srna_reads' =>
-                'Small RNA sequence reads without adapters with redundant sequences removed',
-              'non_redundant_srna_reads' =>
-                'Small RNA sequence reads without adapters with redundant sequences removed and filtered by size',
-              'genomic_dna_reads' =>
-                'Genomic DNA reads',
-              'non_redundant_genomic_dna_reads' =>
-                'DNA sequence reads with redundant sequences removed',
-              'genomic_dna_tags' =>
-                'DNA reads that have been trimmed to a fixed number of bases',
-              'non_redundant_genomic_dna_tags' =>
-                'Trimmed DNA sequence reads with redundant sequences removed',
-              'srna_reads_nuclear_alignment' =>
-                'Small RNA to genome alignments',
-              'srna_reads_mitochondrial_alignment' =>
-                'Small RNA to mitochondrial dna alignments',
-              'srna_reads_chloroplast_alignment' =>
-                'Small RNA to chloroplast dna alignments',
-              'remove_adapter_rejects' =>
-                'Small RNA sequence reads that were rejected by the remove adapters step',
-              'remove_adapter_unknown_barcode' =>
-                'Small RNA sequence reads that were rejected by the remove adapters step because they did not match an expected barcode',
+              'raw_reads' =>
+                'Raw sequence reads from a sequencing run, before any processing',
+              'trimmed_reads' =>
+                'Sequence reads that have been trimmed to a fixed length or to remove adaptor sequences',
+              'filtered_trimmed_reads' =>
+                'Sequence reads that have been trimmed and then filtered by size',
+              'non_redundant_reads' =>
+                'Trimmed and filtered sequence reads with redundant sequences removed',
+              'trim_rejects' =>
+                'Sequence reads that were rejected by the trim step',
+              'trim_unknown_barcode' =>
+                'Sequence reads that were rejected during the trim step because they did not match an expected barcode',
               'first_base_summary' =>
                 'A summary of the first base composition of sequences from a fasta file',
               'fast_stats' =>
                 'Summary information and statistics about a FASTA or FASTQ file',
               'n_mer_stats' =>
                 'Counts of each sequence, ordered by count',
-              'genome_aligned_srna_reads' =>
-                'Small RNA reads that align against the genome',
-              'redundant_genome_aligned_srna_reads' =>
-                'Redundant Small RNA reads that align against the genome - one FASTA record for each read from the original redundant sRNA file that matches the genome',
-              'non_genome_aligned_srna_reads' =>
-                'Small RNA reads that do not align against the genome',
-              'trna_aligned_srna_reads' =>
-                'Small RNA reads that have been aligned against the tRNA sequences of an organism',
-              'genome_aligned_genomic_dna_reads' =>
-                'DNA reads that have been aligned against the genome',
-              'redundant_genome_aligned_genomic_dna_reads' =>
-                'Redundant DNA reads that have been aligned against the genome - one FASTA record for each read from the original redundant file that matches the genome',
-              'non_genome_aligned_genomic_dna_reads' =>
-                'DNA reads that did not align against the genome',
-              'genome_aligned_genomic_dna_tags' =>
-                'DNA tags that have been aligned against the genome',
-              'redundant_genome_aligned_genomic_dna_reads' =>
-                'Redundant DNA tags that have been aligned against the genome - one FASTA record for each read from the original redundant file that matches the genome',
-              'non_genome_aligned_genomic_dna_tags' =>
-                'DNA tags that did not align against the genome',
+              'aligned_reads' =>
+                'Reads that have been aligned against a reference',
+              'redundant_aligned_reads' =>
+                'Redundant reads that align against the a reference - one FASTA record for each read from the original redundant file that matches',
+              'non_aligned_reads' =>
+                'Reads that did not align against the reference',
               'gff3_index' =>
                 'An index of a gff3 file that has the read sequence as the key',
               'fasta_index' =>
@@ -141,11 +105,8 @@ my %terms = (
               'multiplexed sequencing run' =>
                 'This pseudo-analysis generates raw sequence files, ' .
                 'with quality scores, and uses multiplexing/barcodes',
-              'remove adapters' => 'Read FastQ files, process each read to remove the adapter',
-              'remove adapters and de-multiplex' =>
-                'Read FastQ files, process each read to remove the adapter and split the result based on the barcode',
               'trim reads' =>
-                'Read FastQ files, trim each read to a fixed length and then create a fasta file',
+                'Read FastQ files, trim each read to a fixed length or remove adaptor and then create a fasta file',
               'summarise fasta first base' =>
                 'Read a fasta file of short sequences and summarise the first base composition',
               'calculate fasta or fastq file statistics' =>
@@ -659,54 +620,11 @@ my @analyses = (
                 },
                 {
                  type_term_name => 'trim reads',
-                 detail => 'action: trim',
                  runable_name => 'SmallRNA::Runable::TrimRunable',
                  inputs => [
                      {
                        format_type => 'fastq',
-                       content_type => 'raw_genomic_dna_tags',
-                     }
-                    ]
-                },
-                {
-                 type_term_name => 'trim reads',
-                 runable_name => 'SmallRNA::Runable::TrimRunable',
-                 inputs => [
-                     {
-                       format_type => 'fastq',
-                       content_type => 'raw_genomic_dna_reads',
-                     }
-                    ]
-                },
-                {
-                 type_term_name => 'remove adapters',
-                 detail => 'action: remove_adapters',
-                 runable_name => 'SmallRNA::Runable::TrimRunable',
-                 inputs => [
-                     {
-                       format_type => 'fastq',
-                       content_type => 'raw_srna_reads',
-                     }
-                    ]
-                },
-                {
-                  type_term_name => 'remove adapters and de-multiplex',
-                  detail => 'action: remove_adapters',
-                  runable_name => 'SmallRNA::Runable::TrimRunable',
-                  inputs => [
-                      {
-                        format_type => 'fastq',
-                        content_type => 'multiplexed_srna_reads',
-                      }
-                     ]
-                },
-                {
-                 type_term_name => 'calculate fasta or fastq file statistics',
-                 runable_name => 'SmallRNA::Runable::FastStatsRunable',
-                 inputs => [
-                     {
-                       format_type => 'fastq',
-                       content_type => 'raw_srna_reads',
+                       content_type => 'raw_reads',
                      }
                     ]
                 },
@@ -716,17 +634,7 @@ my @analyses = (
                  inputs => [
                      {
                        format_type => 'fastq',
-                       content_type => 'raw_genomic_dna_reads',
-                     }
-                    ]
-                },
-                {
-                 type_term_name => 'calculate fasta or fastq file statistics',
-                 runable_name => 'SmallRNA::Runable::FastStatsRunable',
-                 inputs => [
-                     {
-                       format_type => 'fastq',
-                       content_type => 'multiplexed_srna_reads',
+                       content_type => 'raw_reads',
                      }
                     ]
                 },
@@ -736,7 +644,7 @@ my @analyses = (
                  inputs => [
                      {
                        format_type => 'fasta',
-                       content_type => 'srna_reads',
+                       content_type => 'raw_reads',
                      }
                     ]
                 },
@@ -746,7 +654,7 @@ my @analyses = (
                  inputs => [
                      {
                        format_type => 'fasta',
-                       content_type => 'filtered_srna_reads',
+                       content_type => 'filtered_trimmed_reads',
                      }
                     ]
                 },
@@ -756,7 +664,7 @@ my @analyses = (
                  inputs => [
                      {
                        format_type => 'fasta',
-                       content_type => 'non_redundant_srna_reads',
+                       content_type => 'non_redundant_reads',
                      }
                     ]
                 },
@@ -766,7 +674,7 @@ my @analyses = (
                  inputs => [
                      {
                        format_type => 'fasta',
-                       content_type => 'genome_aligned_srna_reads',
+                       content_type => 'aligned_reads',
                      }
                     ]
                 },
@@ -776,7 +684,7 @@ my @analyses = (
                  inputs => [
                      {
                        format_type => 'fasta',
-                       content_type => 'genomic_dna_reads',
+                       content_type => 'trim_unknown_barcode',
                      }
                     ]
                 },
@@ -786,7 +694,7 @@ my @analyses = (
                  inputs => [
                      {
                        format_type => 'fasta',
-                       content_type => 'non_redundant_genomic_dna_reads',
+                       content_type => 'trim_rejects',
                      }
                     ]
                 },
@@ -796,7 +704,7 @@ my @analyses = (
                  inputs => [
                      {
                        format_type => 'fasta',
-                       content_type => 'genome_aligned_genomic_dna_reads',
+                       content_type => 'redundant_aligned_reads',
                      }
                     ]
                 },
@@ -806,97 +714,7 @@ my @analyses = (
                  inputs => [
                      {
                        format_type => 'fasta',
-                       content_type => 'genomic_dna_tags',
-                     }
-                    ]
-                },
-                {
-                 type_term_name => 'calculate fasta or fastq file statistics',
-                 runable_name => 'SmallRNA::Runable::FastStatsRunable',
-                 inputs => [
-                     {
-                       format_type => 'fasta',
-                       content_type => 'non_redundant_genomic_dna_tags',
-                     }
-                    ]
-                },
-                {
-                 type_term_name => 'calculate fasta or fastq file statistics',
-                 runable_name => 'SmallRNA::Runable::FastStatsRunable',
-                 inputs => [
-                     {
-                       format_type => 'fasta',
-                       content_type => 'genome_aligned_genomic_dna_tags',
-                     }
-                    ]
-                },
-                {
-                 type_term_name => 'calculate fasta or fastq file statistics',
-                 runable_name => 'SmallRNA::Runable::FastStatsRunable',
-                 inputs => [
-                     {
-                       format_type => 'fasta',
-                       content_type => 'remove_adapter_unknown_barcode',
-                     }
-                    ]
-                },
-                {
-                 type_term_name => 'calculate fasta or fastq file statistics',
-                 runable_name => 'SmallRNA::Runable::FastStatsRunable',
-                 inputs => [
-                     {
-                       format_type => 'fasta',
-                       content_type => 'remove_adapter_rejects',
-                     }
-                    ]
-                },
-                {
-                 type_term_name => 'calculate fasta or fastq file statistics',
-                 runable_name => 'SmallRNA::Runable::FastStatsRunable',
-                 inputs => [
-                     {
-                       format_type => 'fasta',
-                       content_type => 'multiplexed_srna_reads',
-                     }
-                    ]
-                },
-                {
-                 type_term_name => 'calculate fasta or fastq file statistics',
-                 runable_name => 'SmallRNA::Runable::FastStatsRunable',
-                 inputs => [
-                     {
-                       format_type => 'fasta',
-                       content_type => 'redundant_genome_aligned_srna_reads',
-                     }
-                    ]
-                },
-                {
-                 type_term_name => 'calculate fasta or fastq file statistics',
-                 runable_name => 'SmallRNA::Runable::FastStatsRunable',
-                 inputs => [
-                     {
-                       format_type => 'fasta',
-                       content_type => 'non_genome_aligned_srna_reads',
-                     }
-                    ]
-                },
-                {
-                 type_term_name => 'calculate fasta or fastq file statistics',
-                 runable_name => 'SmallRNA::Runable::FastStatsRunable',
-                 inputs => [
-                     {
-                       format_type => 'fasta',
-                       content_type => 'non_genome_aligned_genomic_dna_tags',
-                     }
-                    ]
-                },
-                {
-                 type_term_name => 'calculate fasta or fastq file statistics',
-                 runable_name => 'SmallRNA::Runable::FastStatsRunable',
-                 inputs => [
-                     {
-                       format_type => 'fasta',
-                       content_type => 'non_genome_aligned_genomic_dna_reads'
+                       content_type => 'non_aligned_reads',
                      }
                     ]
                 },
@@ -907,18 +725,7 @@ my @analyses = (
                  inputs => [
                      {
                        format_type => 'fasta',
-                       content_type => 'srna_reads'
-                     }
-                    ]
-                },
-
-                {
-                 type_term_name => 'summarise fasta first base',
-                 runable_name => 'SmallRNA::Runable::FirstBaseCompSummaryRunable',
-                 inputs => [
-                     {
-                       format_type => 'fasta',
-                       content_type => 'non_genome_aligned_srna_reads',
+                       content_type => 'trimmed_reads'
                      }
                     ]
                 },
@@ -928,7 +735,7 @@ my @analyses = (
                  inputs => [
                      {
                        format_type => 'fasta',
-                       content_type => 'srna_reads',
+                       content_type => 'trimmed_reads',
                      }
                     ]
                 },
@@ -938,7 +745,7 @@ my @analyses = (
                  inputs => [
                      {
                        format_type => 'fasta',
-                       content_type => 'filtered_srna_reads',
+                       content_type => 'filtered_trimmed_reads',
                      }
                     ]
                 },
@@ -948,7 +755,7 @@ my @analyses = (
                  inputs => [
                      {
                        format_type => 'fasta',
-                       content_type => 'non_redundant_srna_reads',
+                       content_type => 'non_redundant_reads',
                      }
                     ]
                 },
@@ -958,7 +765,7 @@ my @analyses = (
                  inputs => [
                      {
                        format_type => 'fasta',
-                       content_type => 'raw_srna_reads',
+                       content_type => 'raw_reads',
                      }
                     ]
                 },
@@ -968,7 +775,7 @@ my @analyses = (
                  inputs => [
                      {
                        format_type => 'fasta',
-                       content_type => 'multiplexed_srna_reads',
+                       content_type => 'aligned_reads',
                      }
                     ]
                 },
@@ -978,170 +785,17 @@ my @analyses = (
                  inputs => [
                      {
                        format_type => 'fasta',
-                       content_type => 'genome_aligned_srna_reads',
-                     }
-                    ]
-                },
-                {
-                 type_term_name => 'summarise fasta first base',
-                 runable_name => 'SmallRNA::Runable::FirstBaseCompSummaryRunable',
-                 inputs => [
-                     {
-                       format_type => 'fasta',
-                       content_type => 'redundant_genome_aligned_srna_reads',
+                       content_type => 'redundant_aligned_reads',
                       }
                     ]
                 },
                 {
-                 type_term_name => 'calculate fasta or fastq file statistics',
-                 runable_name => 'SmallRNA::Runable::FastStatsRunable',
-                 inputs => [
-                     {
-                       format_type => 'fasta',
-                       content_type => 'redundant_genome_aligned_genomics_dna_reads',
-                     }
-                    ]
-                },
-
-                {
-                 type_term_name => 'summarise fasta first base',
-                 runable_name => 'SmallRNA::Runable::FirstBaseCompSummaryRunable',
-                 inputs => [
-                     {
-                       format_type => 'fasta',
-                       content_type => 'non_genome_aligned_genomic_dna_tags',
-                     }
-                    ]
-                },
-                {
-                 type_term_name => 'summarise fasta first base',
-                 runable_name => 'SmallRNA::Runable::FirstBaseCompSummaryRunable',
-                 inputs => [
-                     {
-                       format_type => 'fasta',
-                       content_type => 'genomic_dna_tags',
-                     }
-                    ]
-                },
-                {
-                 type_term_name => 'summarise fasta first base',
-                 runable_name => 'SmallRNA::Runable::FirstBaseCompSummaryRunable',
-                 inputs => [
-                     {
-                       format_type => 'fasta',
-                       content_type => 'non_redundant_genomic_dna_tags',
-                     }
-                    ]
-                },
-                {
-                 type_term_name => 'summarise fasta first base',
-                 runable_name => 'SmallRNA::Runable::FirstBaseCompSummaryRunable',
-                 inputs => [
-                     {
-                       format_type => 'fasta',
-                       content_type => 'raw_genomic_dna_tags',
-                     }
-                    ]
-                },
-                {
-                 type_term_name => 'summarise fasta first base',
-                 runable_name => 'SmallRNA::Runable::FirstBaseCompSummaryRunable',
-                 inputs => [
-                     {
-                       format_type => 'fasta',
-                       content_type => 'genome_aligned_genomic_dna_tags',
-                     }
-                    ]
-                },
-                {
-                 type_term_name => 'calculate fasta or fastq file statistics',
-                 runable_name => 'SmallRNA::Runable::FastStatsRunable',
-                 inputs => [
-                     {
-                       format_type => 'fasta',
-                       content_type => 'redundant_genome_aligned_genomics_dna_tags',
-                     }
-                    ]
-                },
-
-                {
-                 type_term_name => 'summarise fasta first base',
-                 runable_name => 'SmallRNA::Runable::FirstBaseCompSummaryRunable',
-                 inputs => [
-                     {
-                       format_type => 'fasta',
-                       content_type => 'non_genome_aligned_genomic_dna_reads',
-                     }
-                    ]
-                },
-                {
-                 type_term_name => 'summarise fasta first base',
-                 runable_name => 'SmallRNA::Runable::FirstBaseCompSummaryRunable',
-                 inputs => [
-                     {
-                       format_type => 'fasta',
-                       content_type => 'genomic_dna_reads',
-                     }
-                    ]
-                },
-                {
-                 type_term_name => 'summarise fasta first base',
-                 runable_name => 'SmallRNA::Runable::FirstBaseCompSummaryRunable',
-                 inputs => [
-                     {
-                       format_type => 'fasta',
-                       content_type => 'non_redundant_genomic_dna_reads',
-                     }
-                    ]
-                },
-                {
-                 type_term_name => 'summarise fasta first base',
-                 runable_name => 'SmallRNA::Runable::FirstBaseCompSummaryRunable',
-                 inputs => [
-                     {
-                       format_type => 'fasta',
-                       content_type => 'raw_genomic_dna_reads',
-                     }
-                    ]
-                },
-                {
-                 type_term_name => 'summarise fasta first base',
-                 runable_name => 'SmallRNA::Runable::FirstBaseCompSummaryRunable',
-                 inputs => [
-                     {
-                       format_type => 'fasta',
-                       content_type => 'genome_aligned_genomic_dna_reads',
-                     }
-                    ]
-                },
-
-                {
                  type_term_name => 'remove redundant reads',
                  runable_name => 'SmallRNA::Runable::NonRedundantFastaRunable',
                  inputs => [
                      {
                        format_type => 'fasta',
-                       content_type => 'genomic_dna_tags',
-                     }
-                    ]
-                },
-                {
-                 type_term_name => 'remove redundant reads',
-                 runable_name => 'SmallRNA::Runable::NonRedundantFastaRunable',
-                 inputs => [
-                     {
-                       format_type => 'fasta',
-                       content_type => 'genomic_dna_reads',
-                     }
-                    ]
-                },
-                {
-                 type_term_name => 'remove redundant reads',
-                 runable_name => 'SmallRNA::Runable::NonRedundantFastaRunable',
-                 inputs => [
-                     {
-                       format_type => 'fasta',
-                       content_type => 'filtered_srna_reads',
+                       content_type => 'filtered_trimmed_reads',
                      }
                     ]
                 },
@@ -1151,7 +805,7 @@ my @analyses = (
                  inputs => [
                      {
                        format_type => 'gff3',
-                       content_type => 'genome_aligned_srna_reads',
+                       content_type => 'aligned_reads',
                      }
                     ]
                 },
@@ -1161,7 +815,7 @@ my @analyses = (
                  inputs => [
                      {
                        format_type => 'fasta',
-                       content_type => 'non_redundant_srna_reads',
+                       content_type => 'non_redundant_reads',
                      }
                     ]
                 },
@@ -1173,7 +827,7 @@ my @analyses = (
                      {
                        ecotype_name => 'unspecified Arabidopsis thaliana',
                        format_type => 'fasta',
-                       content_type => 'non_redundant_srna_reads',
+                       content_type => 'non_redundant_reads',
                      }
                     ]
                 },
@@ -1185,7 +839,7 @@ my @analyses = (
                      {
                        ecotype_name => 'unspecified Arabidopsis thaliana',
                        format_type => 'fasta',
-                       content_type => 'non_redundant_srna_reads',
+                       content_type => 'non_redundant_reads',
                      }
                     ]
                 },
@@ -1197,7 +851,7 @@ my @analyses = (
                      {
                        ecotype_name => 'unspecified Lycopersicon esculentum',
                        format_type => 'fasta',
-                       content_type => 'non_redundant_srna_reads',
+                       content_type => 'non_redundant_reads',
                      }
                     ]
                 },
@@ -1209,7 +863,7 @@ my @analyses = (
                      {
                        ecotype_name => 'unspecified Solanum lycopersicon',
                        format_type => 'fasta',
-                       content_type => 'non_redundant_srna_reads',
+                       content_type => 'non_redundant_reads',
                      }
                     ]
                 },
@@ -1221,7 +875,7 @@ my @analyses = (
                      {
                        ecotype_name => 'unspecified Carmovirus turnip crinkle virus',
                        format_type => 'fasta',
-                       content_type => 'non_redundant_srna_reads',
+                       content_type => 'non_redundant_reads',
                      }
                     ]
                 },
@@ -1233,7 +887,7 @@ my @analyses = (
                      {
                        ecotype_name => 'unspecified Oryza sativa',
                        format_type => 'fasta',
-                       content_type => 'non_redundant_srna_reads',
+                       content_type => 'non_redundant_reads',
                      }
                     ]
                 },
@@ -1245,7 +899,7 @@ my @analyses = (
                      {
                        ecotype_name => 'unspecified Benyvirus rice stripe virus',
                        format_type => 'fasta',
-                       content_type => 'non_redundant_srna_reads',
+                       content_type => 'non_redundant_reads',
                      }
                     ]
                 },
@@ -1257,43 +911,7 @@ my @analyses = (
                      {
                        ecotype_name => 'unspecified Chlamydomonas reinhardtii',
                        format_type => 'fasta',
-                       content_type => 'non_redundant_srna_reads',
-                     }
-                    ]
-                },
-                {
-                 type_term_name => 'ssaha alignment',
-                 detail => 'component: genome',
-                 runable_name => 'SmallRNA::Runable::SSAHASearchRunable',
-                 inputs => [
-                     {
-                       ecotype_name => 'unspecified Chlamydomonas reinhardtii',
-                       format_type => 'fasta',
-                       content_type => 'non_redundant_genomic_dna_tags',
-                     }
-                    ]
-                },
-                {
-                 type_term_name => 'ssaha alignment',
-                 detail => 'component: genome',
-                 runable_name => 'SmallRNA::Runable::SSAHASearchRunable',
-                 inputs => [
-                     {
-                       ecotype_name => 'unspecified Arabidopsis thaliana',
-                       format_type => 'fasta',
-                       content_type => 'non_redundant_genomic_dna_tags',
-                     }
-                    ]
-                },
-                {
-                 type_term_name => 'ssaha alignment',
-                 detail => 'component: genome',
-                 runable_name => 'SmallRNA::Runable::SSAHASearchRunable',
-                 inputs => [
-                     {
-                       ecotype_name => 'unspecified Arabidopsis thaliana',
-                       format_type => 'fasta',
-                       content_type => 'non_redundant_genomic_dna_reads',
+                       content_type => 'non_redundant_reads',
                      }
                     ]
                 },
@@ -1305,7 +923,7 @@ my @analyses = (
                      {
                        ecotype_name => 'unspecified Arabidopsis thaliana',
                        format_type => 'fasta',
-                       content_type => 'non_redundant_srna_reads',
+                       content_type => 'non_redundant_reads',
                      }
                     ]
                 },
@@ -1317,7 +935,7 @@ my @analyses = (
                      {
                        ecotype_name => 'unspecified Cleome gynandra',
                        format_type => 'fasta',
-                       content_type => 'non_redundant_srna_reads',
+                       content_type => 'non_redundant_reads',
                      }
                     ]
                 },
@@ -1327,27 +945,7 @@ my @analyses = (
                  inputs => [
                      {
                        format_type => 'gff3',
-                       content_type => 'genome_aligned_srna_reads'
-                     }
-                   ]
-                },
-                {
-                 type_term_name => 'genome aligned reads filter',
-                 runable_name => 'SmallRNA::Runable::GenomeMatchingReadsRunable',
-                 inputs => [
-                     {
-                       format_type => 'gff3',
-                       content_type => 'genome_aligned_genomic_dna_tags'
-                     }
-                   ]
-                },
-                {
-                 type_term_name => 'genome aligned reads filter',
-                 runable_name => 'SmallRNA::Runable::GenomeMatchingReadsRunable',
-                 inputs => [
-                     {
-                       format_type => 'gff3',
-                       content_type => 'genome_aligned_genomic_dna_reads'
+                       content_type => 'aligned_reads'
                      }
                    ]
                 },
@@ -1357,27 +955,7 @@ my @analyses = (
                  inputs => [
                      {
                        format_type => 'gff3',
-                       content_type => 'genome_aligned_srna_reads'
-                     }
-                   ]
-                },
-                {
-                 type_term_name => 'gff3 to sam converter',
-                 runable_name => 'SmallRNA::Runable::GFF3ToSAMRunable',
-                 inputs => [
-                     {
-                       format_type => 'gff3',
-                       content_type => 'genome_aligned_genomic_dna_reads'
-                     }
-                   ]
-                },
-                {
-                 type_term_name => 'gff3 to sam converter',
-                 runable_name => 'SmallRNA::Runable::GFF3ToSAMRunable',
-                 inputs => [
-                     {
-                       format_type => 'gff3',
-                       content_type => 'genome_aligned_genomic_dna_tags'
+                       content_type => 'aligned_reads'
                      }
                    ]
                 },
@@ -1387,42 +965,18 @@ my @analyses = (
                  inputs => [
                      {
                        format_type => 'gff3',
-                       content_type => 'genome_aligned_srna_reads'
+                       content_type => 'aligned_reads'
                      }
                    ]
                 },
                 {
                  type_term_name => 'sam to bam converter',
-                 runable_name => 'SmallRNA::Runable::SAMToBAMRunable',
                  detail => 'component: genome',
+                 runable_name => 'SmallRNA::Runable::SAMToBAMRunable',
                  inputs => [
                      {
                        format_type => 'sam',
-                       content_type => 'genome_aligned_srna_reads',
-                       ecotype_name => 'unspecified Arabidopsis thaliana',
-                     }
-                   ]
-                },
-                {
-                 type_term_name => 'sam to bam converter',
-                 runable_name => 'SmallRNA::Runable::SAMToBAMRunable',
-                 detail => 'component: genome',
-                 inputs => [
-                     {
-                       format_type => 'sam',
-                       content_type => 'genome_aligned_genomic_dna_reads',
-                       ecotype_name => 'unspecified Arabidopsis thaliana',
-                     }
-                   ]
-                },
-                {
-                 type_term_name => 'sam to bam converter',
-                 runable_name => 'SmallRNA::Runable::SAMToBAMRunable',
-                 detail => 'component: genome',
-                 inputs => [
-                     {
-                       format_type => 'sam',
-                       content_type => 'genome_aligned_genomic_dna_tags',
+                       content_type => 'aligned_reads',
                        ecotype_name => 'unspecified Arabidopsis thaliana',
                      }
                    ]
@@ -1443,7 +997,8 @@ my @analyses = (
 $schema->txn_do(sub {
   my %seen = ();
 
-  for my $analysis (@analyses) {
+  for (my $i = 0; $i < @analyses; $i++) {
+    my $analysis = $analyses[$i];
     my %conf = %$analysis;
 
     my $type_cvterm_rs = $schema->resultset('Cvterm');
@@ -1454,6 +1009,7 @@ $schema->txn_do(sub {
     }
 
     my $process_conf = $schema->find_or_create_with_type('ProcessConf', {
+      process_conf_id => $i,
       type => $type_cvterm,
       detail => $conf{detail},
       runable_name => $conf{runable_name},

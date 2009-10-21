@@ -254,23 +254,10 @@ sub add_sequencingrun_pipedata
 
   if ($file_name =~ /\.fa$|\.fasta$/) {
     $pipedata_format_type = $self->_find('Cvterm', name => 'fasta');
-    if ($file_name =~ /\.non_redundant_srna_reads\./) {
-      $pipedata_content_type = $self->_find('Cvterm', name => 'non_redundant_srna_reads');
-    } else {
-      $pipedata_content_type = $self->_find('Cvterm', name => 'srna_reads');
-    }
+    $pipedata_content_type = $self->_find('Cvterm', name => 'trimmed_reads');
   } else {
     $pipedata_format_type = $self->_find('Cvterm', name => 'fastq');
-
-    if ($molecule_type eq 'RNA') {
-      if ($multiplexed) {
-        $pipedata_content_type = $self->_find('Cvterm', name => 'multiplexed_srna_reads');
-      } else {
-        $pipedata_content_type = $self->_find('Cvterm', name => 'raw_srna_reads');
-      }
-    } else {
-      $pipedata_content_type = $self->_find('Cvterm', name => 'raw_genomic_dna_reads');
-    }
+    $pipedata_content_type = $self->_find('Cvterm', name => 'raw_reads');
   }
 
   my $ctx = Digest::MD5->new;

@@ -81,7 +81,7 @@ sub run
     my $output_file_name = $input_file_name;
     my $output_content_type = "filtered_$input_content_type";
 
-    $output_file_name =~ s/.$input_content_type./.$output_content_type./;
+    $output_file_name =~ s/\.([^\.]*).(fa|fasta)$/.filtered_$1.fasta/;
 
     if ($detail =~ /min_size: (\S+)/) {
       SmallRNA::Process::SizeFilterProcess::run(input_file_name => $input_file_name,

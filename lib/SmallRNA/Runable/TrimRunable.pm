@@ -154,8 +154,8 @@ sub run
 
   my $schema = $self->schema();
 
-  my $reject_term_name = 'remove_adapter_rejects';
-  my $unknown_barcode_term_name = 'remove_adapter_unknown_barcode';
+  my $reject_term_name = 'trim_rejects';
+  my $unknown_barcode_term_name = 'trim_unknown_barcode';
 
   my $pipeprocess =
     $self->pipeprocess();
@@ -177,21 +177,25 @@ sub run
   }
 
   my $input_pipedata = $input_pipedatas[0];
-  my $kept_term_name;
-  my $raw_reads;
 
-  if ($input_pipedata->content_type()->name() eq 'raw_genomic_dna_reads') {
-    if ($processing_type eq 'trim') {
-      $raw_reads = 'raw_genomic_dna_tags';
-      $kept_term_name = 'genomic_dna_tags';
+  my $sample_type;
+
+  my @samples = $input_pipedata->samples();
+
+  for my $sample (@samples) {
+    if (defined $sample_type) {
+      if ($sample->sample_type()->name() ne $sample_type) {
+        croak ('pipedata ' . $input_pipedata->pipedata_id() . 
+               ' has more than 1 sample, but with differing sample_types ' .
+               ' - not supported');
+      }
     } else {
-      $raw_reads = 'raw_genomic_dna_reads';
-      $kept_term_name = 'genomic_dna_reads';
+      $sample_type = $sample->sample_type()->name();
     }
-  } else {
-    $raw_reads = 'raw_srna_reads';
-    $kept_term_name = 'srna_reads';
   }
+
+  my $kept_term_name = 'trimmed_reads';
+  my $raw_reads = 'raw_reads';
 
   _check_terms($schema, $kept_term_name, $reject_term_name,
                $unknown_barcode_term_name, $raw_reads);

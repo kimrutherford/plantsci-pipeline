@@ -135,15 +135,13 @@ sub run
 
       my $org_text = ".v_${org_full_name}_$component";
 
-      if(! ($gff_file_name =~ s/\.non_redundant_(\w+)\.fasta/$org_text.gff3/)) {
+      if(! ($gff_file_name =~ s/\.non_redundant_reads\.fasta/$org_text.gff3/)) {
         croak qq{file name ("$gff_file_name") doesn't contain the string "non_redundant"};
       }
 
-      my $content_desc = $1;
-
       my $non_aligned_file_name = $input_file_name;
 
-      $non_aligned_file_name =~ s/\.non_redundant_(\w+)\.fasta/$org_text.non_aligned_$content_desc.fasta/;
+      $non_aligned_file_name =~ s/\.non_redundant_(\w+)\.fasta/$org_text.non_aligned_reads.fasta/;
 
       my @non_aligned_args = ();
 
@@ -162,19 +160,16 @@ sub run
                                                    $db_file_name,
                                                  @non_aligned_args);
 
-      my $aligned_reads_term_name = $component . '_aligned_' . $content_desc;
-      my $non_aligned_reads_term_name = 'non_' . $component . '_aligned_' . $content_desc;
-
       $self->store_pipedata(generating_pipeprocess => $self->pipeprocess(),
                             file_name => $gff_file_name,
                             format_type_name => 'gff3',
-                            content_type_name => $aligned_reads_term_name);
+                            content_type_name => 'aligned_reads');
 
       if ($component eq 'genome') {
         $self->store_pipedata(generating_pipeprocess => $self->pipeprocess(),
                               file_name => $non_aligned_file_name,
                               format_type_name => 'fasta',
-                              content_type_name => $non_aligned_reads_term_name);
+                              content_type_name => 'non_aligned_reads');
       }
     } else {
       croak ("can't understand detail: $1 for pipeprocess: ", $pipeprocess_id);
