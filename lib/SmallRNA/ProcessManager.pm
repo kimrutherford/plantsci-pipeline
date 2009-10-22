@@ -170,6 +170,15 @@ sub _find_pipedata
       $sample->sample_pipedatas()->search_related('pipedata', $cond);
 
     while (my $pipedata = $matching_rs->next()) {
+      my @next_pipeprocess = $pipedata->next_pipeprocesses();
+
+      if (grep {
+        $_->process_conf()->process_conf_id() ==
+          $process_conf->process_conf_id() } @next_pipeprocess) {
+        # we're already run this process_conf for this pipedata
+        next;
+      }
+
       push @matching_pipedatas, $pipedata;
     }
 
@@ -352,8 +361,6 @@ sub create_new_pipeprocesses
 
   my $schema = $self->{schema};
 
-  $schema->storage()->debug(1);
-
   my @retlist = ();
 
   # we query each ProcessConf object then:
@@ -368,8 +375,6 @@ sub create_new_pipeprocesses
   };
 
   $schema->txn_do($code);
-
-  $schema->storage()->debug(0);
 
   return @retlist;
 }
