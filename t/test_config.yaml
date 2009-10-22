@@ -13,12 +13,15 @@ programs:
     path: /applications/ssaha_v31c_amd64/ssaha_v31c_amd64
   bwa:
     path: /applications/bwa/bwa-0.4.9/bwa
+  samtools:
+    path: /applications/samtools-svn-trunk/samtools/samtools
 databases:
   root: t/data
   organisms:
     Arabidopsis_thaliana:
       database_files:
         genome: arabidopsis_thaliana_test_genome.fasta
+        trna: arabidopsis_thaliana_test_trnas.fasta
     Chlamydomonas_reinhardtii:
       database_files:
         genome: chlamydomonas_reinhardtii_test_genome.fasta
