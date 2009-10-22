@@ -156,6 +156,6 @@ while (my $pipeprocess = $conf_rs->next()) {
 if ($test_mode || $run_locally) {
   sleep (5);
 } else {
-  sleep (30);
+  sleep (60);
 }
 }
