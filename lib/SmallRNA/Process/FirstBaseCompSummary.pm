@@ -111,7 +111,7 @@ sub run
   while (defined (my $seq = $in->next_seq())) {
     my $sequence = $seq->seq();
 
-    if ($ENV{'SMALLRNA_PIPELINE_TEST'} && $all_count > 100) {
+    if ($ENV{'SMALLRNA_PIPELINE_TEST'} && $all_count >= 1000) {
       last;
     }
 
