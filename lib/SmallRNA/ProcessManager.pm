@@ -352,11 +352,13 @@ sub create_new_pipeprocesses
 
   my $schema = $self->{schema};
 
+  $schema->storage()->debug(1);
+
   my @retlist = ();
 
   # we query each ProcessConf object then:
-  #   - find all samples that have pipedata objects that are inputs for the
-  #     ProcessConf and that do not have an existing pipeprocess with the
+  #   - find all samples that have pipedata objects that are possible inputs for
+  #     the ProcessConf and that do not have an existing pipeprocess with the
   #     pipedata as input
   #   - for each sample we found, create any pipeprocesses that are needed
 
@@ -366,6 +368,8 @@ sub create_new_pipeprocesses
   };
 
   $schema->txn_do($code);
+
+  $schema->storage()->debug(0);
 
   return @retlist;
 }
