@@ -400,7 +400,7 @@ ALTER TABLE public.coded_sample OWNER TO kmr44;
 -- Name: TABLE coded_sample; Type: COMMENT; Schema: public; Owner: kmr44
 --
 
-COMMENT ON TABLE coded_sample IS 'This table records the many-to-many relationship between samples and sequencing runs and the type of the run (intial, re-run, replicate etc.)';
+COMMENT ON TABLE coded_sample IS 'This table records the many-to-many relationship between samples and sequencing runs and the type of the run (initial, re-run, replicate etc.)';
 
 
 --
@@ -2991,7 +2991,7 @@ COPY cvterm (cvterm_id, cv_id, name, definition, dbxref_id, is_obsolete, is_rela
 17	2	5-prime	Bar code will be at 5' end of the read	17	0	0
 18	3	biological replicate	biological replicate/re-run	18	0	0
 19	3	failure re-run	re-run because of failure	19	0	0
-20	3	initial run	intial sequencing run	20	0	0
+20	3	initial run	initial sequencing run	20	0	0
 21	3	technical replicate	technical replicate/re-run	21	0	0
 22	4	aligned_reads	Reads that have been aligned against a reference	22	0	0
 23	4	fast_stats	Summary information and statistics about a FASTA or FASTQ file	23	0	0

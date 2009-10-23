@@ -135,7 +135,7 @@ my %terms = (
              },
              'tracking coded sample types' =>
              {
-              'initial run' => 'intial sequencing run',
+              'initial run' => 'initial sequencing run',
               'technical replicate' => 'technical replicate/re-run',
               'biological replicate' => 'biological replicate/re-run',
               'failure re-run' => 're-run because of failure'

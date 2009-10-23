@@ -483,7 +483,7 @@ CREATE TABLE coded_sample (
 );
 COMMENT ON TABLE coded_sample IS
   'This table records the many-to-many relationship between samples and '
-  'sequencing runs and the type of the run (intial, re-run, replicate etc.)';
+  'sequencing runs and the type of the run (initial, re-run, replicate etc.)';
 CREATE TABLE pipeprocess_pub (
        pipeprocess_pub_id serial CONSTRAINT pipeprocess_pub_id_pk PRIMARY KEY,
        pipeprocess_id integer NOT NULL,
