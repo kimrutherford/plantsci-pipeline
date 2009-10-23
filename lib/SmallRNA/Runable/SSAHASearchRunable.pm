@@ -163,7 +163,8 @@ sub run
       $self->store_pipedata(generating_pipeprocess => $self->pipeprocess(),
                             file_name => $gff_file_name,
                             format_type_name => 'gff3',
-                            content_type_name => 'aligned_reads');
+                            content_type_name => 'aligned_reads',
+                            properties => { 'alignment target' => $component });
 
       if ($component eq 'genome') {
         $self->store_pipedata(generating_pipeprocess => $self->pipeprocess(),

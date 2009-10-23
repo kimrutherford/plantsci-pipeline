@@ -182,6 +182,7 @@ my %terms = (
                  'gc content' => 'Total G+C bases',
                  'n content' => 'Total N bases',
                  'multiplexing code' => 'The barcode found on the reads in this file',
+                 'alignment target' => 'The target for this alignment, eg. "nuclear genome", "mitochondria"',
                }
             );
 
