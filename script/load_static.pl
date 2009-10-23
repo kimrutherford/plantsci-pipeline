@@ -153,7 +153,7 @@ my %terms = (
              },
              'tracking sample types' =>
              {
-               small_rna_seq => 'Small RNA sequences',
+               small_rnas => 'Small RNA sequences',
                chip_seq => 'Chromatin immunoprecipitation (ChIP) and sequencing',
                mrna_expression => 'Expression analysis of mRNA',
                dna_seq => 'Genomic DNA sequence',
