@@ -124,6 +124,15 @@ sub _make_bit
             AND organism.genus || ' ' || organism.species = '$organism_full_name')";
   }
 
+  my $sample_type_constraint = '';
+
+  if (defined $input->sample_type()) {
+    my $sample_type_name = $input->sample_type()->name();
+    $sample_type_constraint =
+      "AND me.sample_type =
+        (SELECT cvterm_id FROM cvterm WHERE cvterm.name = '$sample_type_name')";
+  }
+
   my $pipedata_constraint = _make_pipedata_constraint($conf, $input);
 
   return qq{
@@ -133,6 +142,7 @@ sub _make_bit
        WHERE sample_pipedata.pipedata = pipedata.pipedata_id
          AND $pipedata_constraint
          $org_constraint
+         $sample_type_constraint
     )
   };
 }

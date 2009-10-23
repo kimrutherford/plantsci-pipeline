@@ -90,6 +90,11 @@ __PACKAGE__->has_many(
   { "foreign.type" => "self.cvterm_id" },
 );
 __PACKAGE__->has_many(
+  "process_conf_input_sample_types",
+  "SmallRNA::DB::ProcessConfInput",
+  { "foreign.sample_type" => "self.cvterm_id" },
+);
+__PACKAGE__->has_many(
   "process_conf_input_format_types",
   "SmallRNA::DB::ProcessConfInput",
   { "foreign.format_type" => "self.cvterm_id" },
@@ -147,7 +152,7 @@ __PACKAGE__->has_many(
 
 
 # Created by DBIx::Class::Schema::Loader v0.04005
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:5zBg5koy+RiseBCUa1OaHQ
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:PDTnxsZq4i3JXto5HwuO7g
 
 __PACKAGE__->many_to_many(dbxrefs => 'cvterm_dbxrefs', 'dbxref');
 

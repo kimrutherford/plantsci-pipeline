@@ -1098,6 +1098,10 @@ $schema->txn_do(sub {
         $args{ecotype} = $ecotype_objs{$input->{ecotype_name}};
       }
 
+      if (defined $input->{sample_type}) {
+        $args{sample_type} = _get_cvterm($input->{sample_type});
+      }
+
       $schema->find_or_create_with_type('ProcessConfInput', { %args });
     }
   }
