@@ -1,9 +1,9 @@
-package SmallRNA::Runable::SSAHASearchRunable;
+package SmallRNA::Runable::PatmanAlignmentRunable;
 
 =head1 NAME
 
-SmallRNA::Runable::SSAHASearchRunable - Run, parse and save the results of a
-                                        SSAHA search
+SmallRNA::Runable::PatmanAlignmentRunable - Run, parse and save the results of a
+                                        Patman search
 
 =head1 SYNOPSIS
 
@@ -19,7 +19,7 @@ Please report any bugs or feature requests to C<kmr44@cam.ac.uk>.
 
 You can find documentation for this module with the perldoc command.
 
-    perldoc SmallRNA::Runable::SSAHASearchRunable
+    perldoc SmallRNA::Runable::PatmanAlignmentRunable
 
 =over 4
 
@@ -47,7 +47,7 @@ extends 'SmallRNA::Runable::AlignmentRunable';
 
 =head2
 
- Function: Run the a SSAHA alignment and store the name of the resulting files
+ Function: Run the a PatMaN alignment and store the name of the resulting files
            in the pipedata table
  Returns : nothing - either succeeds or calls die()
 
@@ -57,7 +57,7 @@ sub run
   my $self = shift;
   my $schema = $self->schema();
 
-  $self->run_alignment('ssaha');
+  $self->run_alignment('patman');
 }
 
 1;

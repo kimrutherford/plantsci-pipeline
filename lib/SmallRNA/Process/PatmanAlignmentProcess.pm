@@ -1,8 +1,8 @@
-package SmallRNA::Process::SSAHASearchProcess;
+package SmallRNA::Process::PatmanAlignmentProcess;
 
 =head1 NAME
 
-SmallRNA::Process::SSAHASearchProcess - Run a SSAHA search
+SmallRNA::Process::PatmanAlignmentProcess - Run a Patman search
 
 =head1 SYNOPSIS
 
@@ -18,7 +18,7 @@ Please report any bugs or feature requests to C<kmr44@cam.ac.uk>.
 
 You can find documentation for this module with the perldoc command.
 
-    perldoc SmallRNA::Process::SSAHASearchProcess
+    perldoc SmallRNA::Process::PatmanAlignmentProcess
 
 =over 4
 
@@ -42,9 +42,7 @@ use Params::Validate qw(:all);
 
 use Bio::SeqIO;
 
-use SmallRNA::Parse::SSAHA;
-
-my $SSAHA_ARGS = "-qf fasta -sf fasta -wl 10 -sl 1 -da 0 -mp 18";
+use SmallRNA::Parse::Patman;
 
 sub _write
 {
@@ -66,14 +64,14 @@ sub _write
 
   my $attributes = "$id;Name=$match->{qid};Note=$match->{qid}";
 
-  my $line = "$match->{sid}\t$source_name\tssaha\t$start\t" .
+  my $line = "$match->{sid}\t$source_name\tpatman\t$start\t" .
     "$end\t$count\t$strand\t.\t$attributes";
   print $gff_file "$line\n";
 }
 
 =head2
 
- Usage   : SmallRNA::Process::SSAHASearchProcess(input_file_name =>
+ Usage   : SmallRNA::Process::PatmanAlignmentProcess(input_file_name =>
                                                    $in_file_name,
                                                  output_gff_file_name =>
                                                    $out_gff_file_name,
@@ -84,15 +82,15 @@ sub _write
                                                    $non_aligned_file_name,
                                                  database_file_name =>
                                                    $database_file_name);
- Function: Run a SSAHA search for the given input file against a fasta database
+ Function: Run a Patman search for the given input file against a fasta database
  Args    : input_file_name - the fasta file of reads
            output_gff_file_name - the output gff3 file path name
-           executable_path - full path to the SSAHA executable
+           executable_path - full path to the Patman executable
            gff_source_name - the value to use for the source field in the ouuput
            database_file_name - the full path to the target database
            non_aligned_file_name - a fasta file of sequences that don't align
               to the target
- Returns : nothing - either succeeds or calls die()
+ Returns : nothing - either succeeds or calls croak()
 
 =cut
 sub run
@@ -121,23 +119,22 @@ sub run
   my %matching_sequences = ();
 
   open my $output_gff_file, '>', $params{output_gff_file_name}
-    or die "can't open $params{output_gff_file_name} for writing: $!\n";
+    or croak "can't open $params{output_gff_file_name} for writing: $!\n";
 
   print $output_gff_file "##gff-version 3\n";
 
   if (!-e $params{database_file_name}) {
-    croak "bad configuration: ssaha database file does not exist: ",
+    croak "bad configuration: patman database file does not exist: ",
       $params{database_file_name}, "\n";
   }
 
-  my $ssaha_command =
-    "$params{executable_path} $in_file $params{database_file_name} $SSAHA_ARGS";
+  my $patman_command =
+    "$params{executable_path} --edits=0 --gaps=0 -P $in_file -D $params{database_file_name}";
 
-  open my $ssaha_out, "$ssaha_command 2>> /tmp/SSAHASearchProcess.log|"
-    or die "can't open pipe to $params{executable_path}: $!";
+  open my $patman_out, "$patman_command 2>> /tmp/PatmanAlignmentProcess.log|"
+    or croak "can't open pipe to $params{executable_path}: $!";
 
-  my $parser = SmallRNA::Parse::SSAHA->new(input_file_handle => $ssaha_out,
-                                           format => 'standard');
+  my $parser = SmallRNA::Parse::Patman->new(input_file_handle => $patman_out);
 
   while (defined (my $match = $parser->next())) {
     my $seq_length = length $match->{qid};
@@ -153,7 +150,7 @@ sub run
            $match, $fasta_counts{$match->{qid}});
   }
 
-  close $ssaha_out or croak "failed to close command pipe: $! (exit code $?)";
+  close $patman_out or croak "failed to close command pipe: $! (exit code $?)";
 
   if (defined $output_gff_file) {
     close $output_gff_file;
@@ -161,7 +158,7 @@ sub run
 
   if ($params{non_aligned_file_name}) {
     open my $non_aligned_file, '>', $params{non_aligned_file_name}
-      or die "can't open $params{non_aligned_file_name} for writing: $!";
+      or croak "can't open $params{non_aligned_file_name} for writing: $!";
 
     for my $sequence (sort keys %fasta_counts) {
       if (!exists $matching_sequences{$sequence}) {
@@ -170,7 +167,7 @@ sub run
       }
     }
 
-    close $non_aligned_file or die "failed to close file $params{non_aligned_file_name}: $!";
+    close $non_aligned_file or croak "failed to close file $params{non_aligned_file_name}: $!";
   }
 }
 

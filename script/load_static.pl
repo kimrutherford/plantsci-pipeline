@@ -118,6 +118,8 @@ my %terms = (
                   . 'and add a count to the header',
               'ssaha alignment' =>
                 'Align reads against a sequence database with SSAHA',
+              'patman alignment' =>
+                'Align reads against a sequence database with PatMaN',
               'bwa alignment' =>
                 'Align reads against a sequence database with BWA',
               'genome aligned reads filter' =>
@@ -182,7 +184,9 @@ my %terms = (
                  'gc content' => 'Total G+C bases',
                  'n content' => 'Total N bases',
                  'multiplexing code' => 'The barcode found on the reads in this file',
-                 'alignment target' => 'The target for this alignment, eg. "nuclear genome", "mitochondria"',
+                 'alignment component' => 'The target genome component for this alignment, eg. "nuclear genome", "mitochondria"',
+                 'alignment ecotype' => 'The target ecotype and organism for this alignment, eg. "unspecified Arabidopsis thaliana"',
+                 'alignment program' => 'The program used for this alignment, eg. "ssaha", "bwa", "patman"',
                }
             );
 
@@ -908,6 +912,54 @@ my @analyses = (
                  type_term_name => 'ssaha alignment',
                  detail => 'component: genome',
                  runable_name => 'SmallRNA::Runable::SSAHASearchRunable',
+                 inputs => [
+                     {
+                       ecotype_name => 'unspecified Chlamydomonas reinhardtii',
+                       format_type => 'fasta',
+                       content_type => 'non_redundant_reads',
+                     }
+                    ]
+                },
+                {
+                 type_term_name => 'patman alignment',
+                 detail => 'component: genome',
+                 runable_name => 'SmallRNA::Runable::PatmanAlignmentRunable',
+                 inputs => [
+                     {
+                       ecotype_name => 'unspecified Arabidopsis thaliana',
+                       format_type => 'fasta',
+                       content_type => 'non_redundant_reads',
+                     }
+                    ]
+                },
+                {
+                 type_term_name => 'patman alignment',
+                 detail => 'component: genome',
+                 runable_name => 'SmallRNA::Runable::PatmanAlignmentRunable',
+                 inputs => [
+                     {
+                       ecotype_name => 'unspecified Solanum lycopersicon',
+                       format_type => 'fasta',
+                       content_type => 'non_redundant_reads',
+                     }
+                    ]
+                },
+                {
+                 type_term_name => 'patman alignment',
+                 detail => 'component: genome',
+                 runable_name => 'SmallRNA::Runable::PatmanAlignmentRunable',
+                 inputs => [
+                     {
+                       ecotype_name => 'unspecified Lycopersicon esculentum',
+                       format_type => 'fasta',
+                       content_type => 'non_redundant_reads',
+                     }
+                    ]
+                },
+                {
+                 type_term_name => 'patman alignment',
+                 detail => 'component: genome',
+                 runable_name => 'SmallRNA::Runable::PatmanAlignmentRunable',
                  inputs => [
                      {
                        ecotype_name => 'unspecified Chlamydomonas reinhardtii',

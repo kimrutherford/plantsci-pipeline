@@ -11,6 +11,8 @@ data_sub_directory: test-results
 programs:
   ssaha:
     path: /applications/ssaha_v31c_amd64/ssaha_v31c_amd64
+  patman:
+    path: /applications/patman-1.2.1/patman
   bwa:
     path: /applications/bwa/bwa-0.4.9/bwa
   samtools:

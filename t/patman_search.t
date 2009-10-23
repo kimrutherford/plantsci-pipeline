@@ -10,18 +10,18 @@ use SmallRNA::Config;
 
 BEGIN {
   unshift @INC, 't';
-  use_ok 'SmallRNA::Process::SSAHASearchProcess';
+  use_ok 'SmallRNA::Process::PatmanAlignmentProcess';
 }
 
 my $input_file_name = 't/data/reads_fasta_summary_test.fasta';
 my $db_file_name = 't/data/arabidopsis_thaliana_test_genome.fasta';
 
 my ($gff_fh, $output_gff_file_name) =
-  tempfile('/tmp/ssaha_search_test_gff.XXXXXX', UNLINK => 0);
+  tempfile('/tmp/patman_alignment_test_gff.XXXXXX', UNLINK => 0);
 
-my $config = SmallRNA::Config->new('t/test_config.yaml')->{programs}{ssaha};
+my $config = SmallRNA::Config->new('t/test_config.yaml')->{programs}{patman};
 
-my $res = SmallRNA::Process::SSAHASearchProcess::run(
+my $res = SmallRNA::Process::PatmanAlignmentProcess::run(
   executable_path => $config->{path},
   database_file_name => $db_file_name,
   input_file_name => $input_file_name,
@@ -31,5 +31,5 @@ my $res = SmallRNA::Process::SSAHASearchProcess::run(
 
 ok(-s $output_gff_file_name, 'has gff output');
 
-compare_ok($output_gff_file_name, "t/data/ssaha_search_results.gff3",
+compare_ok($output_gff_file_name, "t/data/patman_alignment_results.gff3",
            'gff results comparison');
