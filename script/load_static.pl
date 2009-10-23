@@ -625,9 +625,35 @@ my @analyses = (
                 },
                 {
                  type_term_name => 'trim reads',
+                 detail => 'action: remove_adapters',
                  runable_name => 'SmallRNA::Runable::TrimRunable',
                  inputs => [
                      {
+                       sample_type => 'small_rnas',
+                       format_type => 'fastq',
+                       content_type => 'raw_reads',
+                     }
+                    ]
+                },
+                {
+                 type_term_name => 'trim reads',
+                 detail => 'action: passthrough',
+                 runable_name => 'SmallRNA::Runable::TrimRunable',
+                 inputs => [
+                     {
+                       sample_type => 'dna_seq',
+                       format_type => 'fastq',
+                       content_type => 'raw_reads',
+                     }
+                    ]
+                },
+                {
+                 type_term_name => 'trim reads',
+                 detail => 'action: trim',
+                 runable_name => 'SmallRNA::Runable::TrimRunable',
+                 inputs => [
+                     {
+                       sample_type => 'chip_seq',
                        format_type => 'fastq',
                        content_type => 'raw_reads',
                      }
