@@ -851,96 +851,12 @@ my @analyses = (
                     ]
                 },
                 {
-                 type_term_name => 'ssaha alignment',
+                 type_term_name => 'patman alignment',
                  detail => 'component: genome',
-                 runable_name => 'SmallRNA::Runable::SSAHASearchRunable',
+                 runable_name => 'SmallRNA::Runable::PatmanAlignmentRunable',
                  inputs => [
                      {
                        ecotype_name => 'unspecified Arabidopsis thaliana',
-                       format_type => 'fasta',
-                       content_type => 'non_redundant_reads',
-                     }
-                    ]
-                },
-                {
-                 type_term_name => 'ssaha alignment',
-                 detail => 'component: trna',
-                 runable_name => 'SmallRNA::Runable::SSAHASearchRunable',
-                 inputs => [
-                     {
-                       ecotype_name => 'unspecified Arabidopsis thaliana',
-                       format_type => 'fasta',
-                       content_type => 'non_redundant_reads',
-                     }
-                    ]
-                },
-                {
-                 type_term_name => 'ssaha alignment',
-                 detail => 'component: genome',
-                 runable_name => 'SmallRNA::Runable::SSAHASearchRunable',
-                 inputs => [
-                     {
-                       ecotype_name => 'unspecified Lycopersicon esculentum',
-                       format_type => 'fasta',
-                       content_type => 'non_redundant_reads',
-                     }
-                    ]
-                },
-                {
-                 type_term_name => 'ssaha alignment',
-                 detail => 'component: genome',
-                 runable_name => 'SmallRNA::Runable::SSAHASearchRunable',
-                 inputs => [
-                     {
-                       ecotype_name => 'unspecified Solanum lycopersicon',
-                       format_type => 'fasta',
-                       content_type => 'non_redundant_reads',
-                     }
-                    ]
-                },
-                {
-                 type_term_name => 'ssaha alignment',
-                 detail => 'component: genome',
-                 runable_name => 'SmallRNA::Runable::SSAHASearchRunable',
-                 inputs => [
-                     {
-                       ecotype_name => 'unspecified Carmovirus turnip crinkle virus',
-                       format_type => 'fasta',
-                       content_type => 'non_redundant_reads',
-                     }
-                    ]
-                },
-                {
-                 type_term_name => 'ssaha alignment',
-                 detail => 'component: genome',
-                 runable_name => 'SmallRNA::Runable::SSAHASearchRunable',
-                 inputs => [
-                     {
-                       ecotype_name => 'unspecified Oryza sativa',
-                       format_type => 'fasta',
-                       content_type => 'non_redundant_reads',
-                     }
-                    ]
-                },
-                {
-                 type_term_name => 'ssaha alignment',
-                 detail => 'component: genome',
-                 runable_name => 'SmallRNA::Runable::SSAHASearchRunable',
-                 inputs => [
-                     {
-                       ecotype_name => 'unspecified Benyvirus rice stripe virus',
-                       format_type => 'fasta',
-                       content_type => 'non_redundant_reads',
-                     }
-                    ]
-                },
-                {
-                 type_term_name => 'ssaha alignment',
-                 detail => 'component: genome',
-                 runable_name => 'SmallRNA::Runable::SSAHASearchRunable',
-                 inputs => [
-                     {
-                       ecotype_name => 'unspecified Chlamydomonas reinhardtii',
                        format_type => 'fasta',
                        content_type => 'non_redundant_reads',
                      }
@@ -948,7 +864,7 @@ my @analyses = (
                 },
                 {
                  type_term_name => 'patman alignment',
-                 detail => 'component: genome',
+                 detail => 'component: trna',
                  runable_name => 'SmallRNA::Runable::PatmanAlignmentRunable',
                  inputs => [
                      {
@@ -1007,9 +923,9 @@ my @analyses = (
                     ]
                 },
                 {
-                 type_term_name => 'ssaha alignment',
+                 type_term_name => 'patman alignment',
                  detail => 'component: genome, target: "Arabidopsis thaliana"',
-                 runable_name => 'SmallRNA::Runable::SSAHASearchRunable',
+                 runable_name => 'SmallRNA::Runable::PatmanAlignmentRunable',
                  inputs => [
                      {
                        ecotype_name => 'unspecified Cleome gynandra',
@@ -1060,17 +976,6 @@ my @analyses = (
                      }
                    ]
                 },
-                # {
-                #  type_term_name => 'ssaha alignment',
-                #  detail => 'versus: Arabidopsis tRNA+rRNA',
-                #  runable_name => 'SmallRNA::Runable::SSAHASearchRunable',
-                #  inputs => [
-                #      {
-                #        format_type => 'fasta',
-                #        content_type => 'srna_reads',
-                #      }
-                #     ]
-                # }
                );
 
 $schema->txn_do(sub {
