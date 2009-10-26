@@ -109,6 +109,8 @@ sub run
        $sequence = $seq_obj->seq();
     }
 
+    $sequence = uc $sequence;
+
     _add_pos_counts($sequence);
 
     $mers_hash{$sequence}++;
