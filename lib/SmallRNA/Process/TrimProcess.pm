@@ -106,9 +106,8 @@ mode run() returns a list with two element.  The first is file name
 (relative to the directory given by $output_dir_name) containing the
 sequences that were rejected during processing.  Reasons for rejection
 include:
- - the sequence is too long (>36 bases) or short (<16 bases)
  - the sequence doesn't have a valid adapter sequence
- - the sequence contains only base, repeated
+ - the sequence contains only one base, repeated
 
 If there is a barcodes argument, run() attempts to de-multiplex while
 removing the adapter.  The result in this case is a list with two
