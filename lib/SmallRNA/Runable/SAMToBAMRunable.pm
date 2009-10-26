@@ -86,7 +86,7 @@ sub run
     my $c = $self->config()->{programs}{samtools};
     my $samtools_path = $c->{path};
 
-    if ($output_file_name =~ s/\.($input_format_type)$/.$1.$output_type/) {
+    if ($output_file_name =~ s/\.($input_format_type)$/.$output_type/) {
       SmallRNA::Process::SAMToBAMProcess::run(input_file_name => $input_file_name,
                                               output_file_name => $output_file_name,
                                               samtools_path => $samtools_path,
