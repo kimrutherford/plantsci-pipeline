@@ -128,6 +128,9 @@ __PACKAGE__->many_to_many('pipeprojects' => 'sample_pipeprojects', 'pipeproject'
 
 my %_fasta_counts_cache = ();
 
+my $_cache_time = undef;
+my $MAX_CACHE_AGE = 10 * 60;  # 10 minutes
+
 sub _populate_fasta_counts_cache
 {
   my $schema = shift;
@@ -169,6 +172,8 @@ END
       }
     }
   }
+
+  $_cache_time = time();
 }
 
 =head2 get_pipedata_property
@@ -189,7 +194,9 @@ sub get_pipedata_property
 
   my $sample_name = $sample->name();
 
-  if (!exists $_fasta_counts_cache{$sample_name}) {
+  if (!exists $_fasta_counts_cache{$sample_name} || 
+      !defined $_cache_time ||
+      (time() - $_cache_time > $MAX_CACHE_AGE)) {
     my $schema = $sample->result_source->schema();
     _populate_fasta_counts_cache($schema);
   }
