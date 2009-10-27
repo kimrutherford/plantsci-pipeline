@@ -57,6 +57,16 @@ use Search::Dict;
 use POSIX;
 use DB_File;
 
+=head2 cache
+
+ cache - a store file handles used by search() to prevent repeated opening and
+         closing of index files
+
+=cut
+has 'cache' => (
+    is  => 'rw'
+);
+
 =head2
 
  Usage   :  my $manager = $SmallRNA::Index::Manager();
@@ -145,8 +155,11 @@ sub create_index
 
 sub _get_offsets_sorted
 {
+  my $self = shift;
   my $index_file_name = shift;
   my $search_sequence = shift;
+
+  my $cache = $self->cache();
 
   open my $index_file, '<', $index_file_name
     or croak "can't open $index_file_name: $!\n";
@@ -181,9 +194,11 @@ sub _get_offsets_sorted
 
 sub _get_offsets_dbm
 {
+  my $self = shift;
   my $index_file_name = shift;
   my $search_sequence = shift;
-  my $cache = shift;
+
+  my $cache = $self->cache();
 
   my $tied_hash;
 
@@ -198,7 +213,9 @@ sub _get_offsets_dbm
       die "can't tie() $index_file_name: $!\n";
     }
 
-    $cache->{$index_file_name} = $tied_hash;
+    if (defined $cache) {
+      $cache->{$index_file_name} = $tied_hash;
+    }
   }
 
   my $val = $tied_hash->FETCH(uc $search_sequence);
@@ -221,8 +238,12 @@ sub _get_offsets_dbm
  Args    : input_file_name - the name of the file to search
            index_file_name - the name of the index file to use
            search_sequence - the sequence to search for
+           details - if true return the offsets and matches lines from the
+                     indexed file
+                     if false just returns the offsets
  Returns : The lines from the file.  For FASTA, just the header line is returned
-
+           eg. [ { offset => 1000, line => "..." }, { offset => ... }, ... ]
+           or if details param is false: [ { offset => 1000 }, { offset => ... }, ... ]
 =cut
 sub search
 {
@@ -230,11 +251,9 @@ sub search
   my %params = validate(@_, { input_file_name => 1,
                               index_file_name => 1,
                               search_sequence => 1,
-                              cache => 0,
-                              count_only => 0 });
+                              retrieve_lines => 0 });
 
   my $search_sequence = uc $params{search_sequence};
-  my $cache = $params{cache};
   my $count_only = $params{count_only} || 0;
 
   my @results = ();
@@ -242,13 +261,13 @@ sub search
   my @offsets;
 
   if (-T $params{index_file_name}) {
-    @offsets = _get_offsets_sorted($params{index_file_name}, $search_sequence, $cache);
+    @offsets = $self->_get_offsets_sorted($params{index_file_name}, $search_sequence);
   } else {
-    @offsets = _get_offsets_dbm($params{index_file_name}, $search_sequence, $cache);
+    @offsets = $self->_get_offsets_dbm($params{index_file_name}, $search_sequence);
   }
 
-  if ($count_only) {
-    return scalar(@offsets);
+  if (!$params{retrieve_lines}) {
+    return map { { offset => $_ } } @offsets;
   }
 
   open my $input_file, '<', $params{input_file_name}
@@ -264,7 +283,7 @@ sub search
 
     # sanity check
     if ($input_line =~ /Note=$search_sequence\b|>$search_sequence\b/) {
-      push @results, $input_line;
+      push @results, { offset => $offset, line => $input_line };
     } else {
       croak "index doesn't match GFF file: $params{search_sequence} not " .
         "found at line: $input_line\n";
