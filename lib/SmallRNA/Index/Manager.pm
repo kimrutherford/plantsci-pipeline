@@ -251,16 +251,8 @@ sub search
     return scalar(@offsets);
   }
 
-  my $input_file;
-
-  if (defined $cache && exists $cache->{$params{input_file_name}}) {
-    $input_file = $cache->{$params{input_file_name}};
-  } else {
-    open $input_file, '<', $params{input_file_name}
-      or croak "can't open $params{input_file_name}: $!\n";
-
-    $cache->{$params{input_file_name}} = $input_file;
-  }
+  open my $input_file, '<', $params{input_file_name}
+    or croak "can't open $params{input_file_name}: $!\n";
 
   for my $offset (@offsets) {
     seek $input_file, $offset, SEEK_SET
@@ -279,9 +271,7 @@ sub search
     }
   }
 
-  if (!$params{cache}) {
-    close $input_file or croak "can't close $params{input_file_name}: $!\n";
-  }
+  close $input_file or croak "can't close $params{input_file_name}: $!\n";
 
   return @results;
 }
