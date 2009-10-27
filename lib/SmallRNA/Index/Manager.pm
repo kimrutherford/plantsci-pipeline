@@ -183,16 +183,25 @@ sub _get_offsets_dbm
 {
   my $index_file_name = shift;
   my $search_sequence = shift;
+  my $cache = shift;
 
-  my %disk_hash;
+  my $tied_hash;
 
-  if (!defined tie %disk_hash, 'DB_File', $index_file_name, O_RDWR, 0666) {
-    die "can't tie() $index_file_name: $!\n";
+  if (defined $cache && exists $cache->{$index_file_name}) {
+    $tied_hash = $cache->{$index_file_name};
+  } else {
+    my %disk_hash;
+
+    $tied_hash = tie %disk_hash, 'DB_File', $index_file_name, O_RDWR, 0666;
+
+    if (!defined $tied_hash) {
+      die "can't tie() $index_file_name: $!\n";
+    }
+
+    $cache->{$index_file_name} = $tied_hash;
   }
 
-  my $val = $disk_hash{uc $search_sequence};
-
-  untie %disk_hash;
+  my $val = $tied_hash->FETCH(uc $search_sequence);
 
   if (defined $val) {
     return split /,/, $val;
@@ -220,22 +229,38 @@ sub search
   my $self = shift;
   my %params = validate(@_, { input_file_name => 1,
                               index_file_name => 1,
-                              search_sequence => 1 });
+                              search_sequence => 1,
+                              cache => 0,
+                              count_only => 0 });
 
   my $search_sequence = uc $params{search_sequence};
+  my $cache = $params{cache};
+  my $count_only = $params{count_only} || 0;
 
   my @results = ();
 
   my @offsets;
 
   if (-T $params{index_file_name}) {
-    @offsets = _get_offsets_sorted($params{index_file_name}, $search_sequence);
+    @offsets = _get_offsets_sorted($params{index_file_name}, $search_sequence, $cache);
   } else {
-    @offsets = _get_offsets_dbm($params{index_file_name}, $search_sequence);
+    @offsets = _get_offsets_dbm($params{index_file_name}, $search_sequence, $cache);
   }
 
-  open my $input_file, '<', $params{input_file_name}
-    or croak "can't open $params{input_file_name}: $!\n";
+  if ($count_only) {
+    return scalar(@offsets);
+  }
+
+  my $input_file;
+
+  if (defined $cache && exists $cache->{$params{input_file_name}}) {
+    $input_file = $cache->{$params{input_file_name}};
+  } else {
+    open $input_file, '<', $params{input_file_name}
+      or croak "can't open $params{input_file_name}: $!\n";
+
+    $cache->{$params{input_file_name}} = $input_file;
+  }
 
   for my $offset (@offsets) {
     seek $input_file, $offset, SEEK_SET
@@ -254,7 +279,9 @@ sub search
     }
   }
 
-  close $input_file or croak "can't close $params{input_file_name}: $!\n";
+  if (!$params{cache}) {
+    close $input_file or croak "can't close $params{input_file_name}: $!\n";
+  }
 
   return @results;
 }
