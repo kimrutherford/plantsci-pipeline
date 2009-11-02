@@ -27,8 +27,9 @@ my %terms = (
               'fasta' => 'FASTA format',
               'gff2' => 'GFF2 format',
               'gff3' => 'GFF3 format',
-              'sam' => 'SAM format',
-              'bam' => 'BAM format',
+              'sam' => 'SAM alignment format',
+              'bam' => 'BAM alignment format',
+              'bam_index' => 'BAM index file format',
               'seq_offset_index' => 'An index of a GFF3 or FASTA format file',
               'text' => 'A human readable text file with summaries or statistics',
               'tsv' => 'A file containing tab-separated value',
@@ -63,6 +64,8 @@ my %terms = (
                 'An index of a gff3 file that has the read sequence as the key',
               'fasta_index' =>
                 'An index of a fasta file that has the sequence as the key',
+              'bam_index' =>
+                'A BAM file index created by samtools',
              },
              'tracking sequencing method' =>
              {

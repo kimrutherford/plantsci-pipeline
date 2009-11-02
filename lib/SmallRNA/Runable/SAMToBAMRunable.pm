@@ -97,6 +97,11 @@ sub run
                             file_name => $output_file_name,
                             format_type_name => $output_type,
                             content_type_name => $input_content_type);
+
+      $self->store_pipedata(generating_pipeprocess => $self->pipeprocess(),
+                            file_name => $output_file_name . '.bai',
+                            format_type_name => 'bam_index',
+                            content_type_name => 'bam_index');
     } else {
       croak("pattern match failed on: ", $output_file_name);
     }

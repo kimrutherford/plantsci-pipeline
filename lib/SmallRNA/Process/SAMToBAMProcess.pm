@@ -40,6 +40,7 @@ use warnings;
 use Carp;
 use Params::Validate qw(:all);
 use File::Temp qw(tempfile);
+use File::Copy;
 
 use Bio::SeqIO;
 
@@ -63,14 +64,14 @@ sub _do_system
     }
     else {
       printf STDERR "child exited with value %d\n", $? >> 8;
-    } 
+    }
 
     die "command failed - exiting $?\n";
   }
 }
 
 =head2
- 
+
  Usage   : SmallRNA::Process::SAMToBAMProcess(input_file_name => $in_file_name,
                                               output_file_name =>
                                                  $output_file_name,
@@ -102,6 +103,21 @@ sub run
     "$params{samtools_path} view -bt $params{database_file_name}.fai $infile_name";
 
   _do_system "$samtools_command 2>> $log_file_name > $outfile_name";
+
+  my ($fh, $sort_temp_file) =
+    tempfile('/tmp/samtools_sort.XXXXXX', UNLINK => 0);
+
+  my $sort_command =
+    "$params{samtools_path} sort $outfile_name $sort_temp_file";
+
+  _do_system "$sort_command 2>> $log_file_name";
+
+  move("$sort_temp_file.bam", $outfile_name);
+
+  my $index_command =
+    "$params{samtools_path} index $outfile_name";
+
+  _do_system "$index_command 2>> $log_file_name";
 }
 
 1;
