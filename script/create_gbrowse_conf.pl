@@ -63,7 +63,35 @@ TRACK
 open my $devnull, '>', '/dev/null' or die;
 
 my $init_code = <<'INIT_CODE';
-sub fgcolor {
+INIT_CODE
+
+print <<'END';
+[GENERAL]
+description   = Arabidopsis thaliana TAIR8
+database      = arabidopsis_base
+
+initial landmark = Chr1:1504365..1514364
+
+default tracks = transposable_element
+    Chromosome:overview
+
+# examples to show in the introduction
+examples = Chr1:1504365..1514364
+           ChrC:63781..68780
+
+plugins = FastaDumper
+
+link = sub {
+        my $feature = shift;
+        my $name = $feature->name();
+        $name =~ s/-\d+-\d+//;
+        return "http://node3/ui/view/seqread/$name";
+      }
+
+# "automatic" classes to try when an unqualified identifier is given
+automatic classes = chromosome gene five_prime_UTR mRNA exon three_prime_UTR
+
+init_code = sub fgcolor {
   my $feature=shift;
   my $len = ($feature->stop - $feature->start +1);
   return "pink" if ($len >=15 and $len <20);
@@ -82,34 +110,6 @@ sub fgcolor {
    }
    return log($score); 
  }
-INIT_CODE
-
-print <<"END";
-[GENERAL]
-description   = Arabidopsis thaliana TAIR8
-database      = arabidopsis_base
-
-initial landmark = Chr1:1504365..1514364
-
-default tracks = transposable_element
-    Chromosome:overview
-
-# examples to show in the introduction
-examples = Chr1:1504365..1514364
-           ChrC:63781..68780
-
-plugins = FastaDumper
-
-link = sub {
-        my \$feature = shift;
-        my \$name = \$feature->attributes('Name');
-        return "http://node3/ui/view/seqread/\$name";
-      }
-
-# "automatic" classes to try when an unqualified identifier is given
-automatic classes = chromosome gene five_prime_UTR mRNA exon three_prime_UTR
-
-init_code = $init_code
 
 #################################
 # database definitions
@@ -128,11 +128,13 @@ db_args       = -adaptor	DBI::mysql
                 -user	pipe
                 -pass   pipe
 
-$database_config
-
 END
 
+print $database_config;
+
+
 print <<'END';
+
 ######### end database definitions ############
 
 # Default glyph settings
