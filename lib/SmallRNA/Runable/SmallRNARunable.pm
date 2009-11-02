@@ -190,9 +190,15 @@ sub get_pipeprocess_details
           " has more than one input configured\n");
   }
 
-  my $target_organism = $process_conf_inputs[0]->ecotype()->organism();
+  my $org_full_name;
 
-  my $org_full_name = $target_organism->full_name();
+  if ($detail =~ /target: "([^"]+)"/) {
+    $org_full_name = $1;
+  } else {
+    my $target_organism = $process_conf_inputs[0]->ecotype()->organism();
+    $org_full_name = $target_organism->full_name();
+  }
+
   $org_full_name =~ s/ /_/g;
 
   my $database_conf = $self->config()->{databases};
@@ -208,7 +214,7 @@ sub get_pipeprocess_details
     croak "can't find organism configuration for ", $sample->name(), "\n";
   }
 
-  if ($detail =~ /component: (\S+)/) {
+  if ($detail =~ /component: ([^,]+)/) {
     my $component = $1;
 
     if (!defined $org_config->{database_files}{$component}) {
