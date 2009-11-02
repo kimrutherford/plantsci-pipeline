@@ -660,6 +660,18 @@ my @analyses = (
                     ]
                 },
                 {
+                 type_term_name => 'trim reads',
+                 detail => 'action: passthrough',
+                 runable_name => 'SmallRNA::Runable::TrimRunable',
+                 inputs => [
+                     {
+                       sample_type => 'mrna_expression',
+                       format_type => 'fastq',
+                       content_type => 'raw_reads',
+                     }
+                    ]
+                },
+                {
                  type_term_name => 'calculate fasta or fastq file statistics',
                  runable_name => 'SmallRNA::Runable::FastStatsRunable',
                  inputs => [
