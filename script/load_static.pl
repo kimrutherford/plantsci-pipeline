@@ -991,6 +991,18 @@ my @analyses = (
                      }
                    ]
                 },
+                {
+                 type_term_name => 'sam to bam converter',
+                 detail => 'component: genome, target: "Arabidopsis thaliana"',
+                 runable_name => 'SmallRNA::Runable::SAMToBAMRunable',
+                 inputs => [
+                     {
+                       format_type => 'sam',
+                       content_type => 'aligned_reads',
+                       ecotype_name => 'unspecified Cleome gynandra',
+                     }
+                   ]
+                },
                );
 
 $schema->txn_do(sub {
