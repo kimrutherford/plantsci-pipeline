@@ -96,10 +96,21 @@ sub run
                                                output_file_name => $output_file_name,
                                                sample_name => $sample_name);
 
+      my @input_properties = $input_pipedata->pipedata_properties();
+
+      my %props_map = ();
+
+      for my $input_property (@input_properties) {
+        if ($input_property->type()->name() =~ /^alignment .*/) {
+          $props_map{$input_property->type()->name()} = $input_property->value();
+        }
+      }
+
       $self->store_pipedata(generating_pipeprocess => $self->pipeprocess(),
                             file_name => $output_file_name,
                             format_type_name => $output_type,
-                            content_type_name => $input_content_type);
+                            content_type_name => $input_content_type,
+                            properties => \%props_map);
     } else {
       croak("pattern match failed on: ", $output_file_name);
     }
