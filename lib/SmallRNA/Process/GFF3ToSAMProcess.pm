@@ -93,7 +93,15 @@ sub run
 
     my $cigar = (length $sequence) . 'M';
 
-    print $out_file "$id\t0\t$ref_name\t$start\t255\t$cigar\t=\t$start\t0\t$sequence\t*\tXS:i:$score\n";
+    my $flags;
+
+    if ($strand eq '+') {
+      $flags = 0;
+    } else {
+      $flags = 16;
+    }
+
+    print $out_file "$id\t$flags\t$ref_name\t$start\t255\t$cigar\t=\t$start\t0\t$sequence\t*\tXS:i:$score\n";
   }
 
   close $in_file or croak "can't close $params{input_file_name}: $!\n";
