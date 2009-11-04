@@ -66,6 +66,10 @@ sub run
     }
     my $input_pipedata = $input_pipedatas[0];
 
+    if (!defined $input_pipedata) {
+      croak "no input pipedata for process: ", $pipeprocess->pipeprocess_id(), "\n";
+    }
+
     my @samples = $input_pipedata->samples();
 
     if (@samples > 1) {
