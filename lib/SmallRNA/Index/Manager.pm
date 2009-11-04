@@ -207,7 +207,7 @@ sub _get_offsets_dbm
   } else {
     my %disk_hash;
 
-    $tied_hash = tie %disk_hash, 'DB_File', $index_file_name, O_RDWR, 0666;
+    $tied_hash = tie %disk_hash, 'DB_File', $index_file_name, O_RDONLY, 0666;
 
     if (!defined $tied_hash) {
       die "can't tie() $index_file_name: $!\n";
