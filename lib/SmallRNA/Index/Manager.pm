@@ -238,9 +238,9 @@ sub _get_offsets_dbm
  Args    : input_file_name - the name of the file to search
            index_file_name - the name of the index file to use
            search_sequence - the sequence to search for
-           details - if true return the offsets and matches lines from the
-                     indexed file
-                     if false just returns the offsets
+           retrieve_lines - if true return the offsets and matches lines from the
+                            indexed file
+                            if false just returns the offsets
  Returns : The lines from the file.  For FASTA, just the header line is returned
            eg. [ { offset => 1000, line => "..." }, { offset => ... }, ... ]
            or if details param is false: [ { offset => 1000 }, { offset => ... }, ... ]
