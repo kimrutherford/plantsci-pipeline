@@ -40,11 +40,14 @@ is(@results, 3);
 
 @results = $manager->search(input_file_name => $input_file_name,
                             index_file_name => "t/data/smallrna_gff3_index.results",
-                            search_sequence => $test_seq);
+                            search_sequence => $test_seq,
+                            retrieve_lines => 1);
 
 is(@results, 3);
 
-ok($results[0] =~ /^Chr2\ttest_source\tssaha\t1150\t1173/);
+my $res_0 = $results[0];
+
+ok($res_0->{line} =~ /^Chr2\ttest_source\tssaha\t1150\t1173/);
 
 # test searching for something that's not in the index
 @results = $manager->search(input_file_name => $input_file_name,

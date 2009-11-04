@@ -40,11 +40,14 @@ is(@results, 1);
 
 @results = $manager->search(input_file_name => $input_file_name,
                             index_file_name => "t/data/smallrna_fasta_index.results",
-                            search_sequence => $test_seq);
+                            search_sequence => $test_seq,
+                            retrieve_lines => 1);
 
 is(@results, 1);
 
-is($results[0], '>GAGTATCTGAGCCATCTGAAGAAA count:2');
+my $res_0 = $results[0];
+
+is($res_0->{line}, '>GAGTATCTGAGCCATCTGAAGAAA count:2');
 
 
 # test searching for something that's not in the index
