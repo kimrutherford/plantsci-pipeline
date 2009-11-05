@@ -1,3 +1,4 @@
+# SmallRNA test config file  -*- conf -*-
 name: SmallRNA::Web
 long_name: SmallRNA tracking
 pipeline_directory: /tmp/pipeline-test
@@ -11,10 +12,13 @@ data_sub_directory: test-results
 programs:
   ssaha:
     path: /applications/ssaha_v31c_amd64/ssaha_v31c_amd64
+    process_class: SmallRNA::Process::SSAHASearchProcess
   patman:
     path: /applications/patman-1.2.1/patman
+    process_class: SmallRNA::Process::PatmanAlignmentProcess
   bwa:
     path: /applications/bwa/bwa-0.4.9/bwa
+    process_class: SmallRNA::Process::BWASearchProcess
   samtools:
     path: /applications/samtools-svn-trunk/samtools/samtools
 databases:

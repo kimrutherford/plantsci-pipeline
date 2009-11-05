@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 237;
+use Test::More tests => 241;
 use DateTime;
 
 BEGIN {
@@ -26,7 +26,7 @@ my $process_manager = SmallRNA::ProcessManager->new(schema => $schema);
 my $queued_status = $schema->find_with_type('Cvterm', name => 'queued');
 my $started_status = $schema->find_with_type('Cvterm', name => 'started');
 
-for (my $i = 0; $i < 6; $i++) {
+for (my $i = 0; $i < 7; $i++) {
   # this is a faked version of pipeserv.pl
   #  - queue each not_started pipeprocess
   my @processes = $process_manager->create_new_pipeprocesses();
@@ -46,7 +46,7 @@ for (my $i = 0; $i < 6; $i++) {
 
   # this is a bad way to test things as these numbers change each time a new
   # process is added
-  my %count_exp = (0 => 22, 1 => 60, 2 => 87, 3 => 131, 4 => 191, 5 => 237);
+  my %count_exp = (0 => 22, 1 => 60, 2 => 87, 3 => 131, 4 => 191, 5 => 241, 6 => 241);
 
   is($pipeprocess_rs->count(), $count_exp{$i}, "process count for iteration: $i");
 
