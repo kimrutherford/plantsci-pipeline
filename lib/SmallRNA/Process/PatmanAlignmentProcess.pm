@@ -150,7 +150,7 @@ sub run
            $match, $fasta_counts{$match->{qid}});
   }
 
-  close $patman_out or croak "failed to close command pipe: $! (exit code $?)";
+  close $patman_out or croak qq{failed to close command pipe for "$patman_command": $! (exit code $?)};
 
   if (defined $output_gff_file) {
     close $output_gff_file;
