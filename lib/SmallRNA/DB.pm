@@ -86,7 +86,8 @@ sub schema
            $field_name - the field name to use when searching
            $value - the value to search for
        or: $type - an unqualified class name like 'Person'
-           $arg - reference of the hash to pass to find
+           $arg - reference of the hash or a scalar to pass to find
+                  eg. $schema->find({...});  or  $schema->find(5);
 
 =cut
 sub find_with_type
@@ -100,12 +101,16 @@ sub find_with_type
 
   my $obj;
 
-  if (ref $arg) {
-    my %args = %$arg;
+  if (!defined $value) {
     $obj = $rs->find($arg);
     if (!defined $obj) {
-      croak "error: could not find a '$type' with args: "
-        . join "\n", map { "$_: $arg->{$_}" } keys %$arg;
+      if (ref $arg) {
+        my %args = %$arg;
+        croak "error: could not find a '$type' with args: "
+          . join "\n", map { "$_: $arg->{$_}" } keys %$arg;
+      } else {
+        croak "error: could not find a '$type' with arg: $arg";
+      }
     }
   } else {
     my $field_name = $arg;
