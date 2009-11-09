@@ -903,11 +903,23 @@ my @analyses = (
                 },
                 {
                  type_term_name => 'patman alignment',
-                 detail => 'component: genome',
+                 detail => 'component: ests',
                  runable_name => 'SmallRNA::Runable::PatmanAlignmentRunable',
                  inputs => [
                      {
-                       ecotype_name => 'unspecified Lycopersicon esculentum',
+                       ecotype_name => 'unspecified Solanum lycopersicon',
+                       format_type => 'fasta',
+                       content_type => 'non_redundant_reads',
+                     }
+                    ]
+                },
+                {
+                 type_term_name => 'patman alignment',
+                 detail => 'component: concat_ests',
+                 runable_name => 'SmallRNA::Runable::PatmanAlignmentRunable',
+                 inputs => [
+                     {
+                       ecotype_name => 'unspecified Solanum lycopersicon',
                        format_type => 'fasta',
                        content_type => 'non_redundant_reads',
                      }
@@ -1000,6 +1012,42 @@ my @analyses = (
                        format_type => 'sam',
                        content_type => 'aligned_reads',
                        ecotype_name => 'unspecified Solanum lycopersicon',
+                     }
+                   ]
+                },
+                # {
+                #  type_term_name => 'sam to bam converter',
+                #  detail => 'component: ests',
+                #  runable_name => 'SmallRNA::Runable::SAMToBAMRunable',
+                #  inputs => [
+                #      {
+                #        format_type => 'sam',
+                #        content_type => 'aligned_reads',
+                #        ecotype_name => 'unspecified Solanum lycopersicon',
+                #      }
+                #    ]
+                # },
+                # {
+                #  type_term_name => 'sam to bam converter',
+                #  detail => 'component: concat_ests',
+                #  runable_name => 'SmallRNA::Runable::SAMToBAMRunable',
+                #  inputs => [
+                #      {
+                #        format_type => 'sam',
+                #        content_type => 'aligned_reads',
+                #        ecotype_name => 'unspecified Solanum lycopersicon',
+                #      }
+                #    ]
+                # },
+                {
+                 type_term_name => 'sam to bam converter',
+                 detail => 'component: genome',
+                 runable_name => 'SmallRNA::Runable::SAMToBAMRunable',
+                 inputs => [
+                     {
+                       format_type => 'sam',
+                       content_type => 'aligned_reads',
+                       ecotype_name => 'unspecified Chlamydomonas reinhardtii',
                      }
                    ]
                 },
