@@ -81,7 +81,7 @@ sub run
     my $input_file_name = $input_pipedata->file_name();
     my $sam_file_name = $input_file_name;
 
-    my $new_suffix = ".v_${org_full_name}_$component.sam";
+    my $new_suffix = ".v_${org_full_name}_$component.bwa.sam";
 
     if(! ($sam_file_name =~ s/\.non_redundant_reads\.fasta/$new_suffix/)) {
       croak qq{file name ("$sam_file_name") doesn't contain the string "non_redundant"};
