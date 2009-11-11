@@ -146,20 +146,33 @@ END
     close $redundant_fasta_out_file or die "can't close $redundant_fasta_out_file_name: $!\n";
     close $tsv_out_file or die "can't close $tsv_out_file_name: $!\n";
 
+    my @gff_properties = $gff_data->pipedata_properties();
+
+    my %props_map = ();
+
+    for my $gff_property (@gff_properties) {
+      if ($gff_property->type()->name() =~ /^alignment .*/) {
+        $props_map{$gff_property->type()->name()} = $gff_property->value();
+      }
+    }
+
     $self->store_pipedata(generating_pipeprocess => $self->pipeprocess(),
                           file_name => $fasta_out_file_name,
                           format_type_name => $fasta_term_name,
-                          content_type_name => $out_content_type);
+                          content_type_name => $out_content_type,
+                          properties => \%props_map);
 
     $self->store_pipedata(generating_pipeprocess => $self->pipeprocess(),
                           file_name => $redundant_fasta_out_file_name,
                           format_type_name => $fasta_term_name,
-                          content_type_name => $redundant_out_content_type);
+                          content_type_name => $redundant_out_content_type,
+                          properties => \%props_map);
 
     $self->store_pipedata(generating_pipeprocess => $self->pipeprocess(),
                           file_name => $tsv_out_file_name,
                           format_type_name => $tsv_term_name,
-                          content_type_name => $out_content_type);
+                          content_type_name => $out_content_type,
+                          properties => \%props_map);
   };
   $self->schema->txn_do($code);
 }
