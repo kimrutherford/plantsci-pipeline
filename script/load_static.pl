@@ -94,6 +94,7 @@ my %terms = (
               'queued' => 'A job is queued to run this process',
               'started' => 'Processing has started',
               'finished' => 'Processing is done',
+              'failed' => 'Processing failed',
              },
              'tracking sample processing requirements' =>
              {
