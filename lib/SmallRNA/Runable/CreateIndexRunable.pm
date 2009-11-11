@@ -87,7 +87,7 @@ sub run
       my $manager = SmallRNA::Index::Manager->new();
 
       my ($fh, $temp_index_file_name) =
-        tempfile('/tmp/create_index_runable_temp.XXXXXX', UNLINK => 0);
+        tempfile('/tmp/create_index_runable_temp.XXXXXX', UNLINK => 1);
 
       $manager->create_index(input_file_name => $input_file_name,
                              index_file_name => $temp_index_file_name,

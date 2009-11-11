@@ -105,7 +105,7 @@ sub run
   _do_system "$samtools_command 2>> $log_file_name > $outfile_name";
 
   my ($fh, $sort_temp_file) =
-    tempfile('/tmp/samtools_sort.XXXXXX', UNLINK => 0);
+    tempfile('/tmp/samtools_sort.XXXXXX', UNLINK => 1);
 
   my $sort_command =
     "$params{samtools_path} sort $outfile_name $sort_temp_file";

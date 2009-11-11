@@ -97,7 +97,7 @@ sub run
   my $outfile_name = $params{output_file_name};
 
   my ($fh, $temp_aln_file_name) =
-    tempfile('/tmp/bwa_align_temp.XXXXXX', UNLINK => 0);
+    tempfile('/tmp/bwa_align_temp.XXXXXX', UNLINK => 1);
 
   my $log_file_name = "/tmp/BWAProcess.log";
 
