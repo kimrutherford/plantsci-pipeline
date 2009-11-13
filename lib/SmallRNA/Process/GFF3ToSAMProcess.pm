@@ -39,6 +39,8 @@ under the same terms as Perl itself.
 
 use strict;
 use Carp;
+
+use Bio::Seq;
 use Bio::SeqIO;
 use Params::Validate qw(:all);
 use warnings;
@@ -99,6 +101,9 @@ sub run
       $flags = 0;
     } else {
       $flags = 16;
+
+      my $seq = Bio::Seq->new(-seq => $sequence);
+      $sequence = $seq->revcom()->seq();
     }
 
     print $out_file "$id\t$flags\t$ref_name\t$start\t255\t$cigar\t=\t$start\t0\t$sequence\t*\tXS:i:$score\n";
