@@ -561,6 +561,7 @@ my @people = (
               ['Natasha Yelina', 'natasha_yelina', 'DCB'],
               ['Krys Kelly', 'krys_kelly', 'DCB'],
               ['Hannes V', 'hannes_v', 'DCB'],
+              ['Antonis Giakountis', 'antonis_giakountis', 'DCB'],
              );
 
 $schema->txn_do(sub {
