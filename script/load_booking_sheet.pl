@@ -546,7 +546,7 @@ sub process_row
 
         my $seq_centre_name;
 
-        if ($sheet_seq_centre_name eq 'CRI') {
+        if ($sheet_seq_centre_name eq 'CRI' || $sheet_seq_centre_name eq 'Sirocco') {
           $seq_centre_name = 'CRUK CRI';
         } else {
           if ($sheet_seq_centre_name eq 'Norwich') {

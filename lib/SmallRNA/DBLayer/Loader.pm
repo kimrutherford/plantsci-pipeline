@@ -217,7 +217,7 @@ sub add_sequencingrun_pipedata
     $multiplexed = 1;
   }
 
-  if ($seq_centre_name eq 'CRUK CRI') {
+  if ($seq_centre_name eq 'CRUK CRI' || $seq_centre_name eq 'Sirocco') {
     $process_conf = $self->_find('ProcessConf',
                                  detail => 'CRI');
   } else {
