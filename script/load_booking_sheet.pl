@@ -51,6 +51,7 @@ sub add_organism
   $org_objs{$fullname} = $org;
   $org_objs{"${genus_initial}_$species}"} = $org;
   $org_objs{"$genus_initial. $species"} = $org;
+  $org_objs{"$genus_initial $species"} = $org;
   $org_objs{"$genus_initial.$species"} = $org;
 
   if ($fullname eq 'Schizosaccharomyces pombe') {
