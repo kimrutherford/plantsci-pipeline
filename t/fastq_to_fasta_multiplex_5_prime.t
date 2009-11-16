@@ -27,7 +27,7 @@ my %barcodes_map =
   SmallRNA::Runable::TrimRunable::_get_barcodes($schema,
                                                         "Dmitry's barcode set");
 
-my ($reject_file_name, $fasta_file_name, $output) =
+my ($reject_file_name, $n_reject_file_name, $fasta_file_name, $output) =
   SmallRNA::Process::TrimProcess::run(
     output_dir_name => $tempdir,
     input_file_name => $in_fastq_file,

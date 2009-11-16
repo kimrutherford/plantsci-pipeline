@@ -166,6 +166,7 @@ sub run
   my $fastq_seqio = Bio::SeqIO->new(-file => $input_file_name,
                                     -format => 'fastfastq');
 
+  my $n_reject_file_name = "$output_file_base.n-rejects.fasta";
   my $reject_file_name = "$output_file_base.rejects.fasta";
   my $fasta_file_name = "$output_file_base.reads.fasta";
  
@@ -184,6 +185,11 @@ sub run
   # used when there is multiplexing
   my $out_files_by_code = {};
 
+  # for reads that contain 'N's
+  open my $n_rej_file, '>', $n_reject_file_name
+    or croak("can't open $n_reject_file_name for writing: $!\n");
+
+  # for other reads that are rejected
   open my $rej_file, '>', $reject_file_name
     or croak("can't open $reject_file_name for writing: $!\n");
 
@@ -282,8 +288,8 @@ sub run
           }
         } else {
           $reject_count++;
-          print $rej_file ">$id Contains Ns\n";
-          print $rej_file "$sequence\n";
+          print $n_rej_file ">$id Contains Ns\n";
+          print $n_rej_file "$sequence\n";
         }
     } else {
       $reject_count++;
@@ -317,10 +323,12 @@ sub run
   }
 
   close $rej_file or croak "can't close $reject_file_name: $!\n";
+  close $n_rej_file or croak "can't close $n_reject_file_name: $!\n";
   close $fasta_file or croak "can't close $fasta_file_name: $!\n";
 
   if ($multiplexed && $trim_offset == 0) {
     return ($_trim_file->($reject_file_name),
+            $_trim_file->($n_reject_file_name),
             $_trim_file->($fasta_file_name),
             {
               map {
@@ -329,6 +337,7 @@ sub run
             });
   } else {
     return ($_trim_file->($reject_file_name),
+            $_trim_file->($n_reject_file_name),
             $_trim_file->($fasta_file_name),
             $_trim_file->($default_out_file_name));
   }

@@ -155,6 +155,7 @@ sub run
   my $schema = $self->schema();
 
   my $reject_term_name = 'trim_rejects';
+  my $n_reject_term_name = 'trim_n_rejects';
   my $unknown_barcode_term_name = 'trim_unknown_barcode';
 
   my $pipeprocess =
@@ -218,6 +219,7 @@ sub run
                                   '.XXXXX', CLEANUP => 1);
 
     my $reject_file_name;
+    my $n_reject_file_name;
     my $fasta_file_name;
     my $output;
 
@@ -233,7 +235,7 @@ sub run
 
       my %barcodes_map = _get_barcodes($schema, $barcode_set->name());
 
-      ($reject_file_name, $fasta_file_name, $output) =
+      ($reject_file_name, $n_reject_file_name, $fasta_file_name, $output) =
         SmallRNA::Process::TrimProcess::run(
                                                       output_dir_name => $temp_output_dir,
                                                       input_file_name => $input_file_name,
@@ -283,7 +285,7 @@ sub run
                               properties => { 'multiplexing code' => $code_name });
       }
     } else {
-      ($reject_file_name, $fasta_file_name, $output) =
+      ($reject_file_name, $n_reject_file_name, $fasta_file_name, $output) =
         SmallRNA::Process::TrimProcess::run(
                                                       output_dir_name => $temp_output_dir,
                                                       input_file_name => $input_file_name,
@@ -314,6 +316,7 @@ sub run
                             samples => \@samples);
     }
 
+    # store reject file
     my $new_reject_file_name = $reject_file_name;
 
     if (!($new_reject_file_name =~ s|(.*)\.rejects\.fasta$|$reject_term_name/$1.$reject_term_name.fasta|)) {
@@ -331,6 +334,26 @@ sub run
                           file_name => $new_reject_file_name,
                           format_type_name => 'fasta',
                           content_type_name => $reject_term_name,
+                          samples => [$input_pipedata->samples()]);
+
+    # store n-reject file (reads containing 'N's)
+    my $new_n_reject_file_name = $n_reject_file_name;
+
+    if (!($new_n_reject_file_name =~ s|(.*)\.n-rejects\.fasta$|$n_reject_term_name/$1.$n_reject_term_name.fasta|)) {
+      croak "pattern match failed for $new_n_reject_file_name\n";
+    }
+
+    my $n_reject_output_dir = $data_dir . "/$n_reject_term_name";
+    mkpath($n_reject_output_dir);
+
+    die unless -e "$temp_output_dir/$n_reject_file_name";
+
+    move("$temp_output_dir/$n_reject_file_name", "$data_dir/$new_n_reject_file_name");
+
+    $self->store_pipedata(generating_pipeprocess => $self->pipeprocess(),
+                          file_name => $new_n_reject_file_name,
+                          format_type_name => 'fasta',
+                          content_type_name => $n_reject_term_name,
                           samples => [$input_pipedata->samples()]);
 
     my $new_fasta_file_name = $fasta_file_name;

@@ -45,7 +45,9 @@ my %terms = (
               'non_redundant_reads' =>
                 'Trimmed and filtered sequence reads with redundant sequences removed',
               'trim_rejects' =>
-                'Sequence reads that were rejected by the trim step',
+                'Sequence reads that were rejected by the trim step for being too short or for not having the correct adaptor or bar code',
+              'trim_n_rejects' =>
+                'Sequence reads that were rejected by the trim step for containing Ns',
               'trim_unknown_barcode' =>
                 'Sequence reads that were rejected during the trim step because they did not match an expected barcode',
               'first_base_summary' =>
@@ -749,6 +751,16 @@ my @analyses = (
                      {
                        format_type => 'fasta',
                        content_type => 'trim_rejects',
+                     }
+                    ]
+                },
+                {
+                 type_term_name => 'calculate fasta or fastq file statistics',
+                 runable_name => 'SmallRNA::Runable::FastStatsRunable',
+                 inputs => [
+                     {
+                       format_type => 'fasta',
+                       content_type => 'trim_n_rejects',
                      }
                     ]
                 },
