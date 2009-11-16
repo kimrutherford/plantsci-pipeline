@@ -57,28 +57,27 @@ sub run_process
   my $schema = $params{schema};
   my $config = $params{config};
   my $pipeprocess = $params{pipeprocess};
-    
+
   my $conf = $pipeprocess->process_conf();
   my $runable_name = $conf->runable_name();
 
   # it would be nice to do this without eval:
-  eval qq(
-      use $runable_name;
-      my \$runable = new $runable_name(schema => \$schema,
-                                       config => \$config,
-                                       pipeprocess => \$pipeprocess);
-      \$runable->run();
-  );
+  eval "require $runable_name";
   if ($@) {
-    croak "$runable_name->run() failed with: $@\n";
+    return ('failed', "$runable_name->run() failed with error: $@");
   }
 
-  my $finished_status = $schema->find_with_type('Cvterm', name => 'finished');
+  eval {
+    my $runable = $runable_name->new(schema => $schema,
+                                     config => $config,
+                                     pipeprocess => $pipeprocess);
+    $runable->run();
+  };
+  if ($@) {
+    return ('failed', "$runable_name->run() failed with error: $@");
+  }
 
-  $pipeprocess->time_finished(DateTime->now());
-  $pipeprocess->status($finished_status);
-  $pipeprocess->update();
+  return ('finished', '');
 }
 
 1;
-
