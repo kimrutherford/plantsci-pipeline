@@ -646,7 +646,7 @@ sub process_row
         $pipeprocess->update();
       }
     } else {
-      die "library identifier doesn't match expected: $solexa_library\n";
+      warn "library identifier doesn't match expected: $solexa_library from line: @columns\n";
     }
 }
 
