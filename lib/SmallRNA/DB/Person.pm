@@ -81,5 +81,4 @@ sub full_name {
   return $self->first_name() . ' ' . $self->last_name();
 }
 
-# You can replace this text with custom content, and it will be preserved on regeneration
 1;
