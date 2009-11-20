@@ -483,6 +483,14 @@ sub process_row
       my $sample_prefix = $1;
       my $barcodes = $2;
 
+      if ($solexa_library eq 'SL247') {
+        $barcodes = 'AC';
+      }
+
+      if ($solexa_library eq 'SL248') {
+        $barcodes = 'BD';
+      }
+
       if ($solexa_library =~ /^(SL25[12])/) {
         $barcodes = 'ACDEFGH';
       }
