@@ -911,6 +911,42 @@ my @analyses = (
                 },
                 {
                  type_term_name => 'patman alignment',
+                 detail => 'component: mirbase-hairpin',
+                 runable_name => 'SmallRNA::Runable::PatmanAlignmentRunable',
+                 inputs => [
+                     {
+                       ecotype_name => 'unspecified Arabidopsis thaliana',
+                       format_type => 'fasta',
+                       content_type => 'non_redundant_reads',
+                     }
+                    ]
+                },
+                {
+                 type_term_name => 'patman alignment',
+                 detail => 'component: mirbase-mature',
+                 runable_name => 'SmallRNA::Runable::PatmanAlignmentRunable',
+                 inputs => [
+                     {
+                       ecotype_name => 'unspecified Arabidopsis thaliana',
+                       format_type => 'fasta',
+                       content_type => 'non_redundant_reads',
+                     }
+                    ]
+                },
+                {
+                 type_term_name => 'patman alignment',
+                 detail => 'component: mirbase-maturestar',
+                 runable_name => 'SmallRNA::Runable::PatmanAlignmentRunable',
+                 inputs => [
+                     {
+                       ecotype_name => 'unspecified Arabidopsis thaliana',
+                       format_type => 'fasta',
+                       content_type => 'non_redundant_reads',
+                     }
+                    ]
+                },
+                {
+                 type_term_name => 'patman alignment',
                  detail => 'component: genome',
                  runable_name => 'SmallRNA::Runable::PatmanAlignmentRunable',
                  inputs => [
@@ -952,6 +988,18 @@ my @analyses = (
                  inputs => [
                      {
                        ecotype_name => 'unspecified Chlamydomonas reinhardtii',
+                       format_type => 'fasta',
+                       content_type => 'non_redundant_reads',
+                     }
+                    ]
+                },
+                {
+                 type_term_name => 'patman alignment',
+                 detail => 'component: mirbase-mature, target: "Arabidopsis thaliana"',
+                 runable_name => 'SmallRNA::Runable::PatmanAlignmentRunable',
+                 inputs => [
+                     {
+                       ecotype_name => 'unspecified Nicotiana benthamiana',
                        format_type => 'fasta',
                        content_type => 'non_redundant_reads',
                      }
