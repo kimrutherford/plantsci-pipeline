@@ -674,7 +674,7 @@ my @analyses = (
                 },
                 {
                  type_term_name => 'trim reads',
-                 detail => 'action: passthrough',
+                 detail => 'action: remove_adapters',
                  runable_name => 'SmallRNA::Runable::TrimRunable',
                  inputs => [
                      {
