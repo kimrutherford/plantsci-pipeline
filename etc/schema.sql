@@ -311,20 +311,20 @@ CREATE TABLE person (
        last_name text NOT NULL,
        username text UNIQUE NOT NULL,
        password text,
-       role integer REFERENCES cvterm(cvterm_id) NOT NULL,
-       organisation integer REFERENCES organisation(organisation_id) NOT NULL,
+       role integer REFERENCES cvterm(cvterm_id) DEFERRABLE INITIALLY DEFERRED  NOT NULL,
+       organisation integer REFERENCES organisation(organisation_id) DEFERRABLE INITIALLY DEFERRED NOT NULL,
        CONSTRAINT person_full_name_constraint UNIQUE(first_name, last_name)
 );
 CREATE TABLE ecotype (
        ecotype_id serial CONSTRAINT ecotype_id_pk PRIMARY KEY,
        created_stamp timestamp NOT NULL DEFAULT now(),
-       organism integer REFERENCES organism(organism_id) NOT NULL,
+       organism integer REFERENCES organism(organism_id) DEFERRABLE INITIALLY DEFERRED NOT NULL,
        description text NOT NULL
 );
 CREATE TABLE tissue (
        tissue_id SERIAL CONSTRAINT tissue_id_pk PRIMARY KEY,
        created_stamp timestamp NOT NULL DEFAULT now(),
-       organism integer REFERENCES organism(organism_id) NOT NULL,
+       organism integer REFERENCES organism(organism_id) DEFERRABLE INITIALLY DEFERRED NOT NULL,
        description text
 );
 CREATE TABLE pipeproject (
@@ -332,31 +332,31 @@ CREATE TABLE pipeproject (
        created_stamp timestamp NOT NULL DEFAULT now(),
        name text NOT NULL,
        description text NOT NULL,
-       owner integer REFERENCES person(person_id) NOT NULL,
-       funder integer REFERENCES organisation(organisation_id)
+       owner integer REFERENCES person(person_id) DEFERRABLE INITIALLY DEFERRED NOT NULL,
+       funder integer REFERENCES organisation(organisation_id) DEFERRABLE INITIALLY DEFERRED
 );
 CREATE TABLE process_conf (
        process_conf_id serial CONSTRAINT process_conf_id_pk PRIMARY KEY,
        created_stamp timestamp NOT NULL DEFAULT now(),
        runable_name text,
        detail text,
-       type integer REFERENCES cvterm(cvterm_id) NOT NULL
+       type integer REFERENCES cvterm(cvterm_id) DEFERRABLE INITIALLY DEFERRED NOT NULL
 );
 CREATE TABLE process_conf_input (
        process_conf_input_id serial CONSTRAINT process_conf_input_id_pk PRIMARY KEY,
        created_stamp timestamp NOT NULL DEFAULT now(),
-       process_conf integer REFERENCES process_conf(process_conf_id) NOT NULL,
-       format_type integer REFERENCES cvterm(cvterm_id),
-       content_type integer REFERENCES cvterm(cvterm_id),
-       ecotype integer REFERENCES ecotype(ecotype_id),
-       sample_type integer REFERENCES cvterm(cvterm_id)
+       process_conf integer REFERENCES process_conf(process_conf_id) DEFERRABLE INITIALLY DEFERRED NOT NULL,
+       format_type integer REFERENCES cvterm(cvterm_id) DEFERRABLE INITIALLY DEFERRED,
+       content_type integer REFERENCES cvterm(cvterm_id) DEFERRABLE INITIALLY DEFERRED,
+       ecotype integer REFERENCES ecotype(ecotype_id) DEFERRABLE INITIALLY DEFERRED,
+       sample_type integer REFERENCES cvterm(cvterm_id) DEFERRABLE INITIALLY DEFERRED
 );
 CREATE TABLE pipeprocess (
        pipeprocess_id serial CONSTRAINT pipeprocess_id_pk PRIMARY KEY,
        created_stamp timestamp NOT NULL DEFAULT now(),
        description text NOT NULL,
-       process_conf integer REFERENCES process_conf(process_conf_id) NOT NULL,
-       status integer REFERENCES cvterm(cvterm_id) NOT NULL,
+       process_conf integer REFERENCES process_conf(process_conf_id) DEFERRABLE INITIALLY DEFERRED NOT NULL,
+       status integer REFERENCES cvterm(cvterm_id) DEFERRABLE INITIALLY DEFERRED NOT NULL,
        job_identifier text,
        time_queued timestamp,
        time_started timestamp,
@@ -364,14 +364,14 @@ CREATE TABLE pipeprocess (
 );
 CREATE TABLE barcode_set (
        barcode_set_id serial CONSTRAINT barcode_set_id_pk PRIMARY KEY,
-       position_in_read integer REFERENCES cvterm(cvterm_id) NOT NULL,
+       position_in_read integer REFERENCES cvterm(cvterm_id) DEFERRABLE INITIALLY DEFERRED NOT NULL,
        name text NOT NULL UNIQUE
 );
 CREATE TABLE barcode (
        barcode_id serial CONSTRAINT barcode_id_pk PRIMARY KEY,
        created_stamp timestamp NOT NULL DEFAULT now(),
        identifier text NOT NULL,
-       barcode_set integer REFERENCES barcode_set(barcode_set_id) NOT NULL,
+       barcode_set integer REFERENCES barcode_set(barcode_set_id) DEFERRABLE INITIALLY DEFERRED NOT NULL,
        code text NOT NULL,
        CONSTRAINT barcode_identifier_constraint UNIQUE(identifier, barcode_set),
        CONSTRAINT barcode_code_constraint UNIQUE(code, barcode_set)
@@ -387,13 +387,13 @@ CREATE TABLE sample (
        name text NOT NULL UNIQUE,
        genotype text,
        description text NOT NULL,
-       protocol integer NOT NULL REFERENCES protocol(protocol_id),
-       sample_type integer NOT NULL REFERENCES cvterm(cvterm_id),
-       molecule_type integer REFERENCES cvterm(cvterm_id) NOT NULL,
-       treatment_type integer REFERENCES cvterm(cvterm_id),
-       fractionation_type integer REFERENCES cvterm(cvterm_id),
-       processing_requirement integer REFERENCES cvterm(cvterm_id) NOT NULL,
-       tissue integer REFERENCES tissue(tissue_id)
+       protocol integer NOT NULL REFERENCES protocol(protocol_id) DEFERRABLE INITIALLY DEFERRED,
+       sample_type integer NOT NULL REFERENCES cvterm(cvterm_id) DEFERRABLE INITIALLY DEFERRED,
+       molecule_type integer REFERENCES cvterm(cvterm_id) DEFERRABLE INITIALLY DEFERRED NOT NULL,
+       treatment_type integer REFERENCES cvterm(cvterm_id) DEFERRABLE INITIALLY DEFERRED,
+       fractionation_type integer REFERENCES cvterm(cvterm_id) DEFERRABLE INITIALLY DEFERRED,
+       processing_requirement integer REFERENCES cvterm(cvterm_id) DEFERRABLE INITIALLY DEFERRED NOT NULL,
+       tissue integer REFERENCES tissue(tissue_id) DEFERRABLE INITIALLY DEFERRED
 );
 CREATE TABLE sample_dbxref (
     sample_dbxref_id integer NOT NULL,
@@ -401,38 +401,38 @@ CREATE TABLE sample_dbxref (
     dbxref_id integer NOT NULL
 );
 ALTER TABLE ONLY sample_dbxref
-    ADD CONSTRAINT sample_dbxref_sample_fk FOREIGN KEY (sample_id) REFERENCES sample(sample_id) ON DELETE CASCADE;
+    ADD CONSTRAINT sample_dbxref_sample_fk FOREIGN KEY (sample_id) REFERENCES sample(sample_id) DEFERRABLE INITIALLY DEFERRED;
 
 ALTER TABLE ONLY sample_dbxref
-    ADD CONSTRAINT sample_dbxref_dbxref_fk FOREIGN KEY (dbxref_id) REFERENCES dbxref(dbxref_id) ON DELETE CASCADE;
+    ADD CONSTRAINT sample_dbxref_dbxref_fk FOREIGN KEY (dbxref_id) REFERENCES dbxref(dbxref_id) DEFERRABLE INITIALLY DEFERRED;
 
 
 CREATE TABLE sample_pipeproject (
        sample_pipeproject_id serial CONSTRAINT sample_pipeproject_id_pk PRIMARY KEY,
-       sample integer REFERENCES sample(sample_id) NOT NULL,
-       pipeproject integer REFERENCES pipeproject(pipeproject_id) NOT NULL,
+       sample integer REFERENCES sample(sample_id) DEFERRABLE INITIALLY DEFERRED NOT NULL,
+       pipeproject integer REFERENCES pipeproject(pipeproject_id) DEFERRABLE INITIALLY DEFERRED NOT NULL,
        CONSTRAINT sample_pipeproject_constraint UNIQUE(sample, pipeproject)
 );
 CREATE TABLE pipedata (
        pipedata_id serial CONSTRAINT pipedata_id_pk PRIMARY KEY,
        created_stamp timestamp NOT NULL DEFAULT now(),
-       format_type integer REFERENCES cvterm(cvterm_id) NOT NULL,
-       content_type integer REFERENCES cvterm(cvterm_id) NOT NULL,
+       format_type integer REFERENCES cvterm(cvterm_id) DEFERRABLE INITIALLY DEFERRED NOT NULL,
+       content_type integer REFERENCES cvterm(cvterm_id) DEFERRABLE INITIALLY DEFERRED NOT NULL,
        file_name text UNIQUE NOT NULL,
        file_length bigint NOT NULL,
-       generating_pipeprocess integer REFERENCES pipeprocess(pipeprocess_id)
+       generating_pipeprocess integer REFERENCES pipeprocess(pipeprocess_id) DEFERRABLE INITIALLY DEFERRED
 );
 CREATE TABLE pipedata_property (
        pipedata_property_id serial CONSTRAINT pipedata_property_id_pk PRIMARY KEY,
-       pipedata integer REFERENCES pipedata(pipedata_id) NOT NULL,
-       type integer REFERENCES cvterm(cvterm_id) NOT NULL,
+       pipedata integer REFERENCES pipedata(pipedata_id) DEFERRABLE INITIALLY DEFERRED NOT NULL,
+       type integer REFERENCES cvterm(cvterm_id) DEFERRABLE INITIALLY DEFERRED NOT NULL,
        value text NOT NULL
 );
 CREATE TABLE pipeprocess_in_pipedata (
        pipeprocess_in_pipedata_id serial CONSTRAINT pipeprocess_in_pipedata_id_pk PRIMARY KEY,
        created_stamp timestamp NOT NULL DEFAULT now(),
-       pipeprocess integer REFERENCES pipeprocess(pipeprocess_id),
-       pipedata integer REFERENCES pipedata(pipedata_id),
+       pipeprocess integer REFERENCES pipeprocess(pipeprocess_id) DEFERRABLE INITIALLY DEFERRED,
+       pipedata integer REFERENCES pipedata(pipedata_id) DEFERRABLE INITIALLY DEFERRED,
        CONSTRAINT pipeprocess_in_pk_constraint UNIQUE(pipeprocess, pipedata)
 );
 COMMENT ON TABLE pipeprocess_in_pipedata IS
@@ -440,14 +440,14 @@ COMMENT ON TABLE pipeprocess_in_pipedata IS
 CREATE TABLE sample_pipedata (
        sample_pipedata_id serial CONSTRAINT sample_pipedata_id_pk PRIMARY KEY,
        created_stamp timestamp NOT NULL DEFAULT now(),
-       sample integer REFERENCES sample(sample_id) NOT NULL,
-       pipedata integer REFERENCES pipedata(pipedata_id) NOT NULL
+       sample integer REFERENCES sample(sample_id) DEFERRABLE INITIALLY DEFERRED NOT NULL,
+       pipedata integer REFERENCES pipedata(pipedata_id) DEFERRABLE INITIALLY DEFERRED NOT NULL
 );
 CREATE TABLE sample_ecotype (
        sample_ecotype_id serial CONSTRAINT sample_ecotype_id_pk PRIMARY KEY,
        created_stamp timestamp NOT NULL DEFAULT now(),
-       sample integer REFERENCES sample(sample_id) NOT NULL,
-       ecotype integer REFERENCES ecotype(ecotype_id) NOT NULL,
+       sample integer REFERENCES sample(sample_id) DEFERRABLE INITIALLY DEFERRED NOT NULL,
+       ecotype integer REFERENCES ecotype(ecotype_id) DEFERRABLE INITIALLY DEFERRED NOT NULL,
        CONSTRAINT sample_ecotype_constraint UNIQUE(sample, ecotype)
 );
 CREATE TABLE sequencing_sample (
@@ -458,18 +458,18 @@ CREATE TABLE sequencingrun (
        sequencingrun_id serial CONSTRAINT sequencingrun_id_pk PRIMARY KEY,
        created_stamp timestamp NOT NULL DEFAULT now(),
        identifier text NOT NULL UNIQUE,
-       sequencing_sample integer NOT NULL REFERENCES sequencing_sample(sequencing_sample_id),
+       sequencing_sample integer NOT NULL REFERENCES sequencing_sample(sequencing_sample_id) DEFERRABLE INITIALLY DEFERRED,
        -- set when fastq arrives:
-       initial_pipedata integer REFERENCES pipedata(pipedata_id),
-       sequencing_centre integer REFERENCES organisation(organisation_id) NOT NULL,
+       initial_pipedata integer REFERENCES pipedata(pipedata_id) DEFERRABLE INITIALLY DEFERRED,
+       sequencing_centre integer REFERENCES organisation(organisation_id) DEFERRABLE INITIALLY DEFERRED NOT NULL,
        -- set when fastq arrives:
-       initial_pipeprocess integer REFERENCES pipeprocess(pipeprocess_id),
+       initial_pipeprocess integer REFERENCES pipeprocess(pipeprocess_id) DEFERRABLE INITIALLY DEFERRED,
        submission_date date,
        run_date date,
        data_received_date date,
-       quality integer REFERENCES cvterm(cvterm_id) NOT NULL,
-       sequencing_type integer REFERENCES cvterm(cvterm_id) NOT NULL,
-       multiplexing_type integer REFERENCES cvterm(cvterm_id) NOT NULL,
+       quality integer REFERENCES cvterm(cvterm_id) DEFERRABLE INITIALLY DEFERRED NOT NULL,
+       sequencing_type integer REFERENCES cvterm(cvterm_id) DEFERRABLE INITIALLY DEFERRED NOT NULL,
+       multiplexing_type integer REFERENCES cvterm(cvterm_id) DEFERRABLE INITIALLY DEFERRED NOT NULL,
        -- set when analysis starts:
        CHECK (CASE WHEN run_date IS NULL THEN data_received_date IS NULL ELSE TRUE END)
 );
@@ -477,10 +477,10 @@ CREATE TABLE coded_sample (
        coded_sample_id serial CONSTRAINT coded_sample_id_pk PRIMARY KEY,
        created_stamp timestamp NOT NULL DEFAULT now(),
        description text,
-       coded_sample_type integer REFERENCES cvterm(cvterm_id) NOT NULL,
-       sample integer REFERENCES sample(sample_id) NOT NULL,
-       sequencing_sample integer REFERENCES sequencing_sample(sequencing_sample_id),
-       barcode integer REFERENCES barcode(barcode_id)
+       coded_sample_type integer REFERENCES cvterm(cvterm_id) DEFERRABLE INITIALLY DEFERRED NOT NULL,
+       sample integer REFERENCES sample(sample_id) DEFERRABLE INITIALLY DEFERRED NOT NULL,
+       sequencing_sample integer REFERENCES sequencing_sample(sequencing_sample_id) DEFERRABLE INITIALLY DEFERRED,
+       barcode integer REFERENCES barcode(barcode_id) DEFERRABLE INITIALLY DEFERRED
 );
 COMMENT ON TABLE coded_sample IS
   'This table records the many-to-many relationship between samples and '
@@ -491,7 +491,7 @@ CREATE TABLE pipeprocess_pub (
        pub_id integer NOT NULL
 );
 ALTER TABLE ONLY pipeprocess_pub
-    ADD CONSTRAINT pipeprocess_pub_pipeprocess_fk FOREIGN KEY (pipeprocess_id) REFERENCES pipeprocess(pipeprocess_id) ON DELETE CASCADE;
+    ADD CONSTRAINT pipeprocess_pub_pipeprocess_fk FOREIGN KEY (pipeprocess_id) REFERENCES pipeprocess(pipeprocess_id) DEFERRABLE INITIALLY DEFERRED;
 
 ALTER TABLE ONLY pipeprocess_pub
-    ADD CONSTRAINT pipeprocess_pub_pub_fk FOREIGN KEY (pub_id) REFERENCES pub(pub_id) ON DELETE CASCADE;
+    ADD CONSTRAINT pipeprocess_pub_pub_fk FOREIGN KEY (pub_id) REFERENCES pub(pub_id) DEFERRABLE INITIALLY DEFERRED;
