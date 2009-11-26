@@ -90,6 +90,12 @@ sub long_description
         }
         $description .= $_->ecotype()->long_description();
       }
+      if (defined $_->sample_type()) {
+        if (length $description > 0) {
+          $description .= ', ';
+        }
+        $description .= $_->sample_type()->name();
+      }
       $description;
     } @inputs;
 
