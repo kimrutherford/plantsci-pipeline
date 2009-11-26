@@ -99,4 +99,31 @@ __PACKAGE__->many_to_many(input_pipedatas => 'pipeprocess_in_pipedatas',
                           'pipedata' );
 __PACKAGE__->many_to_many(pubs => 'pipeprocess_pub', 'pub');
 
+sub _delete_pipedata
+{
+  my $pipedata = shift;
+
+  for my $pipeprocess ($pipedata->next_pipeprocesses()) {
+    $pipeprocess->delete();
+  }
+}
+
+=head2 delete
+
+ Function: recursively delete pipeprocesses that depend on this process, then
+           delete this process from the storage
+ Args    : none
+
+=cut
+sub delete
+{
+  my $self = shift;
+
+  for my $pipedata ($self->pipedatas()) {
+    _delete_pipedata($pipedata)
+  }
+
+  $self->SUPER::delete();
+}
+
 1;
