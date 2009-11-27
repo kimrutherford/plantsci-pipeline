@@ -1061,7 +1061,6 @@ my @analyses = (
                 },
                 {
                  type_term_name => 'sam to bam converter',
-                 detail => 'component: genome',
                  runable_name => 'SmallRNA::Runable::SAMToBAMRunable',
                  inputs => [
                      {
@@ -1073,7 +1072,6 @@ my @analyses = (
                 },
                 {
                  type_term_name => 'sam to bam converter',
-                 detail => 'component: genome',
                  runable_name => 'SmallRNA::Runable::SAMToBAMRunable',
                  inputs => [
                      {
@@ -1083,33 +1081,8 @@ my @analyses = (
                      }
                    ]
                 },
-                # {
-                #  type_term_name => 'sam to bam converter',
-                #  detail => 'component: ests',
-                #  runable_name => 'SmallRNA::Runable::SAMToBAMRunable',
-                #  inputs => [
-                #      {
-                #        format_type => 'sam',
-                #        content_type => 'aligned_reads',
-                #        ecotype_name => 'unspecified Solanum lycopersicon',
-                #      }
-                #    ]
-                # },
-                # {
-                #  type_term_name => 'sam to bam converter',
-                #  detail => 'component: concat_ests',
-                #  runable_name => 'SmallRNA::Runable::SAMToBAMRunable',
-                #  inputs => [
-                #      {
-                #        format_type => 'sam',
-                #        content_type => 'aligned_reads',
-                #        ecotype_name => 'unspecified Solanum lycopersicon',
-                #      }
-                #    ]
-                # },
                 {
                  type_term_name => 'sam to bam converter',
-                 detail => 'component: genome',
                  runable_name => 'SmallRNA::Runable::SAMToBAMRunable',
                  inputs => [
                      {
@@ -1121,7 +1094,7 @@ my @analyses = (
                 },
                 {
                  type_term_name => 'sam to bam converter',
-                 detail => 'component: genome, target: "Arabidopsis thaliana"',
+                 detail => 'target: "Arabidopsis thaliana"',
                  runable_name => 'SmallRNA::Runable::SAMToBAMRunable',
                  inputs => [
                      {

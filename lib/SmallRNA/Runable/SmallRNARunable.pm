@@ -192,7 +192,7 @@ sub get_pipeprocess_details
 
   my $org_full_name;
 
-  if ($detail =~ /target: "([^"]+)"/) {
+  if (defined $detail && $detail =~ /target: "([^"]+)"/) {
     $org_full_name = $1;
   } else {
     my $target_organism = $process_conf_inputs[0]->ecotype()->organism();
@@ -214,18 +214,33 @@ sub get_pipeprocess_details
     croak "can't find organism configuration for ", $sample->name(), "\n";
   }
 
-  if ($detail =~ /component: ([^,]+)/) {
-    my $component = $1;
+  my $component = undef;
 
-    if (!defined $org_config->{database_files}{$component}) {
-      die "can't find configuration for component: $component\n";
+  for my $prop ($input_pipedata->pipedata_properties()) {
+    if ($prop->type()->name() eq 'alignment component') {
+      $component = $prop->value();
     }
-
-    return ($org_full_name, $component,
-            $database_conf->{root} . '/' . $org_config->{database_files}{$component});
-  } else {
-    croak ("can't understand detail: $1 for pipeprocess: ", $pipeprocess_id);
   }
+
+  if (defined $detail && $detail =~ /component: ([^,]+)/) {
+    if (defined $component) {
+      croak "inconsistent configuration - pipedata ", $input_pipedata->pipedata_id(),
+        " has an 'alignment component' and the pipeprocess has a 'component:' detail";
+    } else {
+      $component = $1;
+    }
+  }
+
+  if (!defined $component) {
+    croak ("can't find alignment component for pipeprocess: ", $pipeprocess_id);
+  }
+
+  if (!defined $org_config->{database_files}{$component}) {
+    die "can't find configuration for component: $component\n";
+  }
+
+  return ($org_full_name, $component,
+          $database_conf->{root} . '/' . $org_config->{database_files}{$component});
 }
 
 sub run
