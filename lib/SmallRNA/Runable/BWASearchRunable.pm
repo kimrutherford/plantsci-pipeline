@@ -100,7 +100,10 @@ sub run
     $self->store_pipedata(generating_pipeprocess => $self->pipeprocess(),
                           file_name => $sam_file_name,
                           format_type_name => 'sam',
-                          content_type_name => 'aligned_reads');
+                          content_type_name => 'aligned_reads',
+                          properties => { 'alignment component' => $component,
+                                          'alignment ecotype' => $org_full_name,
+                                          'alignment program' => 'bwa'});
   };
   $self->schema->txn_do($code);
 }
