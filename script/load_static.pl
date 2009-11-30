@@ -162,6 +162,7 @@ my %terms = (
                small_rnas => 'Small RNA sequences',
                chip_seq => 'Chromatin immunoprecipitation (ChIP) and sequencing',
                mrna_expression => 'Expression analysis of mRNA',
+               sage_expression => 'Expression analysis using SAGE',
                dna_seq => 'Genomic DNA sequence',
              },
              'tracking bar code position' =>
@@ -675,6 +676,18 @@ my @analyses = (
                 {
                  type_term_name => 'trim reads',
                  detail => 'action: remove_adapters',
+                 runable_name => 'SmallRNA::Runable::TrimRunable',
+                 inputs => [
+                     {
+                       sample_type => 'sage_expression',
+                       format_type => 'fastq',
+                       content_type => 'raw_reads',
+                     }
+                    ]
+                },
+                {
+                 type_term_name => 'trim reads',
+                 detail => 'action: passthrough',
                  runable_name => 'SmallRNA::Runable::TrimRunable',
                  inputs => [
                      {

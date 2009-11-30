@@ -189,6 +189,7 @@ sub create_sample
     'Very good' => 'small_rnas',
     queued => 'small_rnas',
     Expression => 'mrna_expression',
+    'SAGE Expression' => 'sage_expression',
     DNA => 'dna_seq',
     ChipSeq => 'chip_seq'
   );
