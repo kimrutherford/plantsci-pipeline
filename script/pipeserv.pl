@@ -145,7 +145,11 @@ while (my $pipeprocess = $conf_rs->next()) {
 
       if ($count >= $ENV{'PIPESERV_MAX_JOBS'}) {
         warn "$count jobs running - sleeping\n";
-        sleep (20);
+        if ($test_mode || $run_locally) {
+          sleep (1);
+        } else {
+          sleep (20);
+        }
       } else {
         last;
       }
