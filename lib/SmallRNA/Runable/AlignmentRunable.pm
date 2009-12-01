@@ -58,6 +58,9 @@ sub run_alignment
 {
   my $self = shift;
   my $alignment_program = shift;
+  my $extra_alignment_args_ref = shift;
+  my %extra_alignment_args = %$extra_alignment_args_ref;
+
   my $schema = $self->schema();
 
   my $pipeprocess = $self->pipeprocess();
@@ -164,7 +167,8 @@ ${process_class}::run(input_file_name =>
                         "\$data_dir/" . \$gff_file_name,
                       database_file_name =>
                         \$db_file_name,
-                      \@non_aligned_args);
+                      \@non_aligned_args,
+                      \%extra_alignment_args);
 EVAL_BLOCK
 
       croak "eval failed: $@" if $@;

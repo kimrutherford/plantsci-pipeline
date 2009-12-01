@@ -100,7 +100,8 @@ sub run
                               database_file_name => 1,
                               gff_source_name => 1,
                               output_gff_file_name => 1,
-                              non_aligned_file_name => 0
+                              non_aligned_file_name => 0,
+                              mismatches => 0
                             });
 
   my $in_file = $params{input_file_name};
@@ -128,8 +129,10 @@ sub run
       $params{database_file_name}, "\n";
   }
 
+  my $mismatches = $params{mismatches} || 0;
+
   my $patman_command =
-    "$params{executable_path} --edits=0 --gaps=0 -P $in_file -D $params{database_file_name}";
+    "$params{executable_path} --edits=$mismatches --gaps=$mismatches -P $in_file -D $params{database_file_name}";
 
   open my $patman_out, "$patman_command 2>> /tmp/PatmanAlignmentProcess.log|"
     or croak "can't open pipe to $params{executable_path}: $!";

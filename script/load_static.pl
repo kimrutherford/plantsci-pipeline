@@ -1043,6 +1043,18 @@ my @analyses = (
                     ]
                 },
                 {
+                 type_term_name => 'patman alignment',
+                 detail => 'component: mrna, target: "Arabidopsis thaliana", mismatches: 1',
+                 runable_name => 'SmallRNA::Runable::PatmanAlignmentRunable',
+                 inputs => [
+                     {
+                       ecotype_name => 'unspecified Cleome gynandra',
+                       format_type => 'fasta',
+                       content_type => 'non_redundant_reads',
+                     }
+                    ]
+                },
+                {
                  type_term_name => 'genome aligned reads filter',
                  runable_name => 'SmallRNA::Runable::GenomeMatchingReadsRunable',
                  inputs => [

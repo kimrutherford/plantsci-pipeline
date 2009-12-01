@@ -57,7 +57,17 @@ sub run
   my $self = shift;
   my $schema = $self->schema();
 
-  $self->run_alignment('patman');
+  my $pipeprocess = $self->pipeprocess();
+  my $process_conf = $pipeprocess->process_conf();
+  my $detail = $process_conf->detail();
+
+  my $mismatches = 0;
+
+  if ($detail =~ /mismatches:\s*(\d+)/) {
+    $mismatches = $1;
+  }
+
+  $self->run_alignment('patman', {mismatches => $mismatches});
 }
 
 1;
