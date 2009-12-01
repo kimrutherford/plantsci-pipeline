@@ -22,6 +22,7 @@ BEGIN {
 use DateTime;
 use Carp;
 use POSIX qw(nice);
+use BSD::Resource qw(RLIMIT_VMEM setrlimit);
 
 use SmallRNA::Config;
 use SmallRNA::DB;
@@ -46,7 +47,9 @@ if (!defined $pipeprocess) {
 }
 
 if (!$ENV{SMALLRNA_PIPELINE_TEST}) {
+  # make the process nice and prevent excess memory use
   POSIX::nice(19);
+  setrlimit(RLIMIT_VMEM, 8_000_000_000, 8_000_000_000);  
 }
 
 my $current_status;
