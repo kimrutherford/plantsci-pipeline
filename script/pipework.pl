@@ -49,7 +49,7 @@ if (!defined $pipeprocess) {
 if (!$ENV{SMALLRNA_PIPELINE_TEST}) {
   # make the process nice and prevent excess memory use
   POSIX::nice(19);
-  setrlimit(RLIMIT_VMEM, 8_000_000_000, 8_000_000_000);
+  setrlimit(RLIMIT_VMEM, 32_000_000_000, 32_000_000_000);
 }
 
 my $current_status;
