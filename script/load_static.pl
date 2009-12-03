@@ -1032,7 +1032,7 @@ my @analyses = (
                 },
                 {
                  type_term_name => 'patman alignment',
-                 detail => 'component: genome, target: "Arabidopsis thaliana"',
+                 detail => 'component: genome, target: "Arabidopsis thaliana", mismatches: 1',
                  runable_name => 'SmallRNA::Runable::PatmanAlignmentRunable',
                  inputs => [
                      {
