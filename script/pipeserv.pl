@@ -59,10 +59,25 @@ my $pipework_path = "$Bin/pipework.pl";
 
 sub submit_torque_job
 {
-  my $pipeprocess_id = shift;
+  my $pipeprocess = shift;
+  my $pipeprocess_id = $pipeprocess->pipeprocess_id();
+
+  my $process_conf_detail = $pipeprocess->process_conf()->detail();
+
+  my $torque_flags = '';
+
+  if (defined $process_conf_detail) {
+  warn "detail: $process_conf_detail\n";
+
+    if ($process_conf_detail =~ /torque_flags:\s*([^,]+)/) {
+      $torque_flags = $1;
+    }
+  }
 
   my $command =
-    "qsub -v PIPEPROCESS_ID=$pipeprocess_id,SMALLRNA_PIPELINE_TEST=$test_mode $pipework_path";
+    "qsub $torque_flags -v PIPEPROCESS_ID=$pipeprocess_id,SMALLRNA_PIPELINE_TEST=$test_mode $pipework_path";
+
+  warn "running: $command\n";
 
   open my $qsub_handle, '-|', $command
     or die "couldn't open pipe from qsub: $!\n";
@@ -89,7 +104,8 @@ sub submit_torque_job
 
 sub submit_local_job
 {
-  my $pipeprocess_id = shift;
+  my $pipeprocess = shift;
+  my $pipeprocess_id = $pipeprocess->pipeprocess_id();
 
   my $pid = fork();
 
@@ -120,9 +136,9 @@ while (my $pipeprocess = $conf_rs->next()) {
 
     my $job_id;
     if ($run_locally) {
-      $job_id = submit_local_job($pipeprocess_id);
+      $job_id = submit_local_job($pipeprocess);
     } else {
-      $job_id = submit_torque_job($pipeprocess_id);
+      $job_id = submit_torque_job($pipeprocess);
     }
 
     $pipeprocess->job_identifier($job_id);
