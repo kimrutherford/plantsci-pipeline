@@ -1032,7 +1032,7 @@ my @analyses = (
                 },
                 {
                  type_term_name => 'patman alignment',
-                 detail => 'component: genome, target: "Arabidopsis thaliana", mismatches: 1',
+                 detail => 'component: genome, target: "Arabidopsis thaliana", mismatches: 1, torque_flags: -l pmem=20',
                  runable_name => 'SmallRNA::Runable::PatmanAlignmentRunable',
                  inputs => [
                      {
@@ -1044,7 +1044,7 @@ my @analyses = (
                 },
                 {
                  type_term_name => 'patman alignment',
-                 detail => 'component: mrna, target: "Arabidopsis thaliana", mismatches: 1',
+                 detail => 'component: mrna, target: "Arabidopsis thaliana", mismatches: 1, torque_flags: -l pmem=20',
                  runable_name => 'SmallRNA::Runable::PatmanAlignmentRunable',
                  inputs => [
                      {
