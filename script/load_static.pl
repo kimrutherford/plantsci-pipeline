@@ -900,7 +900,19 @@ my @analyses = (
                 },
                 {
                  type_term_name => 'patman alignment',
-                 detail => 'component: genome',
+                 detail => 'component: genome, torque_flags: -l pmem=20gb',
+                 runable_name => 'SmallRNA::Runable::PatmanAlignmentRunable',
+                 inputs => [
+                     {
+                       ecotype_name => 'unspecified Arabidopsis thaliana',
+                       format_type => 'fasta',
+                       content_type => 'non_redundant_reads',
+                     }
+                    ]
+                },
+                {
+                 type_term_name => 'patman alignment',
+                 detail => 'component: genome-tair9, torque_flags: -l pmem=20gb',
                  runable_name => 'SmallRNA::Runable::PatmanAlignmentRunable',
                  inputs => [
                      {
@@ -960,7 +972,7 @@ my @analyses = (
                 },
                 {
                  type_term_name => 'patman alignment',
-                 detail => 'component: genome',
+                 detail => 'component: genome, torque_flags: -l pmem=20gb',
                  runable_name => 'SmallRNA::Runable::PatmanAlignmentRunable',
                  inputs => [
                      {
@@ -972,7 +984,7 @@ my @analyses = (
                 },
                 {
                  type_term_name => 'patman alignment',
-                 detail => 'component: ests',
+                 detail => 'component: genome-20091201, torque_flags: -l pmem=20gb',
                  runable_name => 'SmallRNA::Runable::PatmanAlignmentRunable',
                  inputs => [
                      {
@@ -984,7 +996,7 @@ my @analyses = (
                 },
                 {
                  type_term_name => 'patman alignment',
-                 detail => 'component: concat_ests',
+                 detail => 'component: ests, torque_flags: -l pmem=20gb',
                  runable_name => 'SmallRNA::Runable::PatmanAlignmentRunable',
                  inputs => [
                      {
@@ -996,7 +1008,19 @@ my @analyses = (
                 },
                 {
                  type_term_name => 'patman alignment',
-                 detail => 'component: genome',
+                 detail => 'component: concat_ests, torque_flags: -l pmem=20gb',
+                 runable_name => 'SmallRNA::Runable::PatmanAlignmentRunable',
+                 inputs => [
+                     {
+                       ecotype_name => 'unspecified Solanum lycopersicon',
+                       format_type => 'fasta',
+                       content_type => 'non_redundant_reads',
+                     }
+                    ]
+                },
+                {
+                 type_term_name => 'patman alignment',
+                 detail => 'component: genome, torque_flags: -l pmem=20gb',
                  runable_name => 'SmallRNA::Runable::PatmanAlignmentRunable',
                  inputs => [
                      {
@@ -1008,7 +1032,7 @@ my @analyses = (
                 },
                 {
                  type_term_name => 'patman alignment',
-                 detail => 'component: mirbase-mature, target: "Arabidopsis thaliana"',
+                 detail => 'component: mirbase-mature, target: "Arabidopsis thaliana", torque_flags: -l pmem=20gb',
                  runable_name => 'SmallRNA::Runable::PatmanAlignmentRunable',
                  inputs => [
                      {
