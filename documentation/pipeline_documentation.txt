@@ -1,0 +1,38 @@
+# -*- org -*-
+#+INFOJS_OPT: view:content toc:t ltoc:t mouse:#dddddd
+#+OPTIONS:     H:5
+
+University of Cambridge Department of Plant Sciences NGS processing pipeline
+
+* New documention
+** Introduction
+   - a relatively generic pipeline for processing NGS data
+   - handles
+     - sRNA
+     - SAGE
+     - mRNA expression (non-SAGE)
+   - Features
+     - Handles dependencies between jobs
+     - Results are stored in a database
+** Requirements
+*** Linux (or UNIX)
+*** Perl
+*** Perl libraries
+*** [[http//www.postgresql.org/][PostgreSQL]]
+** Getting the code
+*** Github
+    git clone git://github.com/kimrutherford/plantsci-pipeline.git pipeline
+** Installation
+*** Perl code
+Install with the usual Perl installation commands.  This may need to be done
+as root.
+
+#+BEGIN_SRC sh
+  cd pipeline
+  perl Makefile.PL
+  make install
+#+END_SRC
+
+*** Database initialisation
+
+** Operation
