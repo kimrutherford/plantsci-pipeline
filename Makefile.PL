@@ -5,7 +5,6 @@ use inc::Module::Install;
 name 'SmallRNA-Pipeline';
 all_from 'lib/SmallRNA/DB.pm';
 
-requires 'Chart::Clicker';
 requires 'DBIx::Class::ResultSet::Data::Pageset';
 requires 'Params::Validate';
 requires 'YAML';
