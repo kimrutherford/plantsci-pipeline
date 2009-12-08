@@ -35,7 +35,17 @@ if (!exists $ENV{PIPEPROCESS_ID}) {
 
 my $pipeprocess_id = $ENV{PIPEPROCESS_ID};
 
-my $config = SmallRNA::Config->new();
+if (!exists $ENV{CONFIG_FILE_PATH}) {
+  die "no CONFIG_FILE_PATH environment variable\n";
+}
+
+my $config_file_path = $ENV{CONFIG_FILE_PATH};
+
+if (!-f $config_file_path) {
+  $config_file_path =~ s:^/export/:/:;
+}
+
+my $config = SmallRNA::Config->new($config_file_path);
 my $schema = SmallRNA::DB->schema($config);
 
 my $started_status = $schema->find_with_type('Cvterm', name => 'started');
