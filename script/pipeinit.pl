@@ -11,9 +11,6 @@ use Getopt::Long;
 use Pod::Usage;
 use YAML qw(LoadFile);
 
-my $CONF_FILE = 'smallrna_web.yaml';
-my $TEMPLATE_FILE = $CONF_FILE . '.template';
-
 =head1 NAME
 
 pipeinit.pl - deploy a pipeline database
@@ -143,11 +140,14 @@ if ($errors) {
   usage(1, $errors);
 }
 
-open TEMPLATE_FILE, '<', $TEMPLATE_FILE
-  or croak "can't open '$TEMPLATE_FILE' for reading: $!\n";
+my $config_file = $options{'config-file'};
+my $template_file = $options{'template-file'};
 
-open CONF_FILE, '>', $CONF_FILE
-  or croak "can't open '$CONF_FILE' for writing: $!\n";
+open TEMPLATE_FILE, '<', $template_file
+  or croak "can't open '$template_file' for reading: $!\n";
+
+open CONF_FILE, '>', $config_file
+  or croak "can't open '$config_file' for writing: $!\n";
 
 while (defined (my $line = <TEMPLATE_FILE>)) {
   for my $key (keys %options) {
@@ -157,5 +157,5 @@ while (defined (my $line = <TEMPLATE_FILE>)) {
   print CONF_FILE $line;
 }
 
-close CONF_FILE or croak "can't close $CONF_FILE: $!\n";
-close TEMPLATE_FILE or croak "can't close $TEMPLATE_FILE: $!\n";
+close CONF_FILE or croak "can't close $config_file: $!\n";
+close TEMPLATE_FILE or croak "can't close $template_file: $!\n";
