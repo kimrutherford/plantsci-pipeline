@@ -26,6 +26,9 @@ requires 'Config::General'; # This should reflect the config file format you've 
                  # See Catalyst::Plugin::ConfigLoader for supported formats
 catalyst;
 
-install_script glob('script/*.pl');
+install_script 'script/pipework.pl';
+install_script 'script/pipeserv.pl';
+install_script 'script/pipeinit.pl';
+
 auto_install;
 WriteAll;
