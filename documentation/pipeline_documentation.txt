@@ -1,5 +1,5 @@
 # -*- org -*-
-#+INFOJS_OPT: view:content toc:t ltoc:t mouse:#dddddd
+###+INFOJS_OPT: view:content toc:t ltoc:t mouse:#dddddd
 #+OPTIONS:     H:5
 
 University of Cambridge Department of Plant Sciences NGS processing pipeline
@@ -19,8 +19,10 @@ University of Cambridge Department of Plant Sciences NGS processing pipeline
 ** Perl libraries
    If all goes well these will be installed by the installer as needed
 ** [[http//www.postgresql.org/][PostgreSQL]] and its development libraries
+   The pipeline was developed using PostgreSQL 8.3, but any recent version
+   should work.
 * Getting the code
-** Github
+  Currently the easiest way to get the code is via Github:
 #+BEGIN_SRC sh
   git clone git://github.com/kimrutherford/plantsci-pipeline.git pipeline
 #+END_SRC
@@ -84,14 +86,94 @@ dependencies.
       There may be multiple database files for each organism.  Each file has a
       tag like =genome= or =mrna=.  These tags are referred to as "components"
       in other parts of the code.
+* Database structure
+** Tables
+*** =barcode=
+    Sequence and short name (code) used for multiplexed sequencing runs.
+
+    Columns of this table:
+ - =identifier= :: the user friendly identifier of this barcode
+ - =code= :: the barcode
+*** =barcode_set=
+    A collection of barcodes that are used together.
+
+    Columns of this table:
+ - =name= :: The user friendly name for this =barcode_set=
+*** =coded_sample=
+    This table connects a [[sequencing_sample][sequencing sample]], a [[sample]] and a [[barcode]].  The bar
+    code is optional as a sequencing sample isn't always multiplexed.
+
+    Columns of this table:
+ - =coded_sample_type= :: specifies whether this =coded_sample= is an initial
+   run or a technical replicate or biological replicate.
+ - =description= :: an optional description
+*** =cv=
+    Controlled vocabulary table modelled on the [[http://gmod.org/wiki/Chado][Chado]] [[http://gmod.org/wiki/Chado_CV_Module][CV Module]]
+*** =ecotype=
+    An ecotype (also known as a strain or stock) of an [[organism]]
+
+    Columns of this table:
+    - =description= :: the common/standard description of the ecotype
+*** =organisation=
+    Each person is a member of an =organisation= and sequencing centres are
+    organisations in this schema.  A =pipeproject= has an optional =funder=
+    that is also an =organisation=.
+*** =person=
+
+    Notable columns of this table:
+    - =role= :: the role is used by the tracking application to control
+      capabilities.
+*** =pipedata=
+    The pipeline creates a row in the =pipedata= table for each file that a
+    [[pipeprocess][process]] creates which records the file location (in =file_name=) and its
+    size (in =file_length=).  This table also tracks the content type and
+    format type of the file so that [[Pipeline processes][processes]] can find input files of the
+    correct type.
+
+    Columns of this table:
+*** =pipedata_property=
+    Columns of this table:
+*** =pipeprocess=
+    Columns of this table:
+*** =pipeprocess_in_pipedata=
+    Columns of this table:
+*** =pipeprocess_pub=
+    Columns of this table:
+*** =pipeproject=
+    Columns of this table:
+*** =process_conf=
+    Columns of this table:
+*** =process_conf_input=
+    Columns of this table:
+*** =protocol=
+    Columns of this table:
+*** =sample=
+    Columns of this table:
+*** =sample_dbxref=
+    Columns of this table:
+*** =sample_ecotype=
+    Columns of this table:
+*** =sample_pipedata=
+    Columns of this table:
+*** =sample_pipeproject=
+    Columns of this table:
+*** =sequencing_sample=
+    Columns of this table:
+*** =sequencingrun=
+    Columns of this table:
+*** =tissue=
+    Columns of this table:
 * Operation
+** Pipeline processes
+** Pipeline data
 ** The pipeline server
    The script that controls the pipeline is =pipeserv.pl=.
    - creates new processes (entries in the =pipeprocess= table)
    - queues new jobs using torque
    - sleeps, then starts again
 ** The pipeline worker
-   Each job is run by =pipework.pl=
+   Each job is run by =pipework.pl=.  It receives the ID of a pipeprocess and
+   the path to the configuration file as environment variables.
 * Implementation
 ** SmallRNA::Runable::AlignmentRunable
    - configured using the =process_class= setting in the config file
