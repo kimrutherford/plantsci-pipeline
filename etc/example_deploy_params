@@ -1,0 +1,9 @@
+# params file for deploy.pl for use in development
+'template-file': 'pipeline.yaml.template'
+'config-file': 'pipeline-example-config.yaml'
+'pipeline-directory': /data/pipeline
+'pipeline-process-directory': process
+'database-name': pipeline
+'database-host': the_server
+'database-user-name': some_user
+'database-password': user_password
