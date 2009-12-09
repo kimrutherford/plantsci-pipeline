@@ -4,35 +4,94 @@
 
 University of Cambridge Department of Plant Sciences NGS processing pipeline
 
-* New documention
-** Introduction
-   - a relatively generic pipeline for processing NGS data
-   - handles
-     - sRNA
-     - SAGE
-     - mRNA expression (non-SAGE)
-   - Features
-     - Handles dependencies between jobs
-     - Results are stored in a database
-** Requirements
-*** Linux (or UNIX)
-*** Perl
-*** Perl libraries
-*** [[http//www.postgresql.org/][PostgreSQL]]
-** Getting the code
-*** Github
-    git clone git://github.com/kimrutherford/plantsci-pipeline.git pipeline
-** Installation
-*** Perl code
-Install with the usual Perl installation commands.  This may need to be done
-as root.
+* Introduction
+  - a relatively generic pipeline for processing NGS data
+  - handles
+    - sRNA
+    - SAGE
+    - mRNA expression (non-SAGE)
+  - Features
+    - Handles dependencies between jobs
+    - Results are stored in a database
+* Requirements
+** Linux (or UNIX)
+** Perl
+** Perl libraries
+   If all goes well these will be installed by the installer as needed
+** [[http//www.postgresql.org/][PostgreSQL]] and its development libraries
+* Getting the code
+** Github
+#+BEGIN_SRC sh
+  git clone git://github.com/kimrutherford/plantsci-pipeline.git pipeline
+#+END_SRC
+* Installation
+** Posgresql libraries
+   The [[http://www.postgresql.org/][PostgreSQL]] server and development libraries need to be installed first.
 
+   On a Debian system the command is:
+#+BEGIN_SRC sh
+  apt-get install postgresql-8.3 postgresql-server-dev-8.3
+#+END_SRC
+
+** Perl code
+Install with the usual Perl installation commands.  This may need to be done
+as root.  The "make install" step will install any necessary Perl package
+dependencies.
 #+BEGIN_SRC sh
   cd pipeline
   perl Makefile.PL
   make install
 #+END_SRC
 
-*** Database initialisation
+** Database initialisation
+#+BEGIN_SRC sh
+  createdb pipeline
+  psql pipeline < etc/schema.sql
+#+END_SRC
+** Creating an example config file
+   The configuration file for is created by the =pipeinit.pl= script:
+#+BEGIN_SRC sh
+  ./script/pipeinit.pl -f etc/example_deploy_params
+#+END_SRC
+  This will create a file named =pipeline-example-config.yaml=.
+** Edit the config file
+*** Configuration options
+**** =pipeline_directory=
+     This is the root directory for pipeline operation.  It needs to be
+     writable by the user that will run the [[The pipeline server][pipeline server]].
+**** =data_sub_directory=
+     This a the sub directory of =pipeline_directory= where pipeline results
+     will be stored.
+**** "Model::SmallRNAModel"
+     This section configures the connection from =DBIx::Class= to the
+     database.  These options need to be set:
+  - =dbname=
+  - =host=
+  - 'some_user'
+  - 'user_password'
+**** =programs=
+     Each external program needs a =path= setting - the path to the executable
+     for this program.
 
-** Operation
+     A program that is run from the [[SmallRNA::Runable::AlignmentRunable][AlignmentRunable]] will need a
+     =process_class= setting to specify the class to use to run the program.
+**** =databases=
+     This section configures the sequence databases used in the pipeline,
+     mainly by the alignment programs.
+***** =root=
+      All paths in this section are relative to the =root=, which can be =/=
+***** =organisms= / =database_files=
+      There may be multiple database files for each organism.  Each file has a
+      tag like =genome= or =mrna=.  These tags are referred to as "components"
+      in other parts of the code.
+* Operation
+** The pipeline server
+   The script that controls the pipeline is =pipeserv.pl=.
+   - creates new processes (entries in the =pipeprocess= table)
+   - queues new jobs using torque
+   - sleeps, then starts again
+** The pipeline worker
+   Each job is run by =pipework.pl=
+* Implementation
+** SmallRNA::Runable::AlignmentRunable
+   - configured using the =process_class= setting in the config file
