@@ -109,6 +109,7 @@ sub submit_local_job {
       # wait for parent to finish writing to the pipeprocess table
       sleep(1);
       $ENV{PIPEPROCESS_ID} = $pipeprocess_id;
+      $ENV{CONFIG_FILE_PATH} = $config_file_full_path;
       $ENV{SMALLRNA_PIPELINE_TEST} = $test_mode;
       exec $pipework_path;
     }
