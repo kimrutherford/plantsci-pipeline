@@ -480,6 +480,7 @@ CREATE TABLE coded_sample (
        coded_sample_type integer REFERENCES cvterm(cvterm_id) DEFERRABLE INITIALLY DEFERRED NOT NULL,
        sample integer REFERENCES sample(sample_id) DEFERRABLE INITIALLY DEFERRED NOT NULL,
        sequencing_sample integer REFERENCES sequencing_sample(sequencing_sample_id) DEFERRABLE INITIALLY DEFERRED,
+       adaptor integer REFERENCES cvterm(cvterm_id) DEFERRABLE INITIALLY DEFERRED NOT NULL,
        barcode integer REFERENCES barcode(barcode_id) DEFERRABLE INITIALLY DEFERRED
 );
 COMMENT ON TABLE coded_sample IS

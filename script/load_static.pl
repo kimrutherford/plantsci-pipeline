@@ -170,6 +170,11 @@ my %terms = (
                '5-prime' => "Bar code will be at 5' end of the read",
                '3-prime' => "Bar code will be at 3' end of the read",
              },
+             'tracking 3 prime adaptor' =>
+             {
+               'illumina old adaptor' => "TCGTATGCCGTCTTCTGCTTGT",
+               'illumina v1.5 adaptor' => "ATCTCGTATGCCGTCTTCTGCTTG",
+             },
              'tracking publication types' =>
                {
                  'paper' => 'Publication type: paper',

@@ -43,8 +43,6 @@ use Bio::SeqIO;
 use Params::Validate qw(:all);
 use Carp;
 
-my $adapter  = "TCGTATGCCGTCTTCTGCTTGT";
-
 sub _get_file_for_code
 {
   my $code_out_files = shift;
@@ -94,7 +92,7 @@ sub _get_file_for_code
            trim_offset - offset from start of read to start trimming, eg. with
                          trim_bases set to 25 a value of 5 for trim_offset will
                          return bases 5..24 - base numbering starts at 0.
-                         If non-zero any 5' barcode will be ignored. 
+                         If non-zero any 5' barcode will be ignored.
                          default: 0
            barcodes - a map from barcode sequence to barcode id (TACCT => 'A',
                       TACGA => 'B', ...)
@@ -122,7 +120,8 @@ sub run
   my %params = validate(@_, { input_file_name => 1, output_dir_name => 1,
                               processing_type => 1, trim_bases => 0,
                               trim_offset => 0,
-                              barcodes => 0, barcode_position => 0 });
+                              barcodes => 0, barcode_position => 0,
+                              adaptor_sequence => 1 });
 
   my $input_file_name = $params{input_file_name};
   my $output_dir_name = $params{output_dir_name};
@@ -131,6 +130,7 @@ sub run
   my $trim_offset = $params{trim_offset} || 0;
   my $barcodes_map_ref = $params{barcodes};
   my $barcode_position = $params{barcode_position};
+  my $adaptor_sequence = $params{adaptor_sequence};
 
   if (defined $barcodes_map_ref && !defined $barcode_position) {
     croak "barcode_position must be passed as an argument if barcodes "
@@ -155,9 +155,9 @@ sub run
   my $multiplexed = defined $barcodes_map_ref;
 
   if ($multiplexed) {
-    $adapter_start = substr($adapter, 0, 3);
+    $adapter_start = substr($adaptor_sequence, 0, 3);
   } else {
-    $adapter_start = substr($adapter, 0, 8);
+    $adapter_start = substr($adaptor_sequence, 0, 8);
   }
 
   my $output_file_base = $input_file_name;
@@ -169,7 +169,7 @@ sub run
   my $n_reject_file_name = "$output_file_base.n-rejects.fasta";
   my $reject_file_name = "$output_file_base.rejects.fasta";
   my $fasta_file_name = "$output_file_base.reads.fasta";
- 
+
   # used when there is no multiplexing
   my $default_out_file_name = "$output_file_base.fasta";
   my $default_out_file;

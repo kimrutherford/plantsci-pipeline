@@ -48,9 +48,14 @@ __PACKAGE__->has_many(
   { "foreign.position_in_read" => "self.cvterm_id" },
 );
 __PACKAGE__->has_many(
-  "coded_samples",
+  "coded_sample_coded_sample_types",
   "SmallRNA::DB::CodedSample",
   { "foreign.coded_sample_type" => "self.cvterm_id" },
+);
+__PACKAGE__->has_many(
+  "coded_sample_adaptors",
+  "SmallRNA::DB::CodedSample",
+  { "foreign.adaptor" => "self.cvterm_id" },
 );
 __PACKAGE__->belongs_to("cv", "SmallRNA::DB::Cv", { cv_id => "cv_id" });
 __PACKAGE__->belongs_to("dbxref", "SmallRNA::DB::Dbxref", { dbxref_id => "dbxref_id" });
@@ -152,7 +157,7 @@ __PACKAGE__->has_many(
 
 
 # Created by DBIx::Class::Schema::Loader v0.04005
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:PDTnxsZq4i3JXto5HwuO7g
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:3+pujw/C3rFDOyJ8otsRUg
 
 __PACKAGE__->many_to_many(dbxrefs => 'cvterm_dbxrefs', 'dbxref');
 

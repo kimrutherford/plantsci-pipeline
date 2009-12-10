@@ -230,6 +230,7 @@ sub create_coded_sample
   my $sequencing_sample = shift;
   my $is_replicate = shift;
   my $barcode = shift;
+  my $adaptor = shift;
 
   my %coded_sample_args = (
                         sample => $sample,
@@ -252,6 +253,8 @@ sub create_coded_sample
     $coded_sample_args{coded_sample_type} = find('Cvterm',
                                                  name => 'initial run');
   }
+
+  $coded_sample_args{adaptor} = $adaptor;
 
   return create('CodedSample', {%coded_sample_args});
 }
@@ -479,6 +482,9 @@ sub process_row
       return;
     }
 
+    my $old_adaptor = find('Cvterm', name => 'illumina old adaptor');
+    my $v1_5_adaptor = find('Cvterm', name => 'illumina v1.5 adaptor');
+
     # match SL + (_num)? + (_letters)?
     if ($solexa_library =~ /((?:T|SL)\d+)(?:_([A-Z]+))?(?:_(\d+))?/) {
       my $sample_prefix = $1;
@@ -502,6 +508,14 @@ sub process_row
 
       if ($solexa_library =~ /^(SL28[345])/) {
         $barcodes = 'B';
+      }
+
+      my $adaptor;
+
+      if ($solexa_library =~ /SL329|SL33[0123459]/) {
+        $adaptor = $v1_5_adaptor;
+      } else {
+        $adaptor = $old_adaptor;
       }
 
       my $replicate_identifier = $3;
@@ -619,7 +633,7 @@ sub process_row
                                        [@ecotypes], $do_processing, $sample_type);
 
             push @all_samples, $sample;
-            create_coded_sample($sample, $sequencing_sample, $is_replicate, $barcode);
+            create_coded_sample($sample, $sequencing_sample, $is_replicate, $barcode, $adaptor);
           }
         } else {
           my $sample_name = $sample_prefix;
@@ -632,7 +646,7 @@ sub process_row
                                      $molecule_type,
                                      [@ecotypes], $do_processing, $sample_type);
           push @all_samples, $sample;
-          create_coded_sample($sample, $sequencing_sample, $is_replicate, undef);
+          create_coded_sample($sample, $sequencing_sample, $is_replicate, undef, $adaptor);
         }
 
         my $sequencing_run =

@@ -70,7 +70,7 @@ sub _get_barcodes
   return %barcodes_map;
 }
 
-sub _find_barcode_set
+sub _find_barcode_set_and_adaptor
 {
   my $pipeprocess = shift;
 
@@ -82,11 +82,12 @@ sub _find_barcode_set
   my @coded_samples = $sequencing_sample->coded_samples();
 
   my $sample_barcode = $coded_samples[0]->barcode();
+  my $sample_adaptor = $coded_samples[0]->adaptor();
 
   if (defined $sample_barcode) {
-    return $sample_barcode->barcode_set();
+    return ($sample_barcode->barcode_set(), $sample_adaptor);
   } else {
-    return undef;
+    return (undef, $sample_adaptor);
   }
 }
 
@@ -225,7 +226,7 @@ sub run
 
     my $input_file_name = $data_dir . '/' . $input_files[0];
 
-    my $barcode_set = _find_barcode_set($pipeprocess);
+    my ($barcode_set, $adaptor) = _find_barcode_set_and_adaptor($pipeprocess);
 
     my $trim_offset = 0;
 
@@ -242,7 +243,8 @@ sub run
                                                       processing_type => $processing_type,
                                                       barcodes => \%barcodes_map,
                                                       barcode_position => $barcode_position,
-                                                      trim_offset => $trim_offset
+                                                      trim_offset => $trim_offset,
+                                                      adaptor_sequence => $adaptor->definition()
                                                      );
 
       for my $code (keys %{$output}) {
@@ -290,6 +292,7 @@ sub run
                                                       output_dir_name => $temp_output_dir,
                                                       input_file_name => $input_file_name,
                                                       processing_type => $processing_type,
+                                                      adaptor_sequence => $adaptor->definition()
                                                      );
 
       my @samples = $input_pipedata->samples();
