@@ -430,7 +430,7 @@ sub process_row
         $description, $organism_name, $genotype, $submitter, $institution,
         $date_submitted,
         $date_received, $time_taken,
-        $quality, $quality_note, $sample_type, $run_type,
+        $quality, $quality_note, $smallrna_adaptor, $sample_type, $run_type,
         $require_number_of_reads, $sample_concentration) = @columns;
 
     $date_submitted = fix_date($date_submitted);
@@ -512,10 +512,14 @@ sub process_row
 
       my $adaptor;
 
-      if ($solexa_library =~ /SL329|SL33[0123459]/) {
+      if ($smallrna_adaptor eq 'v1.5') {
         $adaptor = $v1_5_adaptor;
       } else {
-        $adaptor = $old_adaptor;
+        if ($smallrna_adaptor eq '') {
+          $adaptor = $old_adaptor;
+        } else {
+          die "unknown adaptor: $adaptor\n";
+        }
       }
 
       my $replicate_identifier = $3;
