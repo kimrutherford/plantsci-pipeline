@@ -125,7 +125,7 @@ dependencies.
       capabilities.
 *** =pipedata=
     The pipeline creates a row in the =pipedata= table for each file that a
-    [[pipeprocess][process]] creates which records the file location (in =file_name=) and its
+    [[Pipeline processes][process]] creates which records the file location (in =file_name=) and its
     size (in =file_length=).  This table also tracks the content type and
     format type of the file so that [[Pipeline processes][processes]] can find input files of the
     correct type.
@@ -165,6 +165,7 @@ dependencies.
     Columns of this table:
 * Operation
 ** Pipeline processes
+   Each process / job that the pipeline runs will have an entry
 ** Pipeline data
 ** The pipeline server
    The script that controls the pipeline is =pipeserv.pl=.
