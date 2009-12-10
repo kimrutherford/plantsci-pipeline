@@ -3,7 +3,7 @@ package SmallRNA::Runable::TrimRunable;
 =head1 NAME
 
 SmallRNA::Runable::TrimRunable - a runable that reads a fastq file, removes
-  adapters and/or trims reads and writes fasta output files
+  adaptors and/or trims reads and writes fasta output files
 
 =head1 SYNOPSIS
 
@@ -211,7 +211,7 @@ sub run
     my @input_files = $self->input_files();
 
     if (@input_files != 1) {
-      croak "Remove adapters needs one input file\n";
+      croak "Remove adaptors needs one input file\n";
     }
 
     my $data_dir = $self->config()->data_directory();

@@ -3,7 +3,7 @@ use warnings;
 use Test::More tests => 3;
 use File::Temp qw(tempdir);
 
-# test that removing adapters generates an empty file rather than no file if
+# test that removing adaptors generates an empty file rather than no file if
 # there are no valid reads
 
 BEGIN {
@@ -21,13 +21,13 @@ SmallRNATest::setup($schema, $config);
 
 my $in_fastq_file = '/dev/null';
 
-my $tempdir = tempdir("/tmp/remove_adapters_test_$$.XXXXX", CLEANUP => 0);
+my $tempdir = tempdir("/tmp/remove_adaptors_test_$$.XXXXX", CLEANUP => 0);
 
 my ($reject_file_name, $n_reject_file_name, $fasta_file_name, $output_file_name) =
   SmallRNA::Process::TrimProcess::run(
     output_dir_name => $tempdir,
     input_file_name => $in_fastq_file,
-    processing_type => 'remove_adapters',
+    processing_type => 'remove_adaptors',
   );
 
 ok(-s "$tempdir/$reject_file_name" == 0 , 'reject file size');

@@ -32,12 +32,12 @@ while (my $pipedata = $pipedata_rs->next()) {
   if ($pipedata->file_name() =~ /SL236/) {
     is(scalar($pipedata->next_pipeprocesses()), 2);
     is(($pipedata->next_pipeprocesses())[0]->description(),
-       'processing with conf: trim reads, action: remove_adapters');
+       'processing with conf: trim reads, action: remove_adaptors');
   } else {
     if ($pipedata->file_name() =~ /SL234/) {
       is(scalar($pipedata->next_pipeprocesses()), 2);
       is(($pipedata->next_pipeprocesses())[0]->description(),
-         'processing with conf: trim reads, action: remove_adapters');
+         'processing with conf: trim reads, action: remove_adaptors');
     }
   }
 }

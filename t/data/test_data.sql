@@ -3381,7 +3381,7 @@ COPY process_conf (process_conf_id, created_stamp, runable_name, detail, type) F
 3	2009-11-13 18:13:11.588204	\N	BGI	10
 4	2009-11-13 18:13:11.588204	\N	CSHL	10
 5	2009-11-13 18:13:11.588204	\N	Edinburgh	10
-6	2009-11-13 18:13:11.588204	SmallRNA::Runable::TrimRunable	action: remove_adapters	16
+6	2009-11-13 18:13:11.588204	SmallRNA::Runable::TrimRunable	action: remove_adaptors	16
 7	2009-11-13 18:13:11.588204	SmallRNA::Runable::TrimRunable	action: passthrough	16
 8	2009-11-13 18:13:11.588204	SmallRNA::Runable::TrimRunable	action: trim	16
 9	2009-11-13 18:13:11.588204	SmallRNA::Runable::TrimRunable	action: passthrough	16

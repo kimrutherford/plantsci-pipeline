@@ -2,7 +2,7 @@ package SmallRNA::Process::TrimProcess;
 
 =head1 NAME
 
-SmallRNA::Process::TrimProcess - Code for removing adapters and
+SmallRNA::Process::TrimProcess - Code for removing adaptors and
                                   de-muliplexing fastq sequence
 
 =head1 SYNOPSIS
@@ -79,11 +79,11 @@ sub _get_file_for_code
                                                          output_dir_name => $out_dir,
                                                          processing_type => $type,
                                                          barcodes => $barcodes_map);
- Function: Remove adapters and optionally de-multiplex
+ Function: Remove adaptors and optionally de-multiplex
  Args    : input_file_name - a fastq file name
            output_dir_name - a directory to write output files to
-           processing_type - one of 'remove_adapters', 'trim' or 'passthrough'
-                   - 'remove_adapters' will remove the sequence adapter
+           processing_type - one of 'remove_adaptors', 'trim' or 'passthrough'
+                   - 'remove_adaptors' will remove the sequence adaptor
                    - 'trim' will trim reads to 25 bases (by default)
                    - 'passthrough' will do no processing apart from (optional)
                       de-multiplexing, just produce a FASTA file or files
@@ -104,11 +104,11 @@ mode run() returns a list with two element.  The first is file name
 (relative to the directory given by $output_dir_name) containing the
 sequences that were rejected during processing.  Reasons for rejection
 include:
- - the sequence doesn't have a valid adapter sequence
+ - the sequence doesn't have a valid adaptor sequence
  - the sequence contains only one base, repeated
 
 If there is a barcodes argument, run() attempts to de-multiplex while
-removing the adapter.  The result in this case is a list with two
+removing the adaptor.  The result in this case is a list with two
 element, with the first being the name of the file with the rejected
 sequences, the second being a map from barcode identifier ('A', 'B',
 ...) to the name of a file containing those sequences that contained
@@ -150,14 +150,14 @@ sub run
 
   my $default_out_file_fasta;
 
-  my $adapter_start;
+  my $adaptor_start;
 
   my $multiplexed = defined $barcodes_map_ref;
 
   if ($multiplexed) {
-    $adapter_start = substr($adaptor_sequence, 0, 3);
+    $adaptor_start = substr($adaptor_sequence, 0, 3);
   } else {
-    $adapter_start = substr($adaptor_sequence, 0, 8);
+    $adaptor_start = substr($adaptor_sequence, 0, 8);
   }
 
   my $output_file_base = $input_file_name;
@@ -209,8 +209,8 @@ sub run
 
   my $process_re;
 
-  if ($processing_type eq 'remove_adapters') {
-    $process_re =  qr/^($five_prime_code_re)(.+)($three_prime_code_re)($adapter_start.*)/;
+  if ($processing_type eq 'remove_adaptors') {
+    $process_re =  qr/^($five_prime_code_re)(.+)($three_prime_code_re)($adaptor_start.*)/;
   } else {
     if ($processing_type eq 'trim') {
       if ($trim_offset > 0) {
@@ -277,7 +277,7 @@ sub run
                   print $rej_file "$sequence\n";
                 }
               } else {
-                print $rej_file ">$id Is zero length after removing the adapter and bar code ($code_from_seq)\n";
+                print $rej_file ">$id Is zero length after removing the adaptor and bar code ($code_from_seq)\n";
                 print $rej_file "$sequence\n";
               }
             }
@@ -294,11 +294,11 @@ sub run
     } else {
       $reject_count++;
       my $message = undef;
-      if ($processing_type eq 'remove_adapters') {
+      if ($processing_type eq 'remove_adaptors') {
         if ($multiplexed) {
-          $message = "Does not match the barcode or does not match the adapter";
+          $message = "Does not match the barcode or does not match the adaptor";
         } else {
-          $message = "Does not match the adapter";
+          $message = "Does not match the adaptor";
         }
       } else {
         $message = "Does not match the barcode";

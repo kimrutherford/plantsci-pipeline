@@ -69,8 +69,8 @@ for (my $i = 0; $i < 7; $i++) {
     SmallRNA::PipeWork::run_process(schema => $schema, config => $config,
                                     pipeprocess => $pipeprocess);
 
-    if ($process_type_name =~ /^remove adapters/) {
-      my $remove_adapters_string = 'remove_adapter_rejects';
+    if ($process_type_name =~ /^remove adaptors/) {
+      my $remove_adaptors_string = 'remove_adaptor_rejects';
       my $reads_string = 'trimmed_reads';
 
       ok(@pipedatas == 1, 'one pipedata as input to the pipeprocess');
@@ -80,7 +80,7 @@ for (my $i = 0; $i < 7; $i++) {
         my $prefix = "SL236.090227.311F6AAXX.s_1";
 
         my $out_file_name = $config->data_directory() . "/SL236/SL236.$reads_string.fasta";
-        my $rej_file_name = $config->data_directory() . "/$remove_adapters_string/$prefix.$remove_adapters_string.fasta";
+        my $rej_file_name = $config->data_directory() . "/$remove_adaptors_string/$prefix.$remove_adaptors_string.fasta";
 
         ok(-e $out_file_name, 'looking for output file');
         ok(-e $rej_file_name, 'looking for reject file');
@@ -90,7 +90,7 @@ for (my $i = 0; $i < 7; $i++) {
 
           my $b_out_file_name = $config->data_directory() . "/SL234_B/SL234_B.$reads_string.fasta";
           my $c_out_file_name = $config->data_directory() . "/SL234_C/SL234_C.$reads_string.fasta";
-          my $rej_file_name = $config->data_directory() . "/$remove_adapters_string/SL234_BCF.$common.$remove_adapters_string.fasta";
+          my $rej_file_name = $config->data_directory() . "/$remove_adaptors_string/SL234_BCF.$common.$remove_adaptors_string.fasta";
 
           ok(-s $b_out_file_name, "look for $b_out_file_name");
           ok(-s $c_out_file_name, "look for $c_out_file_name");

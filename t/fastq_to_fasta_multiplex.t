@@ -15,7 +15,7 @@ use SmallRNATest;
 
 my $in_fastq_file = 't/data/SL234_BCF.090202.30W8NAAXX.s_1.fq';
 
-my $tempdir = tempdir("/tmp/remove_adapters_test_$$.XXXXX", CLEANUP => 0);
+my $tempdir = tempdir("/tmp/remove_adaptors_test_$$.XXXXX", CLEANUP => 0);
 
 my $config = SmallRNA::Config->new('t/test_config.yaml');
 my $schema = SmallRNA::DB->schema($config);
@@ -29,7 +29,7 @@ my ($reject_file_name, $n_reject_file_name, $fasta_file_name, $output) =
   SmallRNA::Process::TrimProcess::run(
     output_dir_name => $tempdir,
     input_file_name => $in_fastq_file,
-    processing_type => 'remove_adapters',
+    processing_type => 'remove_adaptors',
     barcodes => \%barcodes_map,
     barcode_position => '3-prime'
   );

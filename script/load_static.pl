@@ -644,7 +644,7 @@ my @analyses = (
                 },
                 {
                  type_term_name => 'trim reads',
-                 detail => 'action: remove_adapters',
+                 detail => 'action: remove_adaptors',
                  runable_name => 'SmallRNA::Runable::TrimRunable',
                  inputs => [
                      {
@@ -680,7 +680,7 @@ my @analyses = (
                 },
                 {
                  type_term_name => 'trim reads',
-                 detail => 'action: remove_adapters',
+                 detail => 'action: remove_adaptors',
                  runable_name => 'SmallRNA::Runable::TrimRunable',
                  inputs => [
                      {
