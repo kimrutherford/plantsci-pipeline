@@ -108,7 +108,15 @@ dependencies.
    run or a technical replicate or biological replicate.
  - =description= :: an optional description
 *** =cv=
-    Controlled vocabulary table modelled on the [[http://gmod.org/wiki/Chado][Chado]] [[http://gmod.org/wiki/Chado_CV_Module][CV Module]]
+    Controlled vocabulary table copied from the [[http://gmod.org/wiki/Chado][Chado]] [[http://gmod.org/wiki/Chado_CV_Module][CV Module]].
+*** =cvterm=
+    Controlled vocabulary term table from the [[http://gmod.org/wiki/Chado][Chado]] [[http://gmod.org/wiki/Chado_CV_Module][CV Module]].
+*** =cvterm_dbxref=
+    A link table connecting references to cvterms.
+*** =db=
+    Database table from the [[http://gmod.org/wiki/Chado][Chado]] [[http://gmod.org/wiki/Chado_CV_Module][CV Module]].
+*** =dbxref=
+    [[http://gmod.org/wiki/Chado_General_Module#Table:_dbxref][Database cross reference]] table from the [[http://gmod.org/wiki/Chado][Chado]] [[http://gmod.org/wiki/Chado_General_Module][General Module]].
 *** =ecotype=
     An ecotype (also known as a strain or stock) of an [[organism]]
 
@@ -118,8 +126,11 @@ dependencies.
     Each person is a member of an =organisation= and sequencing centres are
     organisations in this schema.  A =pipeproject= has an optional =funder=
     that is also an =organisation=.
+*** =organism=
+    Organism table from the [[http://gmod.org/wiki/Chado][Chado]] [[http://gmod.org/wiki/Chado_Organism_Module][Organism Module]].
+*** =organism_dbxref=
+    Organism to reference link table from the [[http://gmod.org/wiki/Chado][Chado]] [[http://gmod.org/wiki/Chado_Organism_Module][Organism Module]].
 *** =person=
-
     Notable columns of this table:
     - =role= :: the role is used by the tracking application to control
       capabilities.
@@ -131,9 +142,20 @@ dependencies.
     correct type.
 
     Columns of this table:
+    - =content_type= :: a cvterm specifying the content type.
+      eg. "raw_reads", "aligned_reads"
+    - =format_type= :: a cvterm recording the format of the file.
+      eg. "fasta", "gff3"
 *** =pipedata_property=
+    Key/value pairs for a =pipedata=
+
     Columns of this table:
+    - =type= :: the key of the pair
+    - =value= :: the value as text
+    - =pipedata= :: the =pipedata= for the property
 *** =pipeprocess=
+
+
     Columns of this table:
 *** =pipeprocess_in_pipedata=
     Columns of this table:
@@ -147,6 +169,8 @@ dependencies.
     Columns of this table:
 *** =protocol=
     Columns of this table:
+*** =pub=
+*** =pub_dbxref=
 *** =sample=
     Columns of this table:
 *** =sample_dbxref=
@@ -165,7 +189,8 @@ dependencies.
     Columns of this table:
 * Operation
 ** Pipeline processes
-   Each process / job that the pipeline runs will have an entry
+   Each process / job that the pipeline runs will have an entry in the
+   [[=pipeprocess=][pipeprocess]] table.
 ** Pipeline data
 ** The pipeline server
    The script that controls the pipeline is =pipeserv.pl=.
