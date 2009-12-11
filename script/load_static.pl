@@ -1013,7 +1013,7 @@ my @analyses = (
                 },
                 {
                  type_term_name => 'patman alignment',
-                 detail => 'component: concat_ests, torque_flags: -l pmem=20gb',
+                 detail => 'component: concat_ests, ignore_poly_a: yes, torque_flags: -l pmem=20gb',
                  runable_name => 'SmallRNA::Runable::PatmanAlignmentRunable',
                  inputs => [
                      {

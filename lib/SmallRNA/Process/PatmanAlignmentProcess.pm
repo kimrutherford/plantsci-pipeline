@@ -101,7 +101,8 @@ sub run
                               gff_source_name => 1,
                               output_gff_file_name => 1,
                               non_aligned_file_name => 0,
-                              mismatches => 0
+                              mismatches => 0,
+                              ignore_poly_a => 0,
                             });
 
   my $in_file = $params{input_file_name};
@@ -130,6 +131,7 @@ sub run
   }
 
   my $mismatches = $params{mismatches} || 0;
+  my $ignore_poly_a = $params{ignore_poly_a} || 0;
 
   my $patman_command =
     "$params{executable_path} --edits=$mismatches --gaps=$mismatches -P $in_file -D $params{database_file_name}";
@@ -141,6 +143,11 @@ sub run
 
   while (defined (my $match = $parser->next())) {
     my $seq_length = length $match->{qid};
+    
+    if ($ignore_poly_a && $match->{qid} =~ /^a+\b/) {
+      next;
+    }
+
     if ($match->{qstart} != 1 || $match->{qend} != $seq_length) {
       next;
     }
