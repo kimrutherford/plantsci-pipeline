@@ -50,13 +50,14 @@ dependencies.
   createdb pipeline
   psql pipeline < etc/schema.sql
 #+END_SRC
-** Creating an example config file
-   The configuration file for is created by the =pipeinit.pl= script:
+* Configuration
+** The configuration file
+   The configuration file for is created by the =pipeinit.pl= script and
+   containing global configuration.  Other configuration is [[Configuration in the database][stored in the database]].
 #+BEGIN_SRC sh
   ./script/pipeinit.pl -f etc/example_deploy_params
 #+END_SRC
   This will create a file named =pipeline-example-config.yaml=.
-** Edit the config file
 *** Configuration options
 **** =pipeline_directory=
      This is the root directory for pipeline operation.  It needs to be
@@ -67,7 +68,7 @@ dependencies.
 **** "Model::SmallRNAModel"
      This section configures the connection from =DBIx::Class= to the
      database.  These options need to be set:
-  - =dbname=
+  - =dbname= - the database name
   - =host=
   - 'some_user'
   - 'user_password'
@@ -86,6 +87,12 @@ dependencies.
       There may be multiple database files for each organism.  Each file has a
       tag like =genome= or =mrna=.  These tags are referred to as "components"
       in other parts of the code.
+** Configuration in the database
+   Settings that may need to be configured after the pipeline is running are
+   stored in the database.  See the documentation for the following tables:
+   [[=barcode=][barcode]], [[=barcode_set=][barcode_set]], [[=cvterm=][cvterm]], [[=ecotype=][ecotype]], [[=organisation=][organisation]], [[=organism=][organism]], [[=person=][person]],
+   [[=process_conf=][process_conf]] and [[=process_conf_input=][process_conf_input]]
+
 * Database structure
 ** Tables
 *** =barcode=
