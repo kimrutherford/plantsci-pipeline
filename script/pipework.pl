@@ -88,31 +88,35 @@ if ($current_status ne 'started') {
 my $status;
 my $message;
 
-$schema->txn_do(sub {
+eval {
+  $schema->txn_do(sub {
+                    ($status, $message) =
+                      SmallRNA::PipeWork::run_process(schema => $schema,
+                                                      config => $config,
+                                                      pipeprocess => $pipeprocess);
 
-                  eval {
-                  ($status, $message) =
-                    SmallRNA::PipeWork::run_process(schema => $schema,
-                                                    config => $config,
-                                                    pipeprocess => $pipeprocess);
+                    if ($status eq 'failed') {
+                      warn "$message\n";
+                    }
 
-                  my $status_cvterm = $schema->find_with_type('Cvterm', name => $status);
+                    my $status_cvterm = $schema->find_with_type('Cvterm', name => $status);
 
-                  if ($status eq 'finished') {
-                    $pipeprocess->time_finished(DateTime->now());
-                  }
+                    if ($status eq 'finished') {
+                      $pipeprocess->time_finished(DateTime->now());
+                    }
 
-                  $pipeprocess->status($status_cvterm);
-                  $pipeprocess->update();
-                };
-                  if ($@) {
-                    warn "run_process() failed for pipeprocess $pipeprocess_id: $@\n";
+                    $pipeprocess->status($status_cvterm);
+                    $pipeprocess->update();
+                  });
+};
 
-                    $schema->txn_rollback();
-                    $schema->storage()->disconnect();
-                  }
-                });
-
-if ($status eq 'failed') {
-  die "$message\n";
+if ($@) {
+  $schema->txn_do(sub {
+                    my $failed_status = $schema->find_with_type('Cvterm', name => 'failed');
+                    $pipeprocess->status($failed_status);
+                    $pipeprocess->update();
+                  });
+  warn "run_process() failed for pipeprocess $pipeprocess_id: $@\n";
 }
+
+$schema->storage()->disconnect();
