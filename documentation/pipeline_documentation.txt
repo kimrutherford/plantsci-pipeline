@@ -154,16 +154,33 @@ dependencies.
     - =format_type= :: a cvterm recording the format of the file.
       eg. "fasta", "gff3"
 *** =pipedata_property=
-    Key/value pairs for a =pipedata=
+    Key/value pairs for a =pipedata= entry.
 
     Columns of this table:
     - =type= :: the key of the pair
     - =value= :: the value as text
     - =pipedata= :: the =pipedata= for the property
 *** =pipeprocess=
-
+    This table records the tasks performed by the pipeline.  Each row
+    references the =process_conf= that holds the configuration for this
+    process.  Each process is run by the [[The pipeline worker][pipeline worker]] script
+    (=pipework.pl=).
 
     Columns of this table:
+    - =description= :: a human readable description of the process.
+    - =process_conf= :: the =process_conf= that will be used by this
+      pipeprocess.
+    - =status= :: this is the status field is used by the [[The pipeline server][pipeline server]] and
+      will have values from the cvterm table like: "not_started", "started",
+      "queued", "finished" or "failed".
+    - =job_identifier= :: the identifier of this process in the job queuing
+      system (currently Torque).
+    - =time_queued= :: the time when this process moved to the "queued" state,
+      otherwise null.
+    - =time_started= :: the time when this process moved to the "started" state,
+      otherwise null.
+    - =time_finished= :: the time when this process moved to the "finished" state,
+      otherwise null.
 *** =pipeprocess_in_pipedata=
     Columns of this table:
 *** =pipeprocess_pub=
@@ -205,7 +222,7 @@ dependencies.
    - queues new jobs using torque
    - sleeps, then starts again
 ** The pipeline worker
-   Each job is run by =pipework.pl=.  It receives the ID of a pipeprocess and
+   Each job is run by =pipework.pl=.  It receives the ID of a [[pipeprocess][=pipeprocess=]] and
    the path to the configuration file as environment variables.
 * Implementation
 ** SmallRNA::Runable::AlignmentRunable
