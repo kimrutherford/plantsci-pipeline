@@ -32,6 +32,7 @@ my ($reject_file_name, $n_reject_file_name, $fasta_file_name, $output) =
     output_dir_name => $tempdir,
     input_file_name => $in_fastq_file,
     processing_type => 'passthrough',
+    adaptor_sequence => 'TCGTATGCCGTCTTCTGCTTGT',
     barcodes => \%barcodes_map,
     barcode_position => '5-prime'
   );

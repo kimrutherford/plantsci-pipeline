@@ -25,6 +25,7 @@ my ($reject_file_name, $n_reject_file_name, $fasta_file_name, $output_file_name)
     output_dir_name => $tempdir,
     input_file_name => $in_fastq_file,
     processing_type => 'remove_adaptors',
+    adaptor_sequence => 'TCGTATGCCGTCTTCTGCTTGT'
   );
 
 ok(-s "$tempdir/$reject_file_name", 'reject file size');
