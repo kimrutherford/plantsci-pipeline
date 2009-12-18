@@ -450,7 +450,7 @@ sub process_row
       $virus_name = $1;
     }
 
-    if ($solexa_library !~ /SL329|SL33[0123456789]/ && $test_mode) {
+    if ($solexa_library !~ /SL11$|SL234_BCF|SL236|SL5[45]|SL165_1|SL285/ && $test_mode) {
       return;
     }
 
