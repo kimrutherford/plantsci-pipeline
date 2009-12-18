@@ -67,8 +67,6 @@ sub run
     $mismatches = $1;
   }
 
-  $self->run_alignment('patman', {mismatches => $mismatches});
-
   my $ignore_poly_a = 0;
 
   if ($detail =~ /ignore_poly_a:\s*((?i)yes|1|true)\b/) {
