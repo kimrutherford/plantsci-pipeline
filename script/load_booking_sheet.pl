@@ -423,13 +423,15 @@ sub process_row
 {
     my @columns = @_;
 
+    my $barcodes = undef;
+
     my ($file_names_column, $solexa_library, 
         $project_desc, $do_processing,
         $dcb_validated, $funding,
         $sheet_seq_centre_name,
-        $description, $organism_name, $genotype, $submitter, $institution,
-        $date_submitted,
-        $date_received, $time_taken,
+        $description, $organism_name, $genotype, 
+        $barcode, $barcode_set, $submitter, $institution,
+        $date_submitted, $date_received, $time_taken,
         $quality, $quality_note, $smallrna_adaptor, $sample_type, $run_type,
         $require_number_of_reads, $sample_concentration) = @columns;
 
@@ -448,7 +450,7 @@ sub process_row
       $virus_name = $1;
     }
 
-    if ($solexa_library !~ /SL11$|SL234_BCF|SL236|SL5[45]|SL165_1|SL285/ && $test_mode) {
+    if ($solexa_library !~ /SL329|SL33[0123456789]/ && $test_mode) {
       return;
     }
 
@@ -488,7 +490,12 @@ sub process_row
     # match SL + (_num)? + (_letters)?
     if ($solexa_library =~ /((?:T|SL)\d+)(?:_([A-Z]+))?(?:_(\d+))?/) {
       my $sample_prefix = $1;
-      my $barcodes = $2;
+      if (defined $barcodes) {
+        croak "barcodes set in the library name ($solexa_library) and in the "
+          . "spreadsheet barcodes column ($barcodes)\n";
+      } else {
+        $barcodes = $2;
+      }
 
       if ($solexa_library eq 'SL247') {
         $barcodes = 'AC';
@@ -510,6 +517,9 @@ sub process_row
         $barcodes = 'B';
       }
 
+      $smallrna_adaptor =~ s/^\s+//;
+      $smallrna_adaptor =~ s/\s+$//;
+
       my $adaptor;
 
       if ($smallrna_adaptor eq 'v1.5') {
@@ -518,7 +528,7 @@ sub process_row
         if ($smallrna_adaptor eq '') {
           $adaptor = $old_adaptor;
         } else {
-          die "unknown adaptor: $adaptor\n";
+          die "unknown adaptor: $smallrna_adaptor\n";
         }
       }
 
