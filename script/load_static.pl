@@ -905,7 +905,7 @@ my @analyses = (
                 },
                 {
                  type_term_name => 'patman alignment',
-                 detail => 'component: genome, torque_flags: -l pmem=20gb',
+                 detail => 'component: genome, torque_flags: -l pmem=5gb',
                  runable_name => 'SmallRNA::Runable::PatmanAlignmentRunable',
                  inputs => [
                      {
@@ -917,7 +917,7 @@ my @analyses = (
                 },
                 {
                  type_term_name => 'patman alignment',
-                 detail => 'component: genome-tair9, torque_flags: -l pmem=20gb',
+                 detail => 'component: genome-tair9, torque_flags: -l pmem=5gb',
                  runable_name => 'SmallRNA::Runable::PatmanAlignmentRunable',
                  inputs => [
                      {
@@ -977,7 +977,7 @@ my @analyses = (
                 },
                 {
                  type_term_name => 'patman alignment',
-                 detail => 'component: genome, torque_flags: -l pmem=20gb',
+                 detail => 'component: genome, torque_flags: -l pmem=5gb',
                  runable_name => 'SmallRNA::Runable::PatmanAlignmentRunable',
                  inputs => [
                      {
@@ -989,7 +989,7 @@ my @analyses = (
                 },
                 {
                  type_term_name => 'patman alignment',
-                 detail => 'component: genome-20091201, torque_flags: -l pmem=20gb',
+                 detail => 'component: genome-20091201, torque_flags: -l pmem=5gb',
                  runable_name => 'SmallRNA::Runable::PatmanAlignmentRunable',
                  inputs => [
                      {
@@ -1001,7 +1001,7 @@ my @analyses = (
                 },
                 {
                  type_term_name => 'patman alignment',
-                 detail => 'component: ests, torque_flags: -l pmem=20gb',
+                 detail => 'component: ests, torque_flags: -l pmem=5gb',
                  runable_name => 'SmallRNA::Runable::PatmanAlignmentRunable',
                  inputs => [
                      {
@@ -1013,7 +1013,7 @@ my @analyses = (
                 },
                 {
                  type_term_name => 'patman alignment',
-                 detail => 'component: concat_ests, ignore_poly_a: yes, torque_flags: -l pmem=20gb',
+                 detail => 'component: concat_ests, ignore_poly_a: yes, torque_flags: -l pmem=5gb',
                  runable_name => 'SmallRNA::Runable::PatmanAlignmentRunable',
                  inputs => [
                      {
@@ -1025,7 +1025,7 @@ my @analyses = (
                 },
                 {
                  type_term_name => 'patman alignment',
-                 detail => 'component: genome, torque_flags: -l pmem=20gb',
+                 detail => 'component: genome, torque_flags: -l pmem=5gb,
                  runable_name => 'SmallRNA::Runable::PatmanAlignmentRunable',
                  inputs => [
                      {
@@ -1037,7 +1037,7 @@ my @analyses = (
                 },
                 {
                  type_term_name => 'patman alignment',
-                 detail => 'component: mirbase-mature, target: "Arabidopsis thaliana", torque_flags: -l pmem=20gb',
+                 detail => 'component: mirbase-mature, target: "Arabidopsis thaliana", torque_flags: -l pmem=5gb',
                  runable_name => 'SmallRNA::Runable::PatmanAlignmentRunable',
                  inputs => [
                      {
