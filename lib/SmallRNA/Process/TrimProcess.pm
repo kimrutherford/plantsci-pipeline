@@ -75,7 +75,7 @@ sub _get_file_for_code
 
 =head2 run
 
- Usage   : my $res = SmallRNA::Process::TrimProcess->new(input_file_name => $input,
+ Usage   : my $res = SmallRNA::Process::TrimProcess->run(input_file_name => $input,
                                                          output_dir_name => $out_dir,
                                                          processing_type => $type,
                                                          barcodes => $barcodes_map);
