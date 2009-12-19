@@ -11,7 +11,7 @@ BEGIN {
 }
 
 my @inputs = ({ file_name => 't/data/reads_fasta_summary_test.fasta',
-                count => 14,
+                count => 15,
                 gc_count => 149,
                 expected_file_name => 't/data/expected_fasta_stats.txt'
               },

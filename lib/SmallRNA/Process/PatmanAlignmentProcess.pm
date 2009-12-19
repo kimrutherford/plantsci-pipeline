@@ -144,7 +144,7 @@ sub run
   while (defined (my $match = $parser->next())) {
     my $seq_length = length $match->{qid};
     
-    if ($ignore_poly_a && $match->{qid} =~ /^a+\b/) {
+    if ($ignore_poly_a && $match->{qid} =~ /^a+\b/i) {
       next;
     }
 
