@@ -18,8 +18,8 @@ University of Cambridge Department of Plant Sciences NGS processing pipeline
 ** Perl
 ** Perl libraries
    If all goes well these will be installed by the installer as needed
-** [[http//www.postgresql.org/][PostgreSQL]] and its development libraries
-   The pipeline was developed using PostgreSQL 8.3, but any recent version
+** PostgreSQL and its development libraries
+   The pipeline was developed using  [[http://www.postgresql.org/][PostgreSQL]] 8.3, but any recent version
    should work.
 * Getting the code
   Currently the easiest way to get the code is via Github:
@@ -27,7 +27,7 @@ University of Cambridge Department of Plant Sciences NGS processing pipeline
   git clone git://github.com/kimrutherford/plantsci-pipeline.git pipeline
 #+END_SRC
 * Installation
-** Posgresql libraries
+** PostgreSQL libraries
    The [[http://www.postgresql.org/][PostgreSQL]] server and development libraries need to be installed first.
 
    On a Debian system the command is:
@@ -172,8 +172,9 @@ dependencies.
       pipeprocess.
     - =status= :: this is the status field is used by the [[The pipeline server][pipeline server]] and
       will have values from the cvterm table like: "not_started", "started",
-      "queued", "finished" or "failed".
-    - =job_identifier= :: the identifier of this process in the job queuing
+      "queued", "finished" or "failed".  See the [[The pipeline server][pipeline server]] section for
+      descriptions of each state.
+    - =job_identifier= :: the identifier of this process in the job queueing
       system (currently Torque).
     - =time_queued= :: the time when this process moved to the "queued" state,
       otherwise null.
@@ -221,6 +222,18 @@ dependencies.
    - creates new processes (entries in the =pipeprocess= table)
    - queues new jobs using torque
    - sleeps, then starts again
+*** Process states
+    - not_started :: Process has not been queued yet - there is an entry in
+      the database, but no Torque/Condor job has been created (set by
+      =pipeserv.pl=)
+    - queued :: A job is queued to run this process - a Torque/Condor job has
+      been created (set by =pipeserv.pl=)
+    - started :: Processing has started - Torque/Condor has started running
+      this process (set by =pipework.pl=)
+    - finished :: Processing is done - the process finished and succeeded (set
+      by =pipework.pl=)
+    - failed :: Processing failed - the process finished and failed (set by
+      =pipework.pl=)
 ** The pipeline worker
    Each job is run by =pipework.pl=.  It receives the ID of a [[pipeprocess][=pipeprocess=]] and
    the path to the configuration file as environment variables.
