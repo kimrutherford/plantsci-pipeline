@@ -57,7 +57,7 @@ my %terms = (
               'n_mer_stats' =>
                 'Counts of each sequence, ordered by count',
               'aligned_reads' =>
-                'Reads that have been aligned against a reference',
+                'Non-redundant (unique) reads that have been aligned against a reference',
               'redundant_aligned_reads' =>
                 'Redundant reads that align against the a reference - one FASTA record for each read from the original redundant file that matches',
               'non_aligned_reads' =>
