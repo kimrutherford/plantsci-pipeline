@@ -19,7 +19,7 @@ University of Cambridge Department of Plant Sciences NGS processing pipeline
 ** Perl libraries
    If all goes well these will be installed by the installer as needed
 ** PostgreSQL and its development libraries
-   The pipeline was developed using  [[http://www.postgresql.org/][PostgreSQL]] 8.3, but any recent version
+   The pipeline was developed using [[http://www.postgresql.org/][PostgreSQL]] 8.3, but any recent version
    should work.
 * Getting the code
   Currently the easiest way to get the code is via Github:
@@ -219,7 +219,7 @@ dependencies.
 ** Pipeline data
 ** The pipeline server
    The script that controls the pipeline is =pipeserv.pl=.
-   - creates new processes (entries in the =pipeprocess= table)
+   - creates new processes (entries in the =pipeprocess= table) using the [[SmallRNA::ProcessManager][ProcessManager]]
    - queues new jobs using torque
    - sleeps, then starts again
 *** Process states
@@ -238,5 +238,8 @@ dependencies.
    Each job is run by =pipework.pl=.  It receives the ID of a [[pipeprocess][=pipeprocess=]] and
    the path to the configuration file as environment variables.
 * Implementation
+** Runables
 ** SmallRNA::Runable::AlignmentRunable
    - configured using the =process_class= setting in the config file
+** SmallRNA::ProcessManager
+   - code for creating [[=pipeprocess=]] entries
