@@ -22,6 +22,7 @@ my $pipeline_db = $schema->find_or_create_with_type('Db', { name => 'SmallRNA pi
 my %terms = (
              'tracking file format types' =>
              {
+              'srf' => 'SRF format file',
               'fastq' => 'FastQ format file',
               'fs' => 'FASTA format with an empty description line',
               'fasta' => 'FASTA format',
@@ -111,6 +112,8 @@ my %terms = (
               'multiplexed sequencing run' =>
                 'This pseudo-analysis generates raw sequence files, ' .
                 'with quality scores, and uses multiplexing/barcodes',
+              'srf to fastq converter' =>
+                'Create a FastQ file from an SRF file',
               'trim reads' =>
                 'Read FastQ files, trim each read to a fixed length or remove adaptor and then create a fasta file',
               'summarise fasta first base' =>
@@ -641,6 +644,16 @@ my @analyses = (
                  type_term_name => 'non-multiplexed sequencing run',
                  detail => 'Edinburgh',
                  inputs => []
+                },
+                {
+                 type_term_name => 'srf to fastq converter',
+                 runable_name => 'SmallRNA::Runable::SRFToFastqRunable',
+                 inputs => [
+                     {
+                       format_type => 'srf',
+                       content_type => 'raw_reads'
+                     }
+                   ]
                 },
                 {
                  type_term_name => 'trim reads',

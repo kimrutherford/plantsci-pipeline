@@ -21,6 +21,8 @@ programs:
     process_class: SmallRNA::Process::BWASearchProcess
   samtools:
     path: /applications/samtools-svn-trunk/samtools/samtools
+  srf2fastq:
+    path: /applications/io_lib-1-12-1/progs/srf2fastq
 databases:
   root: t/data
   organisms:
