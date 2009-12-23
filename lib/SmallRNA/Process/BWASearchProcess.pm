@@ -43,31 +43,9 @@ use File::Temp qw(tempfile);
 
 use Bio::SeqIO;
 
+use SmallRNA::Process::Utils qw(do_system);
+
 my $BWA_ARGS = "";
-
-sub _do_system
-{
-  my $system_args = shift;
-
-  my $retcode = system $system_args;
-
-  if ($retcode != 0) {
-    warn "system ($system_args) failed: $?\n";
-
-    if ($? == -1) {
-      print STDERR "failed to execute: $!\n";
-    }
-    elsif ($? & 127) {
-      printf STDERR "child died with signal %d, %s coredump\n",
-        ($? & 127),  ($? & 128) ? 'with' : 'without';
-    }
-    else {
-      printf STDERR "child exited with value %d\n", $? >> 8;
-    } 
-
-    die "command failed - exiting\n"; 
-  }
-}
 
 =head2
  
@@ -104,13 +82,13 @@ sub run
   my $aln_command =
     "$params{bwa_path} aln $params{database_file_name} $infile_name $BWA_ARGS";
 
-  _do_system "$aln_command 2>> $log_file_name > $temp_aln_file_name";
+  do_system "$aln_command 2>> $log_file_name > $temp_aln_file_name";
 
   my @samse_files = ($params{database_file_name}, $temp_aln_file_name, $infile_name);
   my $samse_command =
     "$params{bwa_path} samse @samse_files";
 
-  _do_system "$samse_command 2>> $log_file_name > $outfile_name";
+  do_system "$samse_command 2>> $log_file_name > $outfile_name";
 }
 
 1;

@@ -44,31 +44,7 @@ use File::Copy;
 
 use Bio::SeqIO;
 
-my $BWA_ARGS = "";
-
-sub _do_system
-{
-  my $system_args = shift;
-
-  my $retcode = system $system_args;
-
-  if ($retcode != 0) {
-    warn "system ($system_args) failed: $?\n";
-
-    if ($? == -1) {
-      print STDERR "failed to execute: $!\n";
-    }
-    elsif ($? & 127) {
-      printf STDERR "child died with signal %d, %s coredump\n",
-        ($? & 127),  ($? & 128) ? 'with' : 'without';
-    }
-    else {
-      printf STDERR "child exited with value %d\n", $? >> 8;
-    }
-
-    die "command failed - exiting $?\n";
-  }
-}
+use SmallRNA::Process::Utils qw(do_system);
 
 =head2 run
 
@@ -102,7 +78,7 @@ sub run
   my $samtools_command =
     "$params{samtools_path} view -bt $params{database_file_name}.fai $infile_name";
 
-  _do_system "$samtools_command 2>> $log_file_name > $outfile_name";
+  do_system "$samtools_command 2>> $log_file_name > $outfile_name";
 
   my ($fh, $sort_temp_file) =
     tempfile('/tmp/samtools_sort.XXXXXX', UNLINK => 1);
@@ -110,14 +86,14 @@ sub run
   my $sort_command =
     "$params{samtools_path} sort $outfile_name $sort_temp_file";
 
-  _do_system "$sort_command 2>> $log_file_name";
+  do_system "$sort_command 2>> $log_file_name";
 
   move("$sort_temp_file.bam", $outfile_name);
 
   my $index_command =
     "$params{samtools_path} index $outfile_name";
 
-  _do_system "$index_command 2>> $log_file_name";
+  do_system "$index_command 2>> $log_file_name";
 }
 
 1;
