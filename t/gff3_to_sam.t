@@ -10,7 +10,7 @@ BEGIN {
   use_ok 'SmallRNA::Process::GFF3ToSAMProcess';
 }
 
-my $input_file_name = 't/data/ssaha_search_results.gff3';;
+my $input_file_name = 't/data/ssaha_search_results.gff3';
 
 my ($index_fh, $temp_output_file_name) =
   tempfile('/tmp/gff3_to_sam_test.XXXXXX', UNLINK => 0);
