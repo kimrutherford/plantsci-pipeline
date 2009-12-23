@@ -70,7 +70,7 @@ sub _do_system
   }
 }
 
-=head2
+=head2 run
 
  Usage   : SmallRNA::Process::SAMToBAMProcess(input_file_name => $in_file_name,
                                               output_file_name =>
