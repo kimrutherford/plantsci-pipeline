@@ -142,9 +142,9 @@ dependencies.
     - =role= :: the role is used by the tracking application to control
       capabilities.
 *** =pipedata=
-    The pipeline creates a row in the =pipedata= table for each file that a
-    [[Pipeline processes][process]] creates which records the file location (in =file_name=) and its
-    size (in =file_length=).  This table also tracks the content type and
+    The pipeline creates a row in this table for each file that a
+    [[Pipeline processes][process]] creates and records the file location (in =file_name=) and its
+    size.  This table also tracks the content type and
     format type of the file so that [[Pipeline processes][processes]] can find input files of the
     correct type.
 
@@ -153,6 +153,9 @@ dependencies.
       eg. "raw_reads", "aligned_reads"
     - =format_type= :: a cvterm recording the format of the file.
       eg. "fasta", "gff3"
+    - =file_length= :: the data file length
+    - =generating_pipeprocess= :: the id of the [[=pipeprocess=]] that generated
+      this =pipedata=
 *** =pipedata_property=
     Key/value pairs for a =pipedata= entry.
 
@@ -183,6 +186,9 @@ dependencies.
     - =time_finished= :: the time when this process moved to the "finished" state,
       otherwise null.
 *** =pipeprocess_in_pipedata=
+    This table contains the input files ([[=pipedata=]] entries) for the
+    pipeprocesses.
+
     Columns of this table:
 *** =pipeprocess_pub=
     Columns of this table:
