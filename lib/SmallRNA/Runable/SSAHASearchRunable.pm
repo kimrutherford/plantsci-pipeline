@@ -41,7 +41,7 @@ none - see SmallRNA::RunableI;
 use strict;
 use warnings;
 use Carp;
-use Moose;
+use Mouse;
 
 extends 'SmallRNA::Runable::AlignmentRunable';
 

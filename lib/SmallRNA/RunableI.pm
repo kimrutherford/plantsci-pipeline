@@ -41,7 +41,7 @@ under the same terms as Perl itself.
 
 use strict;
 
-use Moose::Role;
+use Mouse::Role;
 
 requires 'run';
 

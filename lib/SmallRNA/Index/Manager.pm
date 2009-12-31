@@ -49,7 +49,7 @@ use strict;
 use warnings;
 use Carp;
 
-use Moose;
+use Mouse;
 
 use Params::Validate qw(:all);
 

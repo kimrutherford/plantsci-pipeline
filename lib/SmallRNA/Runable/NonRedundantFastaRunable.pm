@@ -42,7 +42,7 @@ use strict;
 use warnings;
 use Carp;
 
-use Moose;
+use Mouse;
 
 use SmallRNA::Process::NonRedundantFastaProcess;
 
