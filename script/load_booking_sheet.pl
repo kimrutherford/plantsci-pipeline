@@ -350,11 +350,17 @@ sub fix_name
 
 my %dir_files = ();
 
-for my $sub_dir (qw(fastq T1 T2 SL4 SL9 SL11 SL12 SL18 SL19 SL21 SL22 SL1000 SL1001 SL1002 SL1007 SL1008 SL1009 SL1010)) {
+my @sub_dirs = qw(fastq T1 T2 SL4 SL9 SL11 SL12 SL18 SL19 SL21 SL22 SL1000 SL1001 SL1002 SL1007 SL1008 SL1009 SL1010);
+
+if ($test_mode) {
+  unshift @sub_dirs, 'srf';
+}
+
+for my $sub_dir (@sub_dirs) {
   my $dir_name = $config->data_directory() . "/$sub_dir";
   opendir my $dir, $dir_name or die "can't open directory $dir_name: $!\n";
   while (my $ent = readdir $dir) {
-    next if $ent eq '.' or $ent eq '..' or $ent !~ /\.f[qa]$|\.fasta$/;
+    next if $ent eq '.' or $ent eq '..' or $ent !~ /\.f[qa]$|\.fasta$|\.srf$/;
     $dir_files{$ent} = "$sub_dir/$ent";
   }
   closedir $dir;
@@ -364,6 +370,10 @@ sub find_real_file_name
 {
   my $config = shift;
   my $booking_sheet_file_name = shift;
+
+  if ($test_mode && $booking_sheet_file_name =~ /SL136.080901.30677AAXX.s_3/) {
+    $booking_sheet_file_name = 'SL136.080807.306AKAAXX.s_2.srf';
+  }
 
   if (exists $dir_files{$booking_sheet_file_name}) {
 #    warn "found file: $booking_sheet_file_name\n";
@@ -450,7 +460,7 @@ sub process_row
       $virus_name = $1;
     }
 
-    if ($solexa_library !~ /SL11$|SL234_BCF|SL236|SL5[45]|SL165_1|SL285/ && $test_mode) {
+    if ($solexa_library !~ /SL136|SL11$|SL234_BCF|SL236|SL5[45]|SL165_1|SL285/ && $test_mode) {
       return;
     }
 
