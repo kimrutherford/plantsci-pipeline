@@ -256,8 +256,17 @@ sub add_sequencingrun_pipedata
     $pipedata_format_type = $self->_find('Cvterm', name => 'fasta');
     $pipedata_content_type = $self->_find('Cvterm', name => 'trimmed_reads');
   } else {
-    $pipedata_format_type = $self->_find('Cvterm', name => 'fastq');
-    $pipedata_content_type = $self->_find('Cvterm', name => 'raw_reads');
+    if ($file_name =~ /\.fq$|\.fastq$/) {
+      $pipedata_format_type = $self->_find('Cvterm', name => 'fastq');
+      $pipedata_content_type = $self->_find('Cvterm', name => 'raw_reads');
+    } else {
+      if ($file_name =~ /\.srf$/) {
+        $pipedata_format_type = $self->_find('Cvterm', name => 'srf');
+        $pipedata_content_type = $self->_find('Cvterm', name => 'raw_reads');
+      } else {
+        croak "unknown suffix for file: $file_name\n";
+      }
+    }
   }
 
   my $ctx = Digest::MD5->new;
