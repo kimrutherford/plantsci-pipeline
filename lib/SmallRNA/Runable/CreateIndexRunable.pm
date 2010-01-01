@@ -40,7 +40,7 @@ use strict;
 use warnings;
 use Carp;
 
-use Moose;
+use Mouse;
 
 use File::Temp qw(tempfile);
 use File::Copy;

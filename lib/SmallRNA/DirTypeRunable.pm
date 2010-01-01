@@ -40,7 +40,7 @@ under the same terms as Perl itself.
 
 use strict;
 
-use Moose;
+use Mouse;
 
 around 'run' => sub {
   my $next = shift;

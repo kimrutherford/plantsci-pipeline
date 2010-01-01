@@ -38,7 +38,7 @@ under the same terms as Perl itself.
 
 use strict;
 use warnings;
-use Moose;
+use Mouse;
 use Carp;
 
 use Bio::SeqIO;
