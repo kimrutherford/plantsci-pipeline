@@ -41,7 +41,7 @@ use Carp;
 
 use Moose;
 
-use SmallRNA::Process::GFF3ToSAMProcess;
+use SmallRNA::Process::SRFToFastqProcess;
 
 extends 'SmallRNA::Runable::SmallRNARunable';
 
@@ -85,14 +85,17 @@ sub run
     my $output_file_name = $input_file_name;
 
     if ($output_file_name =~ s/\.($input_format_type)$/.$output_type/) {
+      my $c = $self->config()->{programs}{srf2fastq};
+      my $exec_path = $c->{path};
+
       SmallRNA::Process::SRFToFastqProcess::run(input_file_name => $input_file_name,
-                                                output_file_name => $output_file_name);
+                                                output_file_name => $output_file_name,
+                                                exec_path => );
 
       $self->store_pipedata(generating_pipeprocess => $self->pipeprocess(),
                             file_name => $output_file_name,
                             format_type_name => $output_type,
-                            content_type_name => $input_content_type,
-                            properties => \%props_map);
+                            content_type_name => $input_content_type);
     } else {
       croak("pattern match failed on: ", $output_file_name);
     }
