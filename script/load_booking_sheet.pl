@@ -30,7 +30,7 @@ my $csv = Text::CSV->new({binary => 1});
 
 open my $io, '<', $file;
 
-my $schema = SmallRNA::DB->schema($config);
+my $schema = SmallRNA::DB->new($config);
 
 $csv->column_names ($csv->getline($io));
 
