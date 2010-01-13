@@ -14,7 +14,7 @@ use SmallRNATest;
 
 my $config = SmallRNA::Config->new('t/test_config.yaml');
 
-my $schema = SmallRNA::DB->schema($config);
+my $schema = SmallRNA::DB->new($config);
 
 SmallRNATest::setup($schema, $config);
 

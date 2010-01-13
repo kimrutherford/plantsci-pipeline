@@ -18,7 +18,7 @@ my $in_fastq_file = 't/data/SL234_BCF.090202.30W8NAAXX.s_1.fq';
 my $tempdir = tempdir("/tmp/remove_adaptors_test_$$.XXXXX", CLEANUP => 0);
 
 my $config = SmallRNA::Config->new('t/test_config.yaml');
-my $schema = SmallRNA::DB->schema($config);
+my $schema = SmallRNA::DB->new($config);
 SmallRNATest::setup($schema, $config);
 
 my %barcodes_map =

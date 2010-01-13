@@ -22,7 +22,7 @@ my $in_fastq_file = 't/data/SL283_H3.090805.42L0HAAXX.s_3.fq';
 my $tempdir = tempdir("/tmp/remove_adaptors_test_$$.XXXXX", CLEANUP => 0);
 
 my $config = SmallRNA::Config->new('t/test_config.yaml');
-my $schema = SmallRNA::DB->schema($config);
+my $schema = SmallRNA::DB->new($config);
 SmallRNATest::setup($schema, $config);
 
 my ($reject_file_name, $n_reject_file_name, $fasta_file_name, $output) =
