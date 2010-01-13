@@ -155,8 +155,6 @@ sub add_sequencingrun
 
   my $seq_centre = $self->_find('Organisation',
                                                    name => $sequencing_centre_name);
-  my $process_conf;
-
   my $multiplexing_type = $self->_find('Cvterm',
                                                 name => $multiplexing_type_name);
   my $sequencing_type = $self->_find('Cvterm',
