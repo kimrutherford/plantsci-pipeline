@@ -14,7 +14,7 @@ my $config_file_name = shift;
 
 my $config = SmallRNA::Config->new($config_file_name);
 
-my $schema = SmallRNA::DB->schema($config);
+my $schema = SmallRNA::DB->new($config);
 my $loader = SmallRNA::DBLayer::Loader->new(schema => $schema);
 
 my $pipeline_db = $schema->find_or_create_with_type('Db', { name => 'SmallRNA pipeline database' });
