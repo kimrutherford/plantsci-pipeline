@@ -49,15 +49,15 @@ under the same terms as Perl itself.
 use Params::Validate qw(:all);
 use Carp;
 
-=head2 schema
+=head2 new
 
- Usage   : my $schema = SmallRNA::DB->schema($c->config());
+ Usage   : my $schema = SmallRNA::DB->new($c->config());
  Function: Return a new database connection (schema)
  Args    : $config - if null use the config file from the current directory
                      or some other default location (eg. /etc/smallrna.yaml)
 
 =cut
-sub schema
+sub new
 {
   my $self = shift;
   my $smallrna_config = shift;
