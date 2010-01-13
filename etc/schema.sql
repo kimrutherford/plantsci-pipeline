@@ -4,8 +4,8 @@ DROP TABLE process_conf CASCADE;
 DROP TABLE pipeprocess CASCADE;
 DROP TABLE pipedata CASCADE;
 DROP TABLE pipedata_property CASCADE;
-DROP TABLE sample CASCADE;
-DROP TABLE sample_pipeproject CASCADE;
+DROP TABLE biosample CASCADE;
+DROP TABLE biosample_pipeproject CASCADE;
 DROP TABLE pipeprocess_in_pipedata CASCADE;
 DROP TABLE pipeproject CASCADE;
 DROP TABLE person CASCADE;
@@ -23,10 +23,10 @@ DROP TABLE tissue CASCADE;
 DROP TABLE ecotype CASCADE;
 DROP TABLE organism CASCADE;
 DROP TABLE organism_dbxref CASCADE;
-DROP TABLE sample_pipedata CASCADE;
-DROP TABLE sample_ecotype CASCADE;
-DROP TABLE sample_dbxref CASCADE;
-DROP TABLE coded_sample CASCADE;
+DROP TABLE biosample_pipedata CASCADE;
+DROP TABLE biosample_ecotype CASCADE;
+DROP TABLE biosample_dbxref CASCADE;
+DROP TABLE library CASCADE;
 DROP TABLE sequencing_sample CASCADE;
 DROP TABLE protocol CASCADE;
 DROP TABLE pipeprocess_pub CASCADE;
@@ -349,7 +349,7 @@ CREATE TABLE process_conf_input (
        format_type integer REFERENCES cvterm(cvterm_id) DEFERRABLE INITIALLY DEFERRED,
        content_type integer REFERENCES cvterm(cvterm_id) DEFERRABLE INITIALLY DEFERRED,
        ecotype integer REFERENCES ecotype(ecotype_id) DEFERRABLE INITIALLY DEFERRED,
-       sample_type integer REFERENCES cvterm(cvterm_id) DEFERRABLE INITIALLY DEFERRED
+       biosample_type integer REFERENCES cvterm(cvterm_id) DEFERRABLE INITIALLY DEFERRED
 );
 CREATE TABLE pipeprocess (
        pipeprocess_id serial CONSTRAINT pipeprocess_id_pk PRIMARY KEY,
@@ -381,37 +381,37 @@ CREATE TABLE protocol (
        name text UNIQUE NOT NULL,
        description text NOT NULL
 );
-CREATE TABLE sample (
-       sample_id serial CONSTRAINT sample_id_pk PRIMARY KEY,
+CREATE TABLE biosample (
+       biosample_id serial CONSTRAINT biosample_id_pk PRIMARY KEY,
        created_stamp timestamp NOT NULL DEFAULT now(),
        name text NOT NULL UNIQUE,
        genotype text,
        description text NOT NULL,
        protocol integer NOT NULL REFERENCES protocol(protocol_id) DEFERRABLE INITIALLY DEFERRED,
-       sample_type integer NOT NULL REFERENCES cvterm(cvterm_id) DEFERRABLE INITIALLY DEFERRED,
+       biosample_type integer NOT NULL REFERENCES cvterm(cvterm_id) DEFERRABLE INITIALLY DEFERRED,
        molecule_type integer REFERENCES cvterm(cvterm_id) DEFERRABLE INITIALLY DEFERRED NOT NULL,
        treatment_type integer REFERENCES cvterm(cvterm_id) DEFERRABLE INITIALLY DEFERRED,
        fractionation_type integer REFERENCES cvterm(cvterm_id) DEFERRABLE INITIALLY DEFERRED,
        processing_requirement integer REFERENCES cvterm(cvterm_id) DEFERRABLE INITIALLY DEFERRED NOT NULL,
        tissue integer REFERENCES tissue(tissue_id) DEFERRABLE INITIALLY DEFERRED
 );
-CREATE TABLE sample_dbxref (
-    sample_dbxref_id integer NOT NULL,
-    sample_id integer NOT NULL,
+CREATE TABLE biosample_dbxref (
+    biosample_dbxref_id integer NOT NULL,
+    biosample_id integer NOT NULL,
     dbxref_id integer NOT NULL
 );
-ALTER TABLE ONLY sample_dbxref
-    ADD CONSTRAINT sample_dbxref_sample_fk FOREIGN KEY (sample_id) REFERENCES sample(sample_id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY biosample_dbxref
+    ADD CONSTRAINT biosample_dbxref_biosample_fk FOREIGN KEY (biosample_id) REFERENCES biosample(biosample_id) DEFERRABLE INITIALLY DEFERRED;
 
-ALTER TABLE ONLY sample_dbxref
-    ADD CONSTRAINT sample_dbxref_dbxref_fk FOREIGN KEY (dbxref_id) REFERENCES dbxref(dbxref_id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE ONLY biosample_dbxref
+    ADD CONSTRAINT biosample_dbxref_dbxref_fk FOREIGN KEY (dbxref_id) REFERENCES dbxref(dbxref_id) DEFERRABLE INITIALLY DEFERRED;
 
 
-CREATE TABLE sample_pipeproject (
-       sample_pipeproject_id serial CONSTRAINT sample_pipeproject_id_pk PRIMARY KEY,
-       sample integer REFERENCES sample(sample_id) DEFERRABLE INITIALLY DEFERRED NOT NULL,
+CREATE TABLE biosample_pipeproject (
+       biosample_pipeproject_id serial CONSTRAINT biosample_pipeproject_id_pk PRIMARY KEY,
+       biosample integer REFERENCES biosample(biosample_id) DEFERRABLE INITIALLY DEFERRED NOT NULL,
        pipeproject integer REFERENCES pipeproject(pipeproject_id) DEFERRABLE INITIALLY DEFERRED NOT NULL,
-       CONSTRAINT sample_pipeproject_constraint UNIQUE(sample, pipeproject)
+       CONSTRAINT biosample_pipeproject_constraint UNIQUE(biosample, pipeproject)
 );
 CREATE TABLE pipedata (
        pipedata_id serial CONSTRAINT pipedata_id_pk PRIMARY KEY,
@@ -437,18 +437,18 @@ CREATE TABLE pipeprocess_in_pipedata (
 );
 COMMENT ON TABLE pipeprocess_in_pipedata IS
         'Join table containing the input pipedatas for a pipeprocess';
-CREATE TABLE sample_pipedata (
-       sample_pipedata_id serial CONSTRAINT sample_pipedata_id_pk PRIMARY KEY,
+CREATE TABLE biosample_pipedata (
+       biosample_pipedata_id serial CONSTRAINT biosample_pipedata_id_pk PRIMARY KEY,
        created_stamp timestamp NOT NULL DEFAULT now(),
-       sample integer REFERENCES sample(sample_id) DEFERRABLE INITIALLY DEFERRED NOT NULL,
+       biosample integer REFERENCES biosample(biosample_id) DEFERRABLE INITIALLY DEFERRED NOT NULL,
        pipedata integer REFERENCES pipedata(pipedata_id) DEFERRABLE INITIALLY DEFERRED NOT NULL
 );
-CREATE TABLE sample_ecotype (
-       sample_ecotype_id serial CONSTRAINT sample_ecotype_id_pk PRIMARY KEY,
+CREATE TABLE biosample_ecotype (
+       biosample_ecotype_id serial CONSTRAINT biosample_ecotype_id_pk PRIMARY KEY,
        created_stamp timestamp NOT NULL DEFAULT now(),
-       sample integer REFERENCES sample(sample_id) DEFERRABLE INITIALLY DEFERRED NOT NULL,
+       biosample integer REFERENCES biosample(biosample_id) DEFERRABLE INITIALLY DEFERRED NOT NULL,
        ecotype integer REFERENCES ecotype(ecotype_id) DEFERRABLE INITIALLY DEFERRED NOT NULL,
-       CONSTRAINT sample_ecotype_constraint UNIQUE(sample, ecotype)
+       CONSTRAINT biosample_ecotype_constraint UNIQUE(biosample, ecotype)
 );
 CREATE TABLE sequencing_sample (
        sequencing_sample_id serial CONSTRAINT sequencing_sample_id_pk PRIMARY KEY,
@@ -473,19 +473,16 @@ CREATE TABLE sequencingrun (
        -- set when analysis starts:
        CHECK (CASE WHEN run_date IS NULL THEN data_received_date IS NULL ELSE TRUE END)
 );
-CREATE TABLE coded_sample (
-       coded_sample_id serial CONSTRAINT coded_sample_id_pk PRIMARY KEY,
+CREATE TABLE library (
+       library_id serial CONSTRAINT library_id_pk PRIMARY KEY,
        created_stamp timestamp NOT NULL DEFAULT now(),
        description text,
-       coded_sample_type integer REFERENCES cvterm(cvterm_id) DEFERRABLE INITIALLY DEFERRED NOT NULL,
-       sample integer REFERENCES sample(sample_id) DEFERRABLE INITIALLY DEFERRED NOT NULL,
+       library_type integer REFERENCES cvterm(cvterm_id) DEFERRABLE INITIALLY DEFERRED NOT NULL,
+       biosample integer REFERENCES biosample(biosample_id) DEFERRABLE INITIALLY DEFERRED NOT NULL,
        sequencing_sample integer REFERENCES sequencing_sample(sequencing_sample_id) DEFERRABLE INITIALLY DEFERRED,
        adaptor integer REFERENCES cvterm(cvterm_id) DEFERRABLE INITIALLY DEFERRED NOT NULL,
        barcode integer REFERENCES barcode(barcode_id) DEFERRABLE INITIALLY DEFERRED
 );
-COMMENT ON TABLE coded_sample IS
-  'This table records the many-to-many relationship between samples and '
-  'sequencing runs and the type of the run (initial, re-run, replicate etc.)';
 CREATE TABLE pipeprocess_pub (
        pipeprocess_pub_id serial CONSTRAINT pipeprocess_pub_id_pk PRIMARY KEY,
        pipeprocess_id integer NOT NULL,
