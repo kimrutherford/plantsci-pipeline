@@ -106,12 +106,9 @@ my %terms = (
              },
              'tracking analysis types' =>
              {
-              'non-multiplexed sequencing run' =>
+              'sequencing run' =>
                 'This pseudo-analysis generates raw sequence files, ' .
-                'with quality scores, with no multiplexing',
-              'multiplexed sequencing run' =>
-                'This pseudo-analysis generates raw sequence files, ' .
-                'with quality scores, and uses multiplexing/barcodes',
+                'with quality scores',
               'srf to fastq converter' =>
                 'Create a FastQ file from an SRF file',
               'trim reads' =>
@@ -616,32 +613,27 @@ $schema->txn_do(sub {
 
 my @analyses = (
                 {
-                 type_term_name => 'non-multiplexed sequencing run',
+                 type_term_name => 'sequencing run',
                  detail => 'Sainsbury',
                  inputs => []
                 },
                 {
-                 type_term_name => 'non-multiplexed sequencing run',
+                 type_term_name => 'sequencing run',
                  detail => 'CRI',
                  inputs => []
                 },
                 {
-                 type_term_name => 'multiplexed sequencing run',
-                 detail => 'CRI',
-                 inputs => []
-                },
-                {
-                 type_term_name => 'non-multiplexed sequencing run',
+                 type_term_name => 'sequencing run',
                  detail => 'BGI',
                  inputs => []
                 },
                 {
-                 type_term_name => 'non-multiplexed sequencing run',
+                 type_term_name => 'sequencing run',
                  detail => 'CSHL',
                  inputs => []
                 },
                 {
-                 type_term_name => 'non-multiplexed sequencing run',
+                 type_term_name => 'sequencing run',
                  detail => 'Edinburgh',
                  inputs => []
                 },
