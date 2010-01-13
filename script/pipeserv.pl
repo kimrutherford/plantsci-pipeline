@@ -150,7 +150,7 @@ while (1) {
 
     $schema->txn_do($code);
 
-    if (defined $ENV{'PIPESERV_MAX_JOBS'} && $ENV{'PIPESERV_MAX_JOBS'} > 0) {
+    if (!$run_locally && defined $ENV{'PIPESERV_MAX_JOBS'} && $ENV{'PIPESERV_MAX_JOBS'} > 0) {
       for (1..1000) { # don't do it forever, in case there's a problem
         my $count = 0;
 
@@ -164,7 +164,7 @@ while (1) {
 
         if ($count >= $ENV{'PIPESERV_MAX_JOBS'}) {
           warn "$count jobs running - sleeping\n";
-          if ($test_mode || $run_locally) {
+          if ($test_mode) {
             sleep (1);
           } else {
             sleep (20);
