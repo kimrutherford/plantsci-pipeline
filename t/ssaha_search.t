@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 3;
+use Test::More tests => 1;
 use File::Temp qw(tempfile);
 use Test::Files;
 
@@ -12,6 +12,9 @@ BEGIN {
   unshift @INC, 't';
   use_ok 'SmallRNA::Process::SSAHASearchProcess';
 }
+
+# disabled because ssaha v1 isn't currently available
+__END__
 
 my $input_file_name = 't/data/reads_fasta_summary_test.fasta';
 my $db_file_name = 't/data/arabidopsis_thaliana_test_genome.fasta';
