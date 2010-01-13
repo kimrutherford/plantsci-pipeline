@@ -119,8 +119,8 @@ __PACKAGE__->has_many(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.04005
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:0gZyl41qMMv1eV1gIy74bg
+# Created by DBIx::Class::Schema::Loader v0.04006
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:SJuVOgvm/boTnYfhCLdeMA
 
 __PACKAGE__->many_to_many('pipedatas' => 'sample_pipedatas', 'pipedata');
 __PACKAGE__->many_to_many('ecotypes' => 'sample_ecotypes', 'ecotype');

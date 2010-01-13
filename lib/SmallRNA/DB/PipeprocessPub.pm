@@ -30,8 +30,8 @@ __PACKAGE__->belongs_to(
 __PACKAGE__->belongs_to("pub", "SmallRNA::DB::Pub", { pub_id => "pub_id" });
 
 
-# Created by DBIx::Class::Schema::Loader v0.04005
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:scosBk9o+Mr3wS5mNIP2tA
+# Created by DBIx::Class::Schema::Loader v0.04006
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:LY1B0NTa8nqSbAoe3rUV1Q
 
 
 # You can replace this text with custom content, and it will be preserved on regeneration

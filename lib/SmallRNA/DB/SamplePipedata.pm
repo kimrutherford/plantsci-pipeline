@@ -37,7 +37,7 @@ __PACKAGE__->belongs_to(
 __PACKAGE__->belongs_to("sample", "SmallRNA::DB::Sample", { sample_id => "sample" });
 
 
-# Created by DBIx::Class::Schema::Loader v0.04005
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:CoqFQ9J0UvHwBp+pL5AtWA
+# Created by DBIx::Class::Schema::Loader v0.04006
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:P7kj/JueUi2X+B5RCWS8Rg
 
 1;

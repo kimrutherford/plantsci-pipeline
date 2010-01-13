@@ -56,8 +56,8 @@ __PACKAGE__->has_many(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.04005
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:Lv7SOBa9/wLW0lbfmsg/Xg
+# Created by DBIx::Class::Schema::Loader v0.04006
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:D8ELs1re+H+R1WbiB/62iA
 
 __PACKAGE__->many_to_many('samples' => 'sample_pipeprojects', 'sample');
 

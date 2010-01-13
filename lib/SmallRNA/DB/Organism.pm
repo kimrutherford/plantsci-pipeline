@@ -71,8 +71,8 @@ __PACKAGE__->has_many(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.04005
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:LCgru7pcyY4VX/AZ8qu/cQ
+# Created by DBIx::Class::Schema::Loader v0.04006
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:Fqui5xmYkJAc9GNHGCdvWQ
 
 # the genus and species, used when displaying organisms
 sub full_name {

@@ -92,8 +92,8 @@ __PACKAGE__->has_many(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.04005
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:M1YaMOxBmJYT475Pf9GL4Q
+# Created by DBIx::Class::Schema::Loader v0.04006
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:KY5krrJEkvbJf/AK3nisQQ
 
 __PACKAGE__->many_to_many(input_pipedatas => 'pipeprocess_in_pipedatas',
                           'pipedata' );

@@ -31,8 +31,8 @@ __PACKAGE__->belongs_to(
 __PACKAGE__->belongs_to("sample", "SmallRNA::DB::Sample", { sample_id => "sample" });
 
 
-# Created by DBIx::Class::Schema::Loader v0.04005
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:8kxcgUE5VHL91XyD8fyE1Q
+# Created by DBIx::Class::Schema::Loader v0.04006
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:GFFtEnR1elWCTm1Wlo7jEw
 
 
 # You can replace this text with custom content, and it will be preserved on regeneration

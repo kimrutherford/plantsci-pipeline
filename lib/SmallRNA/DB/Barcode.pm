@@ -58,8 +58,8 @@ __PACKAGE__->has_many(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.04005
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:9x8Cak4clfG0eA4VqIeCRw
+# Created by DBIx::Class::Schema::Loader v0.04006
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:gHYgLJaxv+B+e9SNyDXKAQ
 
 sub long_identifier
 {

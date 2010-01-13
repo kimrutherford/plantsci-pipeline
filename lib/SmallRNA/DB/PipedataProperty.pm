@@ -37,8 +37,8 @@ __PACKAGE__->belongs_to(
 __PACKAGE__->belongs_to("type", "SmallRNA::DB::Cvterm", { cvterm_id => "type" });
 
 
-# Created by DBIx::Class::Schema::Loader v0.04005
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:QrcWfXOEw00Pxb5THL8NoA
+# Created by DBIx::Class::Schema::Loader v0.04006
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:AGAh/SDUZY/PzNu4ykljNQ
 
 
 # You can replace this text with custom content, and it will be preserved on regeneration

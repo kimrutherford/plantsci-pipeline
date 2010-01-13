@@ -8,8 +8,8 @@ use base 'DBIx::Class::Schema';
 __PACKAGE__->load_classes;
 
 
-# Created by DBIx::Class::Schema::Loader v0.04005
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:c8bmoIPFDvtC/D52J11brg
+# Created by DBIx::Class::Schema::Loader v0.04006
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:6MXa2PCFbpoh2+Fkr5IYsw
 
 for my $source (__PACKAGE__->sources()) {
   __PACKAGE__->source($source)->resultset_class('SmallRNA::DBResultSet');

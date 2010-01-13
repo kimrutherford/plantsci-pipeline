@@ -51,8 +51,8 @@ __PACKAGE__->has_many(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.04005
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:e6Qau0DRTw923KppwJ/JYA
+# Created by DBIx::Class::Schema::Loader v0.04006
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:GofuhMJYQeWe0syU1lFIFg
 
 # the description and the organism full name, used when displaying ecotypes
 sub long_description

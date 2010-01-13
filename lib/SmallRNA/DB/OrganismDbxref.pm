@@ -31,8 +31,8 @@ __PACKAGE__->belongs_to(
 __PACKAGE__->belongs_to("dbxref", "SmallRNA::DB::Dbxref", { dbxref_id => "dbxref_id" });
 
 
-# Created by DBIx::Class::Schema::Loader v0.04005
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:5VPYxg5fXaQU77VjUuWRfw
+# Created by DBIx::Class::Schema::Loader v0.04006
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:046C7SYrZ8LkrQtnCcY5cg
 
 
 # You can replace this text with custom content, and it will be preserved on regeneration
