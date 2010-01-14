@@ -26,7 +26,7 @@ DROP TABLE organism_dbxref CASCADE;
 DROP TABLE biosample_pipedata CASCADE;
 DROP TABLE biosample_ecotype CASCADE;
 DROP TABLE biosample_dbxref CASCADE;
-DROP TABLE library CASCADE;
+DROP TABLE coded_sample CASCADE;
 DROP TABLE sequencing_sample CASCADE;
 DROP TABLE protocol CASCADE;
 DROP TABLE pipeprocess_pub CASCADE;
@@ -473,11 +473,11 @@ CREATE TABLE sequencingrun (
        -- set when analysis starts:
        CHECK (CASE WHEN run_date IS NULL THEN data_received_date IS NULL ELSE TRUE END)
 );
-CREATE TABLE library (
-       library_id serial CONSTRAINT library_id_pk PRIMARY KEY,
+CREATE TABLE coded_sample (
+       coded_sample_id serial CONSTRAINT coded_sample_id_pk PRIMARY KEY,
        created_stamp timestamp NOT NULL DEFAULT now(),
        description text,
-       library_type integer REFERENCES cvterm(cvterm_id) DEFERRABLE INITIALLY DEFERRED NOT NULL,
+       coded_sample_type integer REFERENCES cvterm(cvterm_id) DEFERRABLE INITIALLY DEFERRED NOT NULL,
        biosample integer REFERENCES biosample(biosample_id) DEFERRABLE INITIALLY DEFERRED NOT NULL,
        sequencing_sample integer REFERENCES sequencing_sample(sequencing_sample_id) DEFERRABLE INITIALLY DEFERRED,
        adaptor integer REFERENCES cvterm(cvterm_id) DEFERRABLE INITIALLY DEFERRED NOT NULL,
