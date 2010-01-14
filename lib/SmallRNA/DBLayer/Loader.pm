@@ -330,7 +330,7 @@ sub get_unique_identifier
   my $field_name = shift;
   my $prefix = shift;
 
-  my $rs = $schema->resultset($type)->search_like({$field_name, "$prefix%"});
+  my $rs = $schema->resultset($type)->search({$field_name, { -like => "$prefix%"}});
 
   my $max = 0;
 
