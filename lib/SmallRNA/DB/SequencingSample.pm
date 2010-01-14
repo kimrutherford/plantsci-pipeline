@@ -27,8 +27,8 @@ __PACKAGE__->set_primary_key("sequencing_sample_id");
 __PACKAGE__->add_unique_constraint("sequencing_sample_name_key", ["name"]);
 __PACKAGE__->add_unique_constraint("sequencing_sample_id_pk", ["sequencing_sample_id"]);
 __PACKAGE__->has_many(
-  "coded_samples",
-  "SmallRNA::DB::CodedSample",
+  "libraries",
+  "SmallRNA::DB::Library",
   { "foreign.sequencing_sample" => "self.sequencing_sample_id" },
 );
 __PACKAGE__->has_many(
@@ -39,7 +39,7 @@ __PACKAGE__->has_many(
 
 
 # Created by DBIx::Class::Schema::Loader v0.04006
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:ti9hAODCLNKZV2yE1E2e9A
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:jvmegVm4leQYlfsGaVC7kg
 
 
 # You can replace this text with custom content, and it will be preserved on regeneration

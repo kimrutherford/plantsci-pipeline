@@ -106,12 +106,12 @@ dependencies.
 
     Columns of this table:
  - =name= :: The user friendly name for this =barcode_set=
-*** =coded_sample=
+*** =library=
     This table connects a [[sequencing_sample][sequencing sample]], a [[biosample]] and a [[barcode]].  The bar
     code is optional as a sequencing sample isn't always multiplexed.
 
     Columns of this table:
- - =coded_sample_type= :: specifies whether this =coded_sample= is an initial
+ - =library_type= :: specifies whether this =library= is an initial
    run or a technical replicate or biological replicate.
  - =description= :: an optional description
 *** =cv=

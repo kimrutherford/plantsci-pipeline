@@ -113,14 +113,14 @@ __PACKAGE__->has_many(
   { "foreign.biosample" => "self.biosample_id" },
 );
 __PACKAGE__->has_many(
-  "coded_samples",
-  "SmallRNA::DB::CodedSample",
+  "libraries",
+  "SmallRNA::DB::Library",
   { "foreign.biosample" => "self.biosample_id" },
 );
 
 
 # Created by DBIx::Class::Schema::Loader v0.04006
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:WjTXMCZIod91eyDnc05h6g
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:KjpTnsitonYdaZcbWBICnA
 
 __PACKAGE__->many_to_many('pipedatas' => 'biosample_pipedatas', 'pipedata');
 __PACKAGE__->many_to_many('ecotypes' => 'biosample_ecotypes', 'ecotype');

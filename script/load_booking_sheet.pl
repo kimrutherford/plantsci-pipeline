@@ -224,7 +224,7 @@ sub create_biosample
   return $biosample;
 }
 
-sub create_coded_sample
+sub create_library
 {
   my $biosample = shift;
   my $sequencing_sample = shift;
@@ -232,31 +232,31 @@ sub create_coded_sample
   my $barcode = shift;
   my $adaptor = shift;
 
-  my %coded_sample_args = (
-                        biosample => $biosample,
-                        sequencing_sample => $sequencing_sample,
-                       );
+  my %library_args = (
+                      biosample => $biosample,
+                      sequencing_sample => $sequencing_sample,
+                     );
 
   if (defined $barcode) {
-    $coded_sample_args{barcode} = $barcode;
-    $coded_sample_args{description} =
-      'barcoded sample for: ' . $biosample->name() . ' using barcode: '
+    $library_args{barcode} = $barcode;
+    $library_args{description} =
+      'barcoded library for: ' . $biosample->name() . ' using barcode: '
         . $barcode->identifier();
   } else {
-    $coded_sample_args{description} = 'non-barcoded sample for: ' . $biosample->name();
+    $library_args{description} = 'non-barcoded library for: ' . $biosample->name();
   }
 
   if ($is_replicate) {
-    $coded_sample_args{coded_sample_type} = find('Cvterm',
-                                                 name => 'technical replicate');
+    $library_args{library_type} = find('Cvterm',
+                                       name => 'technical replicate');
   } else {
-    $coded_sample_args{coded_sample_type} = find('Cvterm',
-                                                 name => 'initial run');
+    $library_args{library_type} = find('Cvterm',
+                                       name => 'initial run');
   }
 
-  $coded_sample_args{adaptor} = $adaptor;
+  $library_args{adaptor} = $adaptor;
 
-  return create('CodedSample', {%coded_sample_args});
+  return create('Library', {%library_args});
 }
 
 my %file_name_to_sequencingrun = ();
@@ -657,7 +657,7 @@ sub process_row
                                              [@ecotypes], $do_processing, $biosample_type);
 
             push @all_biosamples, $biosample;
-            create_coded_sample($biosample, $sequencing_sample, $is_replicate, $barcode, $adaptor);
+            create_library($biosample, $sequencing_sample, $is_replicate, $barcode, $adaptor);
           }
         } else {
           my $biosample_name = $biosample_prefix;
@@ -670,7 +670,7 @@ sub process_row
                                            $molecule_type,
                                            [@ecotypes], $do_processing, $biosample_type);
           push @all_biosamples, $biosample;
-          create_coded_sample($biosample, $sequencing_sample, $is_replicate, undef, $adaptor);
+          create_library($biosample, $sequencing_sample, $is_replicate, undef, $adaptor);
         }
 
         my $sequencing_run =

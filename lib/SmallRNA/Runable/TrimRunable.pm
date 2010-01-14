@@ -91,10 +91,10 @@ sub _find_barcode_set_and_adaptor
   my @sequencingruns = $seq_run_process->sequencingruns();
 
   my $sequencing_sample = $sequencingruns[0]->sequencing_sample();
-  my @coded_samples = $sequencing_sample->coded_samples();
+  my @libraries = $sequencing_sample->libraries();
 
-  my $sample_barcode = $coded_samples[0]->barcode();
-  my $sample_adaptor = $coded_samples[0]->adaptor();
+  my $sample_barcode = $libraries[0]->barcode();
+  my $sample_adaptor = $libraries[0]->adaptor();
 
   if (defined $sample_barcode) {
     return ($sample_barcode->barcode_set(), $sample_adaptor);
@@ -126,17 +126,17 @@ sub _find_biosample_from_code
 
   my $sequencing_sample = $sequencingrun->sequencing_sample();
 
-  my @coded_samples = $sequencing_sample->coded_samples();
+  my @libraries = $sequencing_sample->libraries();
 
   my $biosample = undef;
 
-  for my $coded_sample (@coded_samples) {
-    if ($coded_sample->barcode()->code() eq $code) {
+  for my $library (@libraries) {
+    if ($library->barcode()->code() eq $code) {
       if (defined $biosample) {
         croak ("two biosamples used the same barcode: ", $biosample->biosample_id(),
-               " and ", $coded_sample->biosample());
+               " and ", $library->biosample());
       } else {
-        $biosample = $coded_sample->biosample();
+        $biosample = $library->biosample();
       }
     }
   }

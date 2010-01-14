@@ -52,14 +52,14 @@ __PACKAGE__->belongs_to(
   { barcode_set_id => "barcode_set" },
 );
 __PACKAGE__->has_many(
-  "coded_samples",
-  "SmallRNA::DB::CodedSample",
+  "libraries",
+  "SmallRNA::DB::Library",
   { "foreign.barcode" => "self.barcode_id" },
 );
 
 
 # Created by DBIx::Class::Schema::Loader v0.04006
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:gHYgLJaxv+B+e9SNyDXKAQ
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:1q0UFuilUTFYLPbB/QTJ0w
 
 sub long_identifier
 {

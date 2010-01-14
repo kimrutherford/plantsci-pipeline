@@ -282,7 +282,7 @@ sub id_of_object
              or
            my $display_name = SmallRNA::DB::display_name($class_name);
  Function: return a description of a table that is suitable for display.
-           eg. turn "coded_sample" into "coded sample"
+           eg. turn "sequencing_run" into "sequencing run"
 
 =cut
 sub display_name

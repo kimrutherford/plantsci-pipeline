@@ -44,17 +44,17 @@ ALTER TABLE ONLY public.person DROP CONSTRAINT person_role_fkey;
 ALTER TABLE ONLY public.person DROP CONSTRAINT person_organisation_fkey;
 ALTER TABLE ONLY public.organism_dbxref DROP CONSTRAINT organism_dbxref_organism_id_fkey;
 ALTER TABLE ONLY public.organism_dbxref DROP CONSTRAINT organism_dbxref_dbxref_id_fkey;
+ALTER TABLE ONLY public.library DROP CONSTRAINT library_sequencing_sample_fkey;
+ALTER TABLE ONLY public.library DROP CONSTRAINT library_library_type_fkey;
+ALTER TABLE ONLY public.library DROP CONSTRAINT library_biosample_fkey;
+ALTER TABLE ONLY public.library DROP CONSTRAINT library_barcode_fkey;
+ALTER TABLE ONLY public.library DROP CONSTRAINT library_adaptor_fkey;
 ALTER TABLE ONLY public.ecotype DROP CONSTRAINT ecotype_organism_fkey;
 ALTER TABLE ONLY public.dbxref DROP CONSTRAINT dbxref_db_id_fkey;
 ALTER TABLE ONLY public.cvterm DROP CONSTRAINT cvterm_dbxref_id_fkey;
 ALTER TABLE ONLY public.cvterm_dbxref DROP CONSTRAINT cvterm_dbxref_dbxref_id_fkey;
 ALTER TABLE ONLY public.cvterm_dbxref DROP CONSTRAINT cvterm_dbxref_cvterm_id_fkey;
 ALTER TABLE ONLY public.cvterm DROP CONSTRAINT cvterm_cv_id_fkey;
-ALTER TABLE ONLY public.coded_sample DROP CONSTRAINT coded_sample_sequencing_sample_fkey;
-ALTER TABLE ONLY public.coded_sample DROP CONSTRAINT coded_sample_coded_sample_type_fkey;
-ALTER TABLE ONLY public.coded_sample DROP CONSTRAINT coded_sample_biosample_fkey;
-ALTER TABLE ONLY public.coded_sample DROP CONSTRAINT coded_sample_barcode_fkey;
-ALTER TABLE ONLY public.coded_sample DROP CONSTRAINT coded_sample_adaptor_fkey;
 ALTER TABLE ONLY public.biosample DROP CONSTRAINT biosample_treatment_type_fkey;
 ALTER TABLE ONLY public.biosample DROP CONSTRAINT biosample_tissue_fkey;
 ALTER TABLE ONLY public.biosample DROP CONSTRAINT biosample_protocol_fkey;
@@ -114,6 +114,7 @@ ALTER TABLE ONLY public.organism_dbxref DROP CONSTRAINT organism_dbxref_pkey;
 ALTER TABLE ONLY public.organism_dbxref DROP CONSTRAINT organism_dbxref_c1;
 ALTER TABLE ONLY public.organism DROP CONSTRAINT organism_c1;
 ALTER TABLE ONLY public.organisation DROP CONSTRAINT organisation_id_pk;
+ALTER TABLE ONLY public.library DROP CONSTRAINT library_id_pk;
 ALTER TABLE ONLY public.ecotype DROP CONSTRAINT ecotype_id_pk;
 ALTER TABLE ONLY public.dbxref DROP CONSTRAINT dbxref_pkey;
 ALTER TABLE ONLY public.dbxref DROP CONSTRAINT dbxref_c1;
@@ -126,7 +127,6 @@ ALTER TABLE ONLY public.cvterm DROP CONSTRAINT cvterm_c2;
 ALTER TABLE ONLY public.cvterm DROP CONSTRAINT cvterm_c1;
 ALTER TABLE ONLY public.cv DROP CONSTRAINT cv_pkey;
 ALTER TABLE ONLY public.cv DROP CONSTRAINT cv_c1;
-ALTER TABLE ONLY public.coded_sample DROP CONSTRAINT coded_sample_id_pk;
 ALTER TABLE ONLY public.biosample_pipeproject DROP CONSTRAINT biosample_pipeproject_id_pk;
 ALTER TABLE ONLY public.biosample_pipeproject DROP CONSTRAINT biosample_pipeproject_constraint;
 ALTER TABLE ONLY public.biosample_pipedata DROP CONSTRAINT biosample_pipedata_id_pk;
@@ -157,13 +157,13 @@ ALTER TABLE public.person ALTER COLUMN person_id DROP DEFAULT;
 ALTER TABLE public.organism_dbxref ALTER COLUMN organism_dbxref_id DROP DEFAULT;
 ALTER TABLE public.organism ALTER COLUMN organism_id DROP DEFAULT;
 ALTER TABLE public.organisation ALTER COLUMN organisation_id DROP DEFAULT;
+ALTER TABLE public.library ALTER COLUMN library_id DROP DEFAULT;
 ALTER TABLE public.ecotype ALTER COLUMN ecotype_id DROP DEFAULT;
 ALTER TABLE public.dbxref ALTER COLUMN dbxref_id DROP DEFAULT;
 ALTER TABLE public.db ALTER COLUMN db_id DROP DEFAULT;
 ALTER TABLE public.cvterm_dbxref ALTER COLUMN cvterm_dbxref_id DROP DEFAULT;
 ALTER TABLE public.cvterm ALTER COLUMN cvterm_id DROP DEFAULT;
 ALTER TABLE public.cv ALTER COLUMN cv_id DROP DEFAULT;
-ALTER TABLE public.coded_sample ALTER COLUMN coded_sample_id DROP DEFAULT;
 ALTER TABLE public.biosample_pipeproject ALTER COLUMN biosample_pipeproject_id DROP DEFAULT;
 ALTER TABLE public.biosample_pipedata ALTER COLUMN biosample_pipedata_id DROP DEFAULT;
 ALTER TABLE public.biosample_ecotype ALTER COLUMN biosample_ecotype_id DROP DEFAULT;
@@ -206,6 +206,8 @@ DROP TABLE public.organism_dbxref;
 DROP TABLE public.organism;
 DROP SEQUENCE public.organisation_organisation_id_seq;
 DROP TABLE public.organisation;
+DROP SEQUENCE public.library_library_id_seq;
+DROP TABLE public.library;
 DROP SEQUENCE public.ecotype_ecotype_id_seq;
 DROP TABLE public.ecotype;
 DROP SEQUENCE public.dbxref_dbxref_id_seq;
@@ -218,8 +220,6 @@ DROP SEQUENCE public.cvterm_cvterm_id_seq;
 DROP TABLE public.cvterm;
 DROP SEQUENCE public.cv_cv_id_seq;
 DROP TABLE public.cv;
-DROP SEQUENCE public.coded_sample_coded_sample_id_seq;
-DROP TABLE public.coded_sample;
 DROP SEQUENCE public.biosample_pipeproject_biosample_pipeproject_id_seq;
 DROP TABLE public.biosample_pipeproject;
 DROP SEQUENCE public.biosample_pipedata_biosample_pipedata_id_seq;
@@ -615,51 +615,6 @@ ALTER SEQUENCE biosample_pipeproject_biosample_pipeproject_id_seq OWNED BY biosa
 --
 
 SELECT pg_catalog.setval('biosample_pipeproject_biosample_pipeproject_id_seq', 10, true);
-
-
---
--- Name: coded_sample; Type: TABLE; Schema: public; Owner: kmr44; Tablespace: 
---
-
-CREATE TABLE coded_sample (
-    coded_sample_id integer NOT NULL,
-    created_stamp timestamp without time zone DEFAULT now() NOT NULL,
-    description text,
-    coded_sample_type integer NOT NULL,
-    biosample integer NOT NULL,
-    sequencing_sample integer,
-    adaptor integer NOT NULL,
-    barcode integer
-);
-
-
-ALTER TABLE public.coded_sample OWNER TO kmr44;
-
---
--- Name: coded_sample_coded_sample_id_seq; Type: SEQUENCE; Schema: public; Owner: kmr44
---
-
-CREATE SEQUENCE coded_sample_coded_sample_id_seq
-    INCREMENT BY 1
-    NO MAXVALUE
-    NO MINVALUE
-    CACHE 1;
-
-
-ALTER TABLE public.coded_sample_coded_sample_id_seq OWNER TO kmr44;
-
---
--- Name: coded_sample_coded_sample_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: kmr44
---
-
-ALTER SEQUENCE coded_sample_coded_sample_id_seq OWNED BY coded_sample.coded_sample_id;
-
-
---
--- Name: coded_sample_coded_sample_id_seq; Type: SEQUENCE SET; Schema: public; Owner: kmr44
---
-
-SELECT pg_catalog.setval('coded_sample_coded_sample_id_seq', 10, true);
 
 
 --
@@ -1060,6 +1015,51 @@ ALTER SEQUENCE ecotype_ecotype_id_seq OWNED BY ecotype.ecotype_id;
 --
 
 SELECT pg_catalog.setval('ecotype_ecotype_id_seq', 27, true);
+
+
+--
+-- Name: library; Type: TABLE; Schema: public; Owner: kmr44; Tablespace: 
+--
+
+CREATE TABLE library (
+    library_id integer NOT NULL,
+    created_stamp timestamp without time zone DEFAULT now() NOT NULL,
+    description text,
+    library_type integer NOT NULL,
+    biosample integer NOT NULL,
+    sequencing_sample integer,
+    adaptor integer NOT NULL,
+    barcode integer
+);
+
+
+ALTER TABLE public.library OWNER TO kmr44;
+
+--
+-- Name: library_library_id_seq; Type: SEQUENCE; Schema: public; Owner: kmr44
+--
+
+CREATE SEQUENCE library_library_id_seq
+    INCREMENT BY 1
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.library_library_id_seq OWNER TO kmr44;
+
+--
+-- Name: library_library_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: kmr44
+--
+
+ALTER SEQUENCE library_library_id_seq OWNED BY library.library_id;
+
+
+--
+-- Name: library_library_id_seq; Type: SEQUENCE SET; Schema: public; Owner: kmr44
+--
+
+SELECT pg_catalog.setval('library_library_id_seq', 10, true);
 
 
 --
@@ -1966,13 +1966,6 @@ ALTER TABLE biosample_pipeproject ALTER COLUMN biosample_pipeproject_id SET DEFA
 
 
 --
--- Name: coded_sample_id; Type: DEFAULT; Schema: public; Owner: kmr44
---
-
-ALTER TABLE coded_sample ALTER COLUMN coded_sample_id SET DEFAULT nextval('coded_sample_coded_sample_id_seq'::regclass);
-
-
---
 -- Name: cv_id; Type: DEFAULT; Schema: public; Owner: kmr44
 --
 
@@ -2012,6 +2005,13 @@ ALTER TABLE dbxref ALTER COLUMN dbxref_id SET DEFAULT nextval('dbxref_dbxref_id_
 --
 
 ALTER TABLE ecotype ALTER COLUMN ecotype_id SET DEFAULT nextval('ecotype_ecotype_id_seq'::regclass);
+
+
+--
+-- Name: library_id; Type: DEFAULT; Schema: public; Owner: kmr44
+--
+
+ALTER TABLE library ALTER COLUMN library_id SET DEFAULT nextval('library_library_id_seq'::regclass);
 
 
 --
@@ -2145,96 +2145,96 @@ ALTER TABLE tissue ALTER COLUMN tissue_id SET DEFAULT nextval('tissue_tissue_id_
 --
 
 COPY barcode (barcode_id, created_stamp, identifier, barcode_set, code) FROM stdin;
-1	2010-01-14 15:50:35.624216	A	1	TACCT
-2	2010-01-14 15:50:35.624216	B	1	TACGA
-3	2010-01-14 15:50:35.624216	C	1	TAGCA
-4	2010-01-14 15:50:35.624216	D	1	TAGGT
-5	2010-01-14 15:50:35.624216	E	1	TCAAG
-6	2010-01-14 15:50:35.624216	F	1	TCATC
-7	2010-01-14 15:50:35.624216	G	1	TCTAC
-8	2010-01-14 15:50:35.624216	H	1	TCTTG
-9	2010-01-14 15:50:35.624216	I	1	TGAAC
-10	2010-01-14 15:50:35.624216	J	1	TGTTG
-11	2010-01-14 15:50:35.624216	K	1	TGTTC
-12	2010-01-14 15:50:35.624216	A	2	AAAT
-13	2010-01-14 15:50:35.624216	B	2	ATCT
-14	2010-01-14 15:50:35.624216	C	2	AGGT
-15	2010-01-14 15:50:35.624216	D	2	ACTT
-16	2010-01-14 15:50:35.624216	E	2	TACT
-17	2010-01-14 15:50:35.624216	F	2	TTGT
-18	2010-01-14 15:50:35.624216	G	2	TGTT
-19	2010-01-14 15:50:35.624216	H	2	TCAT
-20	2010-01-14 15:50:35.624216	I	2	GAGT
-21	2010-01-14 15:50:35.624216	J	2	GTTT
-22	2010-01-14 15:50:35.624216	K	2	GGAT
-23	2010-01-14 15:50:35.624216	L	2	GCCT
-24	2010-01-14 15:50:35.624216	M	2	CATT
-25	2010-01-14 15:50:35.624216	N	2	CTAT
-26	2010-01-14 15:50:35.624216	O	2	CGCT
-27	2010-01-14 15:50:35.624216	P	2	CCGT
-28	2010-01-14 15:50:35.624216	A	3	CGTGA
-29	2010-01-14 15:50:35.624216	A1	3	ACGCA
-30	2010-01-14 15:50:35.624216	A2	3	TGCTC
-31	2010-01-14 15:50:35.624216	B	3	GTCGA
-32	2010-01-14 15:50:35.624216	B1	3	GCGCG
-33	2010-01-14 15:50:35.624216	B2	3	CTCTA
-34	2010-01-14 15:50:35.624216	C	3	AGCGC
-35	2010-01-14 15:50:35.624216	C1	3	ATGCG
-36	2010-01-14 15:50:35.624216	C2	3	GTCTC
-37	2010-01-14 15:50:35.624216	D	3	TATGA
-38	2010-01-14 15:50:35.624216	D1	3	GTGCA
-39	2010-01-14 15:50:35.624216	D2	3	CAGTG
-40	2010-01-14 15:50:35.624216	E	3	CACAG
-41	2010-01-14 15:50:35.624216	E1	3	GATCG
-42	2010-01-14 15:50:35.624216	E2	3	TAGTA
-43	2010-01-14 15:50:35.624216	F	3	TGCAG
-44	2010-01-14 15:50:35.624216	F1	3	TCTCA
-45	2010-01-14 15:50:35.624216	F2	3	ACGTG
-46	2010-01-14 15:50:35.624216	G	3	CTCAC
-47	2010-01-14 15:50:35.624216	G1	3	AGTCG
-48	2010-01-14 15:50:35.624216	G2	3	GCGTA
-49	2010-01-14 15:50:35.624216	H	3	GTCAG
-50	2010-01-14 15:50:35.624216	H1	3	GCAGC
-51	2010-01-14 15:50:35.624216	H2	3	TCGTC
-52	2010-01-14 15:50:35.624216	I	3	TAGAC
-53	2010-01-14 15:50:35.624216	I1	3	AGAGA
-54	2010-01-14 15:50:35.624216	I2	3	ATGTA
-55	2010-01-14 15:50:35.624216	J	3	GCGAC
-56	2010-01-14 15:50:35.624216	J1	3	CGAGC
-57	2010-01-14 15:50:35.624216	J2	3	CTGTC
-58	2010-01-14 15:50:35.624216	K	3	TCGAG
-59	2010-01-14 15:50:35.624216	K1	3	ATAGC
-60	2010-01-14 15:50:35.624216	K2	3	GTGTG
-61	2010-01-14 15:50:35.624216	L	3	ATGAC
-62	2010-01-14 15:50:35.624216	L1	3	CACGA
-63	2010-01-14 15:50:35.624216	M	3	CTGAG
-64	2010-01-14 15:50:35.624216	M1	3	GACGC
-65	2010-01-14 15:50:35.624216	N	3	GATAC
-66	2010-01-14 15:50:35.624216	N1	3	TGCGA
-67	2010-01-14 15:50:35.624216	O	3	TATAG
-68	2010-01-14 15:50:35.624216	O1	3	GCTGA
-69	2010-01-14 15:50:35.624216	P	3	GCTAG
-70	2010-01-14 15:50:35.624216	P1	3	TCTGC
-71	2010-01-14 15:50:35.624216	Q	3	AGTAC
-72	2010-01-14 15:50:35.624216	Q1	3	ACATA
-73	2010-01-14 15:50:35.624216	R	3	CGTAG
-74	2010-01-14 15:50:35.624216	R1	3	GCATG
-75	2010-01-14 15:50:35.624216	S	3	ACACG
-76	2010-01-14 15:50:35.624216	S1	3	AGATC
-77	2010-01-14 15:50:35.624216	T	3	GCACA
-78	2010-01-14 15:50:35.624216	T1	3	CGATG
-79	2010-01-14 15:50:35.624216	U	3	CGACA
-80	2010-01-14 15:50:35.624216	U1	3	TGATA
-81	2010-01-14 15:50:35.624216	V	3	TGACG
-82	2010-01-14 15:50:35.624216	V1	3	ATATG
-83	2010-01-14 15:50:35.624216	W	3	ATACA
-84	2010-01-14 15:50:35.624216	W1	3	GTATA
-85	2010-01-14 15:50:35.624216	X	3	GTACG
-86	2010-01-14 15:50:35.624216	X1	3	CACTC
-87	2010-01-14 15:50:35.624216	Y	3	CAGCA
-88	2010-01-14 15:50:35.624216	Y1	3	GACTG
-89	2010-01-14 15:50:35.624216	Z	3	TAGCG
-90	2010-01-14 15:50:35.624216	Z1	3	AGCTG
+1	2010-01-14 17:11:17.917087	A	1	TACCT
+2	2010-01-14 17:11:17.917087	B	1	TACGA
+3	2010-01-14 17:11:17.917087	C	1	TAGCA
+4	2010-01-14 17:11:17.917087	D	1	TAGGT
+5	2010-01-14 17:11:17.917087	E	1	TCAAG
+6	2010-01-14 17:11:17.917087	F	1	TCATC
+7	2010-01-14 17:11:17.917087	G	1	TCTAC
+8	2010-01-14 17:11:17.917087	H	1	TCTTG
+9	2010-01-14 17:11:17.917087	I	1	TGAAC
+10	2010-01-14 17:11:17.917087	J	1	TGTTG
+11	2010-01-14 17:11:17.917087	K	1	TGTTC
+12	2010-01-14 17:11:17.917087	A	2	AAAT
+13	2010-01-14 17:11:17.917087	B	2	ATCT
+14	2010-01-14 17:11:17.917087	C	2	AGGT
+15	2010-01-14 17:11:17.917087	D	2	ACTT
+16	2010-01-14 17:11:17.917087	E	2	TACT
+17	2010-01-14 17:11:17.917087	F	2	TTGT
+18	2010-01-14 17:11:17.917087	G	2	TGTT
+19	2010-01-14 17:11:17.917087	H	2	TCAT
+20	2010-01-14 17:11:17.917087	I	2	GAGT
+21	2010-01-14 17:11:17.917087	J	2	GTTT
+22	2010-01-14 17:11:17.917087	K	2	GGAT
+23	2010-01-14 17:11:17.917087	L	2	GCCT
+24	2010-01-14 17:11:17.917087	M	2	CATT
+25	2010-01-14 17:11:17.917087	N	2	CTAT
+26	2010-01-14 17:11:17.917087	O	2	CGCT
+27	2010-01-14 17:11:17.917087	P	2	CCGT
+28	2010-01-14 17:11:17.917087	A	3	CGTGA
+29	2010-01-14 17:11:17.917087	A1	3	ACGCA
+30	2010-01-14 17:11:17.917087	A2	3	TGCTC
+31	2010-01-14 17:11:17.917087	B	3	GTCGA
+32	2010-01-14 17:11:17.917087	B1	3	GCGCG
+33	2010-01-14 17:11:17.917087	B2	3	CTCTA
+34	2010-01-14 17:11:17.917087	C	3	AGCGC
+35	2010-01-14 17:11:17.917087	C1	3	ATGCG
+36	2010-01-14 17:11:17.917087	C2	3	GTCTC
+37	2010-01-14 17:11:17.917087	D	3	TATGA
+38	2010-01-14 17:11:17.917087	D1	3	GTGCA
+39	2010-01-14 17:11:17.917087	D2	3	CAGTG
+40	2010-01-14 17:11:17.917087	E	3	CACAG
+41	2010-01-14 17:11:17.917087	E1	3	GATCG
+42	2010-01-14 17:11:17.917087	E2	3	TAGTA
+43	2010-01-14 17:11:17.917087	F	3	TGCAG
+44	2010-01-14 17:11:17.917087	F1	3	TCTCA
+45	2010-01-14 17:11:17.917087	F2	3	ACGTG
+46	2010-01-14 17:11:17.917087	G	3	CTCAC
+47	2010-01-14 17:11:17.917087	G1	3	AGTCG
+48	2010-01-14 17:11:17.917087	G2	3	GCGTA
+49	2010-01-14 17:11:17.917087	H	3	GTCAG
+50	2010-01-14 17:11:17.917087	H1	3	GCAGC
+51	2010-01-14 17:11:17.917087	H2	3	TCGTC
+52	2010-01-14 17:11:17.917087	I	3	TAGAC
+53	2010-01-14 17:11:17.917087	I1	3	AGAGA
+54	2010-01-14 17:11:17.917087	I2	3	ATGTA
+55	2010-01-14 17:11:17.917087	J	3	GCGAC
+56	2010-01-14 17:11:17.917087	J1	3	CGAGC
+57	2010-01-14 17:11:17.917087	J2	3	CTGTC
+58	2010-01-14 17:11:17.917087	K	3	TCGAG
+59	2010-01-14 17:11:17.917087	K1	3	ATAGC
+60	2010-01-14 17:11:17.917087	K2	3	GTGTG
+61	2010-01-14 17:11:17.917087	L	3	ATGAC
+62	2010-01-14 17:11:17.917087	L1	3	CACGA
+63	2010-01-14 17:11:17.917087	M	3	CTGAG
+64	2010-01-14 17:11:17.917087	M1	3	GACGC
+65	2010-01-14 17:11:17.917087	N	3	GATAC
+66	2010-01-14 17:11:17.917087	N1	3	TGCGA
+67	2010-01-14 17:11:17.917087	O	3	TATAG
+68	2010-01-14 17:11:17.917087	O1	3	GCTGA
+69	2010-01-14 17:11:17.917087	P	3	GCTAG
+70	2010-01-14 17:11:17.917087	P1	3	TCTGC
+71	2010-01-14 17:11:17.917087	Q	3	AGTAC
+72	2010-01-14 17:11:17.917087	Q1	3	ACATA
+73	2010-01-14 17:11:17.917087	R	3	CGTAG
+74	2010-01-14 17:11:17.917087	R1	3	GCATG
+75	2010-01-14 17:11:17.917087	S	3	ACACG
+76	2010-01-14 17:11:17.917087	S1	3	AGATC
+77	2010-01-14 17:11:17.917087	T	3	GCACA
+78	2010-01-14 17:11:17.917087	T1	3	CGATG
+79	2010-01-14 17:11:17.917087	U	3	CGACA
+80	2010-01-14 17:11:17.917087	U1	3	TGATA
+81	2010-01-14 17:11:17.917087	V	3	TGACG
+82	2010-01-14 17:11:17.917087	V1	3	ATATG
+83	2010-01-14 17:11:17.917087	W	3	ATACA
+84	2010-01-14 17:11:17.917087	W1	3	GTATA
+85	2010-01-14 17:11:17.917087	X	3	GTACG
+86	2010-01-14 17:11:17.917087	X1	3	CACTC
+87	2010-01-14 17:11:17.917087	Y	3	CAGCA
+88	2010-01-14 17:11:17.917087	Y1	3	GACTG
+89	2010-01-14 17:11:17.917087	Z	3	TAGCG
+90	2010-01-14 17:11:17.917087	Z1	3	AGCTG
 \.
 
 
@@ -2254,16 +2254,16 @@ COPY barcode_set (barcode_set_id, position_in_read, name) FROM stdin;
 --
 
 COPY biosample (biosample_id, created_stamp, name, genotype, description, protocol, biosample_type, molecule_type, treatment_type, fractionation_type, processing_requirement, tissue) FROM stdin;
-1	2010-01-14 15:50:36.83111	SL11	\N	AGO9 associated small RNAs Rep1 (mixed Col-0 floral + silique)	1	25	59	\N	\N	90	\N
-2	2010-01-14 15:50:36.83111	SL54	\N	Chlamy total DNA (mononuc)	1	21	58	\N	\N	90	\N
-3	2010-01-14 15:50:36.83111	SL55	\N	Chlamy methylated DNA IP (mononuc)	1	21	58	\N	\N	90	\N
-4	2010-01-14 15:50:36.83111	SL136	\N	Col-0 floral gene expression	1	24	59	\N	\N	90	\N
-5	2010-01-14 15:50:36.83111	SL165_1	\N	Total sRNA mono-P	1	25	59	\N	\N	90	\N
-6	2010-01-14 15:50:36.83111	SL234_B	\N	B: Ago4p:AGO4 IP C: AGO4p:AGO6 IP F: AGO4p:AGO9 IP  - barcode B	1	25	59	\N	\N	90	\N
-7	2010-01-14 15:50:36.83111	SL234_C	\N	B: Ago4p:AGO4 IP C: AGO4p:AGO6 IP F: AGO4p:AGO9 IP  - barcode C	1	25	59	\N	\N	90	\N
-8	2010-01-14 15:50:36.83111	SL234_F	\N	B: Ago4p:AGO4 IP C: AGO4p:AGO6 IP F: AGO4p:AGO9 IP  - barcode F	1	25	59	\N	\N	90	\N
-9	2010-01-14 15:50:36.83111	SL236	\N	grafting dcl2,3,4 to dcl2,3,4 (root)	1	25	59	\N	\N	90	\N
-10	2010-01-14 15:50:36.83111	SL285_B	\N	ChIP - H3K9Me1 - barcode B	1	21	58	\N	\N	90	\N
+1	2010-01-14 17:11:19.532592	SL11	\N	AGO9 associated small RNAs Rep1 (mixed Col-0 floral + silique)	1	25	59	\N	\N	90	\N
+2	2010-01-14 17:11:19.532592	SL54	\N	Chlamy total DNA (mononuc)	1	21	58	\N	\N	90	\N
+3	2010-01-14 17:11:19.532592	SL55	\N	Chlamy methylated DNA IP (mononuc)	1	21	58	\N	\N	90	\N
+4	2010-01-14 17:11:19.532592	SL136	\N	Col-0 floral gene expression	1	24	59	\N	\N	90	\N
+5	2010-01-14 17:11:19.532592	SL165_1	\N	Total sRNA mono-P	1	25	59	\N	\N	90	\N
+6	2010-01-14 17:11:19.532592	SL234_B	\N	B: Ago4p:AGO4 IP C: AGO4p:AGO6 IP F: AGO4p:AGO9 IP  - barcode B	1	25	59	\N	\N	90	\N
+7	2010-01-14 17:11:19.532592	SL234_C	\N	B: Ago4p:AGO4 IP C: AGO4p:AGO6 IP F: AGO4p:AGO9 IP  - barcode C	1	25	59	\N	\N	90	\N
+8	2010-01-14 17:11:19.532592	SL234_F	\N	B: Ago4p:AGO4 IP C: AGO4p:AGO6 IP F: AGO4p:AGO9 IP  - barcode F	1	25	59	\N	\N	90	\N
+9	2010-01-14 17:11:19.532592	SL236	\N	grafting dcl2,3,4 to dcl2,3,4 (root)	1	25	59	\N	\N	90	\N
+10	2010-01-14 17:11:19.532592	SL285_B	\N	ChIP - H3K9Me1 - barcode B	1	21	58	\N	\N	90	\N
 \.
 
 
@@ -2280,16 +2280,16 @@ COPY biosample_dbxref (biosample_dbxref_id, biosample_id, dbxref_id) FROM stdin;
 --
 
 COPY biosample_ecotype (biosample_ecotype_id, created_stamp, biosample, ecotype) FROM stdin;
-1	2010-01-14 15:50:36.83111	1	1
-2	2010-01-14 15:50:36.83111	2	7
-3	2010-01-14 15:50:36.83111	3	7
-4	2010-01-14 15:50:36.83111	4	1
-5	2010-01-14 15:50:36.83111	5	7
-6	2010-01-14 15:50:36.83111	6	1
-7	2010-01-14 15:50:36.83111	7	1
-8	2010-01-14 15:50:36.83111	8	1
-9	2010-01-14 15:50:36.83111	9	1
-10	2010-01-14 15:50:36.83111	10	7
+1	2010-01-14 17:11:19.532592	1	1
+2	2010-01-14 17:11:19.532592	2	7
+3	2010-01-14 17:11:19.532592	3	7
+4	2010-01-14 17:11:19.532592	4	1
+5	2010-01-14 17:11:19.532592	5	7
+6	2010-01-14 17:11:19.532592	6	1
+7	2010-01-14 17:11:19.532592	7	1
+8	2010-01-14 17:11:19.532592	8	1
+9	2010-01-14 17:11:19.532592	9	1
+10	2010-01-14 17:11:19.532592	10	7
 \.
 
 
@@ -2298,16 +2298,16 @@ COPY biosample_ecotype (biosample_ecotype_id, created_stamp, biosample, ecotype)
 --
 
 COPY biosample_pipedata (biosample_pipedata_id, created_stamp, biosample, pipedata) FROM stdin;
-1	2010-01-14 15:50:36.83111	1	1
-2	2010-01-14 15:50:36.83111	2	2
-3	2010-01-14 15:50:36.83111	3	3
-4	2010-01-14 15:50:36.83111	4	4
-5	2010-01-14 15:50:36.83111	5	5
-6	2010-01-14 15:50:36.83111	6	6
-7	2010-01-14 15:50:36.83111	7	6
-8	2010-01-14 15:50:36.83111	8	6
-9	2010-01-14 15:50:36.83111	9	7
-10	2010-01-14 15:50:36.83111	10	8
+1	2010-01-14 17:11:19.532592	1	1
+2	2010-01-14 17:11:19.532592	2	2
+3	2010-01-14 17:11:19.532592	3	3
+4	2010-01-14 17:11:19.532592	4	4
+5	2010-01-14 17:11:19.532592	5	5
+6	2010-01-14 17:11:19.532592	6	6
+7	2010-01-14 17:11:19.532592	7	6
+8	2010-01-14 17:11:19.532592	8	6
+9	2010-01-14 17:11:19.532592	9	7
+10	2010-01-14 17:11:19.532592	10	8
 \.
 
 
@@ -2330,24 +2330,6 @@ COPY biosample_pipeproject (biosample_pipeproject_id, biosample, pipeproject) FR
 
 
 --
--- Data for Name: coded_sample; Type: TABLE DATA; Schema: public; Owner: kmr44
---
-
-COPY coded_sample (coded_sample_id, created_stamp, description, coded_sample_type, biosample, sequencing_sample, adaptor, barcode) FROM stdin;
-1	2010-01-14 15:50:36.83111	non-barcoded sample for: SL11	28	1	1	1	\N
-2	2010-01-14 15:50:36.83111	non-barcoded sample for: SL54	28	2	2	1	\N
-3	2010-01-14 15:50:36.83111	non-barcoded sample for: SL55	28	3	3	1	\N
-4	2010-01-14 15:50:36.83111	non-barcoded sample for: SL136	28	4	4	1	\N
-5	2010-01-14 15:50:36.83111	non-barcoded sample for: SL165_1	28	5	5	1	\N
-6	2010-01-14 15:50:36.83111	barcoded sample for: SL234_B using barcode: B	28	6	6	1	2
-7	2010-01-14 15:50:36.83111	barcoded sample for: SL234_C using barcode: C	28	7	6	1	3
-8	2010-01-14 15:50:36.83111	barcoded sample for: SL234_F using barcode: F	28	8	6	1	6
-9	2010-01-14 15:50:36.83111	non-barcoded sample for: SL236	28	9	7	1	\N
-10	2010-01-14 15:50:36.83111	barcoded sample for: SL285_B using barcode: B	28	10	8	1	13
-\.
-
-
---
 -- Data for Name: cv; Type: TABLE DATA; Schema: public; Owner: kmr44
 --
 
@@ -2356,10 +2338,10 @@ COPY cv (cv_id, name, definition) FROM stdin;
 2	tracking analysis types	\N
 3	tracking bar code position	\N
 4	tracking biosample types	\N
-5	tracking coded sample types	\N
-6	tracking file content types	\N
-7	tracking file format types	\N
-8	tracking fractionation types	\N
+5	tracking file content types	\N
+6	tracking file format types	\N
+7	tracking fractionation types	\N
+8	tracking library types	\N
 9	tracking molecule types	\N
 10	tracking multiplexing types	\N
 11	tracking pipedata property types	\N
@@ -2403,38 +2385,38 @@ COPY cvterm (cvterm_id, cv_id, name, definition, dbxref_id, is_obsolete, is_rela
 23	4	mrna_expression	Expression analysis of mRNA	23	0	0
 24	4	sage_expression	Expression analysis using SAGE	24	0	0
 25	4	small_rnas	Small RNA sequences	25	0	0
-26	5	biological replicate	biological replicate/re-run	26	0	0
-27	5	failure re-run	re-run because of failure	27	0	0
-28	5	initial run	initial sequencing run	28	0	0
-29	5	technical replicate	technical replicate/re-run	29	0	0
-30	6	aligned_reads	Non-redundant (unique) reads that have been aligned against a reference	30	0	0
-31	6	bam_index	A BAM file index created by samtools	31	0	0
-32	6	fast_stats	Summary information and statistics about a FASTA or FASTQ file	32	0	0
-33	6	fasta_index	An index of a fasta file that has the sequence as the key	33	0	0
-34	6	filtered_trimmed_reads	Sequence reads that have been trimmed and then filtered by size	34	0	0
-35	6	first_base_summary	A summary of the first base composition of sequences from a fasta file	35	0	0
-36	6	gff3_index	An index of a gff3 file that has the read sequence as the key	36	0	0
-37	6	n_mer_stats	Counts of each sequence, ordered by count	37	0	0
-38	6	non_aligned_reads	Reads that did not align against the reference	38	0	0
-39	6	non_redundant_reads	Trimmed and filtered sequence reads with redundant sequences removed	39	0	0
-40	6	raw_reads	Raw sequence reads from a sequencing run, before any processing	40	0	0
-41	6	redundant_aligned_reads	Redundant reads that align against the a reference - one FASTA record for each read from the original redundant file that matches	41	0	0
-42	6	trim_n_rejects	Sequence reads that were rejected by the trim step for containing Ns	42	0	0
-43	6	trim_rejects	Sequence reads that were rejected by the trim step for being too short or for not having the correct adaptor or bar code	43	0	0
-44	6	trim_unknown_barcode	Sequence reads that were rejected during the trim step because they did not match an expected barcode	44	0	0
-45	6	trimmed_reads	Sequence reads that have been trimmed to a fixed length or to remove adaptor sequences	45	0	0
-46	7	bam	BAM alignment format	46	0	0
-47	7	fasta	FASTA format	47	0	0
-48	7	fastq	FastQ format file	48	0	0
-49	7	fs	FASTA format with an empty description line	49	0	0
-50	7	gff2	GFF2 format	50	0	0
-51	7	gff3	GFF3 format	51	0	0
-52	7	sam	SAM alignment format	52	0	0
-53	7	seq_offset_index	An index of a GFF3 or FASTA format file	53	0	0
-54	7	srf	SRF format file	54	0	0
-55	7	text	A human readable text file with summaries or statistics	55	0	0
-56	7	tsv	A file containing tab-separated value	56	0	0
-57	8	no fractionation	no fractionation	57	0	0
+26	5	aligned_reads	Non-redundant (unique) reads that have been aligned against a reference	26	0	0
+27	5	bam_index	A BAM file index created by samtools	27	0	0
+28	5	fast_stats	Summary information and statistics about a FASTA or FASTQ file	28	0	0
+29	5	fasta_index	An index of a fasta file that has the sequence as the key	29	0	0
+30	5	filtered_trimmed_reads	Sequence reads that have been trimmed and then filtered by size	30	0	0
+31	5	first_base_summary	A summary of the first base composition of sequences from a fasta file	31	0	0
+32	5	gff3_index	An index of a gff3 file that has the read sequence as the key	32	0	0
+33	5	n_mer_stats	Counts of each sequence, ordered by count	33	0	0
+34	5	non_aligned_reads	Reads that did not align against the reference	34	0	0
+35	5	non_redundant_reads	Trimmed and filtered sequence reads with redundant sequences removed	35	0	0
+36	5	raw_reads	Raw sequence reads from a sequencing run, before any processing	36	0	0
+37	5	redundant_aligned_reads	Redundant reads that align against the a reference - one FASTA record for each read from the original redundant file that matches	37	0	0
+38	5	trim_n_rejects	Sequence reads that were rejected by the trim step for containing Ns	38	0	0
+39	5	trim_rejects	Sequence reads that were rejected by the trim step for being too short or for not having the correct adaptor or bar code	39	0	0
+40	5	trim_unknown_barcode	Sequence reads that were rejected during the trim step because they did not match an expected barcode	40	0	0
+41	5	trimmed_reads	Sequence reads that have been trimmed to a fixed length or to remove adaptor sequences	41	0	0
+42	6	bam	BAM alignment format	42	0	0
+43	6	fasta	FASTA format	43	0	0
+44	6	fastq	FastQ format file	44	0	0
+45	6	fs	FASTA format with an empty description line	45	0	0
+46	6	gff2	GFF2 format	46	0	0
+47	6	gff3	GFF3 format	47	0	0
+48	6	sam	SAM alignment format	48	0	0
+49	6	seq_offset_index	An index of a GFF3 or FASTA format file	49	0	0
+50	6	srf	SRF format file	50	0	0
+51	6	text	A human readable text file with summaries or statistics	51	0	0
+52	6	tsv	A file containing tab-separated value	52	0	0
+53	7	no fractionation	no fractionation	53	0	0
+54	8	biological replicate	biological replicate/re-run	54	0	0
+55	8	failure re-run	re-run because of failure	55	0	0
+56	8	initial run	initial sequencing run	56	0	0
+57	8	technical replicate	technical replicate/re-run	57	0	0
 58	9	DNA	Deoxyribonucleic acid	58	0	0
 59	9	RNA	Ribonucleic acid	59	0	0
 60	10	multiplexed	multiplexed sequencing run using barcodes	60	0	0
@@ -2524,38 +2506,38 @@ COPY dbxref (dbxref_id, db_id, accession, version, description) FROM stdin;
 23	1	mrna_expression		\N
 24	1	sage_expression		\N
 25	1	small_rnas		\N
-26	1	biological replicate		\N
-27	1	failure re-run		\N
-28	1	initial run		\N
-29	1	technical replicate		\N
-30	1	aligned_reads		\N
-31	1	bam_index		\N
-32	1	fast_stats		\N
-33	1	fasta_index		\N
-34	1	filtered_trimmed_reads		\N
-35	1	first_base_summary		\N
-36	1	gff3_index		\N
-37	1	n_mer_stats		\N
-38	1	non_aligned_reads		\N
-39	1	non_redundant_reads		\N
-40	1	raw_reads		\N
-41	1	redundant_aligned_reads		\N
-42	1	trim_n_rejects		\N
-43	1	trim_rejects		\N
-44	1	trim_unknown_barcode		\N
-45	1	trimmed_reads		\N
-46	1	bam		\N
-47	1	fasta		\N
-48	1	fastq		\N
-49	1	fs		\N
-50	1	gff2		\N
-51	1	gff3		\N
-52	1	sam		\N
-53	1	seq_offset_index		\N
-54	1	srf		\N
-55	1	text		\N
-56	1	tsv		\N
-57	1	no fractionation		\N
+26	1	aligned_reads		\N
+27	1	bam_index		\N
+28	1	fast_stats		\N
+29	1	fasta_index		\N
+30	1	filtered_trimmed_reads		\N
+31	1	first_base_summary		\N
+32	1	gff3_index		\N
+33	1	n_mer_stats		\N
+34	1	non_aligned_reads		\N
+35	1	non_redundant_reads		\N
+36	1	raw_reads		\N
+37	1	redundant_aligned_reads		\N
+38	1	trim_n_rejects		\N
+39	1	trim_rejects		\N
+40	1	trim_unknown_barcode		\N
+41	1	trimmed_reads		\N
+42	1	bam		\N
+43	1	fasta		\N
+44	1	fastq		\N
+45	1	fs		\N
+46	1	gff2		\N
+47	1	gff3		\N
+48	1	sam		\N
+49	1	seq_offset_index		\N
+50	1	srf		\N
+51	1	text		\N
+52	1	tsv		\N
+53	1	no fractionation		\N
+54	1	biological replicate		\N
+55	1	failure re-run		\N
+56	1	initial run		\N
+57	1	technical replicate		\N
 58	1	DNA		\N
 59	1	RNA		\N
 60	1	multiplexed		\N
@@ -2603,33 +2585,51 @@ COPY dbxref (dbxref_id, db_id, accession, version, description) FROM stdin;
 --
 
 COPY ecotype (ecotype_id, created_stamp, organism, description) FROM stdin;
-1	2010-01-14 15:50:35.894137	1	unspecified
-2	2010-01-14 15:50:35.894137	1	Col
-3	2010-01-14 15:50:35.894137	1	WS
-4	2010-01-14 15:50:35.894137	1	Ler
-5	2010-01-14 15:50:35.894137	1	C24
-6	2010-01-14 15:50:35.894137	1	Cvi
-7	2010-01-14 15:50:35.894137	2	unspecified
-8	2010-01-14 15:50:35.894137	3	unspecified
-9	2010-01-14 15:50:35.894137	4	unspecified
-10	2010-01-14 15:50:35.894137	5	unspecified
-11	2010-01-14 15:50:35.894137	6	unspecified
-12	2010-01-14 15:50:35.894137	7	unspecified
-13	2010-01-14 15:50:35.894137	8	unspecified
-14	2010-01-14 15:50:35.894137	9	unspecified
-15	2010-01-14 15:50:35.894137	10	unspecified
-16	2010-01-14 15:50:35.894137	11	unspecified
-17	2010-01-14 15:50:35.894137	12	unspecified
-18	2010-01-14 15:50:35.894137	12	B73
-19	2010-01-14 15:50:35.894137	12	Mo17
-20	2010-01-14 15:50:35.894137	14	unspecified
-21	2010-01-14 15:50:35.894137	15	unspecified
-22	2010-01-14 15:50:35.894137	13	unspecified
-23	2010-01-14 15:50:35.894137	13	indica
-24	2010-01-14 15:50:35.894137	13	japonica
-25	2010-01-14 15:50:35.894137	16	unspecified
-26	2010-01-14 15:50:35.894137	17	unspecified
-27	2010-01-14 15:50:35.894137	18	unspecified
+1	2010-01-14 17:11:18.188592	1	unspecified
+2	2010-01-14 17:11:18.188592	1	Col
+3	2010-01-14 17:11:18.188592	1	WS
+4	2010-01-14 17:11:18.188592	1	Ler
+5	2010-01-14 17:11:18.188592	1	C24
+6	2010-01-14 17:11:18.188592	1	Cvi
+7	2010-01-14 17:11:18.188592	2	unspecified
+8	2010-01-14 17:11:18.188592	3	unspecified
+9	2010-01-14 17:11:18.188592	4	unspecified
+10	2010-01-14 17:11:18.188592	5	unspecified
+11	2010-01-14 17:11:18.188592	6	unspecified
+12	2010-01-14 17:11:18.188592	7	unspecified
+13	2010-01-14 17:11:18.188592	8	unspecified
+14	2010-01-14 17:11:18.188592	9	unspecified
+15	2010-01-14 17:11:18.188592	10	unspecified
+16	2010-01-14 17:11:18.188592	11	unspecified
+17	2010-01-14 17:11:18.188592	12	unspecified
+18	2010-01-14 17:11:18.188592	12	B73
+19	2010-01-14 17:11:18.188592	12	Mo17
+20	2010-01-14 17:11:18.188592	14	unspecified
+21	2010-01-14 17:11:18.188592	15	unspecified
+22	2010-01-14 17:11:18.188592	13	unspecified
+23	2010-01-14 17:11:18.188592	13	indica
+24	2010-01-14 17:11:18.188592	13	japonica
+25	2010-01-14 17:11:18.188592	16	unspecified
+26	2010-01-14 17:11:18.188592	17	unspecified
+27	2010-01-14 17:11:18.188592	18	unspecified
+\.
+
+
+--
+-- Data for Name: library; Type: TABLE DATA; Schema: public; Owner: kmr44
+--
+
+COPY library (library_id, created_stamp, description, library_type, biosample, sequencing_sample, adaptor, barcode) FROM stdin;
+1	2010-01-14 17:11:19.532592	non-barcoded library for: SL11	56	1	1	1	\N
+2	2010-01-14 17:11:19.532592	non-barcoded library for: SL54	56	2	2	1	\N
+3	2010-01-14 17:11:19.532592	non-barcoded library for: SL55	56	3	3	1	\N
+4	2010-01-14 17:11:19.532592	non-barcoded library for: SL136	56	4	4	1	\N
+5	2010-01-14 17:11:19.532592	non-barcoded library for: SL165_1	56	5	5	1	\N
+6	2010-01-14 17:11:19.532592	barcoded library for: SL234_B using barcode: B	56	6	6	1	2
+7	2010-01-14 17:11:19.532592	barcoded library for: SL234_C using barcode: C	56	7	6	1	3
+8	2010-01-14 17:11:19.532592	barcoded library for: SL234_F using barcode: F	56	8	6	1	6
+9	2010-01-14 17:11:19.532592	non-barcoded library for: SL236	56	9	7	1	\N
+10	2010-01-14 17:11:19.532592	barcoded library for: SL285_B using barcode: B	56	10	8	1	13
 \.
 
 
@@ -2638,13 +2638,13 @@ COPY ecotype (ecotype_id, created_stamp, organism, description) FROM stdin;
 --
 
 COPY organisation (organisation_id, created_stamp, name, description) FROM stdin;
-1	2010-01-14 15:50:35.837013	DCB	David Baulcombe Lab, University of Cambridge, Dept. of Plant Sciences
-2	2010-01-14 15:50:35.837013	CRUK CRI	Cancer Research UK, Cambridge Research Institute
-3	2010-01-14 15:50:35.837013	Sainsbury	Sainsbury Laboratory
-4	2010-01-14 15:50:35.837013	JIC	John Innes Centre
-5	2010-01-14 15:50:35.837013	BGI	Beijing Genomics Institute
-6	2010-01-14 15:50:35.837013	CSHL	Cold Spring Harbor Laboratory
-7	2010-01-14 15:50:35.837013	Edinburgh	The University of Edinburgh
+1	2010-01-14 17:11:18.128536	DCB	David Baulcombe Lab, University of Cambridge, Dept. of Plant Sciences
+2	2010-01-14 17:11:18.128536	CRUK CRI	Cancer Research UK, Cambridge Research Institute
+3	2010-01-14 17:11:18.128536	Sainsbury	Sainsbury Laboratory
+4	2010-01-14 17:11:18.128536	JIC	John Innes Centre
+5	2010-01-14 17:11:18.128536	BGI	Beijing Genomics Institute
+6	2010-01-14 17:11:18.128536	CSHL	Cold Spring Harbor Laboratory
+7	2010-01-14 17:11:18.128536	Edinburgh	The University of Edinburgh
 \.
 
 
@@ -2687,29 +2687,29 @@ COPY organism_dbxref (organism_dbxref_id, organism_id, dbxref_id) FROM stdin;
 --
 
 COPY person (person_id, created_stamp, first_name, last_name, username, password, role, organisation) FROM stdin;
-1	2010-01-14 15:50:36.005	Andy	Bassett	andy_bassett	andy_bassett	96	1
-2	2010-01-14 15:50:36.005	David	Baulcombe	david_baulcombe	david_baulcombe	96	1
-3	2010-01-14 15:50:36.005	Amy	Beeken	amy_beeken	amy_beeken	96	1
-4	2010-01-14 15:50:36.005	Paola	Fedita	paola_fedita	paola_fedita	96	1
-5	2010-01-14 15:50:36.005	Susi	Heimstaedt	susi_heimstaedt	susi_heimstaedt	96	1
-6	2010-01-14 15:50:36.005	Jagger	Harvey	jagger_harvey	jagger_harvey	96	1
-7	2010-01-14 15:50:36.005	Ericka	Havecker	ericka_havecker	ericka_havecker	96	1
-8	2010-01-14 15:50:36.005	Ian	Henderson	ian_henderson	ian_henderson	96	1
-9	2010-01-14 15:50:36.005	Charles	Melnyk	charles_melnyk	charles_melnyk	96	1
-10	2010-01-14 15:50:36.005	Attila	Molnar	attila_molnar	attila_molnar	96	1
-11	2010-01-14 15:50:36.005	Becky	Mosher	becky_mosher	becky_mosher	96	1
-12	2010-01-14 15:50:36.005	Kanu	Patel	kanu_patel	kanu_patel	96	1
-13	2010-01-14 15:50:36.005	Anna	Peters	anna_peters	anna_peters	96	1
-14	2010-01-14 15:50:36.005	Kim	Rutherford	kim_rutherford	kim_rutherford	94	1
-15	2010-01-14 15:50:36.005	Iain	Searle	iain_searle	iain_searle	96	1
-16	2010-01-14 15:50:36.005	Padubidri	Shivaprasad	padubidri_shivaprasad	padubidri_shivaprasad	96	1
-17	2010-01-14 15:50:36.005	Shuoya	Tang	shuoya_tang	shuoya_tang	96	1
-18	2010-01-14 15:50:36.005	Laura	Taylor	laura_taylor	laura_taylor	96	1
-19	2010-01-14 15:50:36.005	Craig	Thompson	craig_thompson	craig_thompson	96	1
-20	2010-01-14 15:50:36.005	Natasha	Yelina	natasha_yelina	natasha_yelina	96	1
-21	2010-01-14 15:50:36.005	Krys	Kelly	krys_kelly	krys_kelly	96	1
-22	2010-01-14 15:50:36.005	Hannes	V	hannes_v	hannes_v	96	1
-23	2010-01-14 15:50:36.005	Antonis	Giakountis	antonis_giakountis	antonis_giakountis	96	1
+1	2010-01-14 17:11:18.299615	Andy	Bassett	andy_bassett	andy_bassett	96	1
+2	2010-01-14 17:11:18.299615	David	Baulcombe	david_baulcombe	david_baulcombe	96	1
+3	2010-01-14 17:11:18.299615	Amy	Beeken	amy_beeken	amy_beeken	96	1
+4	2010-01-14 17:11:18.299615	Paola	Fedita	paola_fedita	paola_fedita	96	1
+5	2010-01-14 17:11:18.299615	Susi	Heimstaedt	susi_heimstaedt	susi_heimstaedt	96	1
+6	2010-01-14 17:11:18.299615	Jagger	Harvey	jagger_harvey	jagger_harvey	96	1
+7	2010-01-14 17:11:18.299615	Ericka	Havecker	ericka_havecker	ericka_havecker	96	1
+8	2010-01-14 17:11:18.299615	Ian	Henderson	ian_henderson	ian_henderson	96	1
+9	2010-01-14 17:11:18.299615	Charles	Melnyk	charles_melnyk	charles_melnyk	96	1
+10	2010-01-14 17:11:18.299615	Attila	Molnar	attila_molnar	attila_molnar	96	1
+11	2010-01-14 17:11:18.299615	Becky	Mosher	becky_mosher	becky_mosher	96	1
+12	2010-01-14 17:11:18.299615	Kanu	Patel	kanu_patel	kanu_patel	96	1
+13	2010-01-14 17:11:18.299615	Anna	Peters	anna_peters	anna_peters	96	1
+14	2010-01-14 17:11:18.299615	Kim	Rutherford	kim_rutherford	kim_rutherford	94	1
+15	2010-01-14 17:11:18.299615	Iain	Searle	iain_searle	iain_searle	96	1
+16	2010-01-14 17:11:18.299615	Padubidri	Shivaprasad	padubidri_shivaprasad	padubidri_shivaprasad	96	1
+17	2010-01-14 17:11:18.299615	Shuoya	Tang	shuoya_tang	shuoya_tang	96	1
+18	2010-01-14 17:11:18.299615	Laura	Taylor	laura_taylor	laura_taylor	96	1
+19	2010-01-14 17:11:18.299615	Craig	Thompson	craig_thompson	craig_thompson	96	1
+20	2010-01-14 17:11:18.299615	Natasha	Yelina	natasha_yelina	natasha_yelina	96	1
+21	2010-01-14 17:11:18.299615	Krys	Kelly	krys_kelly	krys_kelly	96	1
+22	2010-01-14 17:11:18.299615	Hannes	V	hannes_v	hannes_v	96	1
+23	2010-01-14 17:11:18.299615	Antonis	Giakountis	antonis_giakountis	antonis_giakountis	96	1
 \.
 
 
@@ -2718,14 +2718,14 @@ COPY person (person_id, created_stamp, first_name, last_name, username, password
 --
 
 COPY pipedata (pipedata_id, created_stamp, format_type, content_type, file_name, file_length, generating_pipeprocess) FROM stdin;
-1	2010-01-14 15:50:36.83111	47	45	SL11/SL11.ID15_FC5372.lane2.reads.7_5_2008.fa	85196121	1
-2	2010-01-14 15:50:36.83111	48	40	fastq/SL54.ID24_171007_FC5359.lane4.fq	308933804	2
-3	2010-01-14 15:50:36.83111	48	40	fastq/SL55.ID24_171007_FC5359.lane5.fq	305662338	3
-4	2010-01-14 15:50:36.83111	54	40	srf/SL136.080807.306AKAAXX.s_2.srf	12552548	4
-5	2010-01-14 15:50:36.83111	48	40	fastq/SL165.080905.306BFAAXX.s_5.fq	1026029170	5
-6	2010-01-14 15:50:36.83111	48	40	fastq/SL234_BCF.090202.30W8NAAXX.s_1.fq	517055794	6
-7	2010-01-14 15:50:36.83111	48	40	fastq/SL236.090227.311F6AAXX.s_1.fq	1203596662	7
-8	2010-01-14 15:50:36.83111	48	40	fastq/SL285.090720.42L77AAXX.s_7.fq	912823970	8
+1	2010-01-14 17:11:19.532592	43	41	SL11/SL11.ID15_FC5372.lane2.reads.7_5_2008.fa	85196121	1
+2	2010-01-14 17:11:19.532592	44	36	fastq/SL54.ID24_171007_FC5359.lane4.fq	308933804	2
+3	2010-01-14 17:11:19.532592	44	36	fastq/SL55.ID24_171007_FC5359.lane5.fq	305662338	3
+4	2010-01-14 17:11:19.532592	50	36	srf/SL136.080807.306AKAAXX.s_2.srf	12552548	4
+5	2010-01-14 17:11:19.532592	44	36	fastq/SL165.080905.306BFAAXX.s_5.fq	1026029170	5
+6	2010-01-14 17:11:19.532592	44	36	fastq/SL234_BCF.090202.30W8NAAXX.s_1.fq	517055794	6
+7	2010-01-14 17:11:19.532592	44	36	fastq/SL236.090227.311F6AAXX.s_1.fq	1203596662	7
+8	2010-01-14 17:11:19.532592	44	36	fastq/SL285.090720.42L77AAXX.s_7.fq	912823970	8
 \.
 
 
@@ -2742,14 +2742,14 @@ COPY pipedata_property (pipedata_property_id, pipedata, type, value) FROM stdin;
 --
 
 COPY pipeprocess (pipeprocess_id, created_stamp, description, process_conf, status, job_identifier, time_queued, time_started, time_finished) FROM stdin;
-1	2010-01-14 15:50:36.83111	Sequencing by Sainsbury for: SL11	0	71	\N	\N	\N	\N
-2	2010-01-14 15:50:36.83111	Sequencing by Sainsbury for: SL54	0	71	\N	\N	\N	\N
-3	2010-01-14 15:50:36.83111	Sequencing by Sainsbury for: SL55	0	71	\N	\N	\N	\N
-4	2010-01-14 15:50:36.83111	Sequencing by CRUK CRI for: SL136	1	71	\N	\N	\N	\N
-5	2010-01-14 15:50:36.83111	Sequencing by CRUK CRI for: SL165_1	1	71	\N	\N	\N	\N
-6	2010-01-14 15:50:36.83111	Sequencing by CRUK CRI for: SL234_B, SL234_C, SL234_F	1	71	\N	\N	\N	\N
-7	2010-01-14 15:50:36.83111	Sequencing by CRUK CRI for: SL236	1	71	\N	\N	\N	\N
-8	2010-01-14 15:50:36.83111	Sequencing by CRUK CRI for: SL285_B	1	71	\N	\N	\N	\N
+1	2010-01-14 17:11:19.532592	Sequencing by Sainsbury for: SL11	0	71	\N	\N	\N	\N
+2	2010-01-14 17:11:19.532592	Sequencing by Sainsbury for: SL54	0	71	\N	\N	\N	\N
+3	2010-01-14 17:11:19.532592	Sequencing by Sainsbury for: SL55	0	71	\N	\N	\N	\N
+4	2010-01-14 17:11:19.532592	Sequencing by CRUK CRI for: SL136	1	71	\N	\N	\N	\N
+5	2010-01-14 17:11:19.532592	Sequencing by CRUK CRI for: SL165_1	1	71	\N	\N	\N	\N
+6	2010-01-14 17:11:19.532592	Sequencing by CRUK CRI for: SL234_B, SL234_C, SL234_F	1	71	\N	\N	\N	\N
+7	2010-01-14 17:11:19.532592	Sequencing by CRUK CRI for: SL236	1	71	\N	\N	\N	\N
+8	2010-01-14 17:11:19.532592	Sequencing by CRUK CRI for: SL285_B	1	71	\N	\N	\N	\N
 \.
 
 
@@ -2774,14 +2774,14 @@ COPY pipeprocess_pub (pipeprocess_pub_id, pipeprocess_id, pub_id) FROM stdin;
 --
 
 COPY pipeproject (pipeproject_id, created_stamp, name, description, owner, funder) FROM stdin;
-1	2010-01-14 15:50:36.83111	P_SL11	P_SL11	7	\N
-2	2010-01-14 15:50:36.83111	P_SL54	P_SL54	1	\N
-3	2010-01-14 15:50:36.83111	P_SL55	P_SL55	1	\N
-4	2010-01-14 15:50:36.83111	P_SL136	P_SL136	4	\N
-5	2010-01-14 15:50:36.83111	P_SL165_1	P_SL165_1	1	\N
-6	2010-01-14 15:50:36.83111	P_SL234_BCF	P_SL234_BCF	7	\N
-7	2010-01-14 15:50:36.83111	P_SL236	P_SL236	10	\N
-8	2010-01-14 15:50:36.83111	P_SL285	P_SL285	1	\N
+1	2010-01-14 17:11:19.532592	P_SL11	P_SL11	7	\N
+2	2010-01-14 17:11:19.532592	P_SL54	P_SL54	1	\N
+3	2010-01-14 17:11:19.532592	P_SL55	P_SL55	1	\N
+4	2010-01-14 17:11:19.532592	P_SL136	P_SL136	4	\N
+5	2010-01-14 17:11:19.532592	P_SL165_1	P_SL165_1	1	\N
+6	2010-01-14 17:11:19.532592	P_SL234_BCF	P_SL234_BCF	7	\N
+7	2010-01-14 17:11:19.532592	P_SL236	P_SL236	10	\N
+8	2010-01-14 17:11:19.532592	P_SL285	P_SL285	1	\N
 \.
 
 
@@ -2790,59 +2790,59 @@ COPY pipeproject (pipeproject_id, created_stamp, name, description, owner, funde
 --
 
 COPY process_conf (process_conf_id, created_stamp, runable_name, detail, type) FROM stdin;
-0	2010-01-14 15:50:36.091624	\N	Sainsbury	14
-1	2010-01-14 15:50:36.091624	\N	CRI	14
-2	2010-01-14 15:50:36.091624	\N	BGI	14
-3	2010-01-14 15:50:36.091624	\N	CSHL	14
-4	2010-01-14 15:50:36.091624	\N	Edinburgh	14
-5	2010-01-14 15:50:36.091624	SmallRNA::Runable::SRFToFastqRunable	\N	15
-6	2010-01-14 15:50:36.091624	SmallRNA::Runable::TrimRunable	action: remove_adaptors	18
-7	2010-01-14 15:50:36.091624	SmallRNA::Runable::TrimRunable	action: passthrough	18
-8	2010-01-14 15:50:36.091624	SmallRNA::Runable::TrimRunable	action: trim	18
-9	2010-01-14 15:50:36.091624	SmallRNA::Runable::TrimRunable	action: remove_adaptors	18
-10	2010-01-14 15:50:36.091624	SmallRNA::Runable::TrimRunable	action: passthrough	18
-11	2010-01-14 15:50:36.091624	SmallRNA::Runable::FastStatsRunable	\N	4
-12	2010-01-14 15:50:36.091624	SmallRNA::Runable::FastStatsRunable	\N	4
-13	2010-01-14 15:50:36.091624	SmallRNA::Runable::FastStatsRunable	\N	4
-14	2010-01-14 15:50:36.091624	SmallRNA::Runable::FastStatsRunable	\N	4
-15	2010-01-14 15:50:36.091624	SmallRNA::Runable::FastStatsRunable	\N	4
-16	2010-01-14 15:50:36.091624	SmallRNA::Runable::FastStatsRunable	\N	4
-17	2010-01-14 15:50:36.091624	SmallRNA::Runable::FastStatsRunable	\N	4
-18	2010-01-14 15:50:36.091624	SmallRNA::Runable::FastStatsRunable	\N	4
-19	2010-01-14 15:50:36.091624	SmallRNA::Runable::FastStatsRunable	\N	4
-20	2010-01-14 15:50:36.091624	SmallRNA::Runable::FastStatsRunable	\N	4
-21	2010-01-14 15:50:36.091624	SmallRNA::Runable::SizeFilterRunable	min_size: 15	6
-22	2010-01-14 15:50:36.091624	SmallRNA::Runable::FirstBaseCompSummaryRunable	\N	17
-23	2010-01-14 15:50:36.091624	SmallRNA::Runable::FirstBaseCompSummaryRunable	\N	17
-24	2010-01-14 15:50:36.091624	SmallRNA::Runable::FirstBaseCompSummaryRunable	\N	17
-25	2010-01-14 15:50:36.091624	SmallRNA::Runable::FirstBaseCompSummaryRunable	\N	17
-26	2010-01-14 15:50:36.091624	SmallRNA::Runable::FirstBaseCompSummaryRunable	\N	17
-27	2010-01-14 15:50:36.091624	SmallRNA::Runable::FirstBaseCompSummaryRunable	\N	17
-28	2010-01-14 15:50:36.091624	SmallRNA::Runable::NonRedundantFastaRunable	\N	12
-29	2010-01-14 15:50:36.091624	SmallRNA::Runable::CreateIndexRunable	\N	8
-30	2010-01-14 15:50:36.091624	SmallRNA::Runable::CreateIndexRunable	\N	5
-31	2010-01-14 15:50:36.091624	SmallRNA::Runable::PatmanAlignmentRunable	component: genome, torque_flags: -l pmem=5gb	11
-32	2010-01-14 15:50:36.091624	SmallRNA::Runable::PatmanAlignmentRunable	component: genome-tair9, torque_flags: -l pmem=5gb	11
-33	2010-01-14 15:50:36.091624	SmallRNA::Runable::PatmanAlignmentRunable	component: trna	11
-34	2010-01-14 15:50:36.091624	SmallRNA::Runable::PatmanAlignmentRunable	component: mirbase-hairpin	11
-35	2010-01-14 15:50:36.091624	SmallRNA::Runable::PatmanAlignmentRunable	component: mirbase-mature	11
-36	2010-01-14 15:50:36.091624	SmallRNA::Runable::PatmanAlignmentRunable	component: mirbase-maturestar	11
-37	2010-01-14 15:50:36.091624	SmallRNA::Runable::PatmanAlignmentRunable	component: genome, torque_flags: -l pmem=5gb	11
-38	2010-01-14 15:50:36.091624	SmallRNA::Runable::PatmanAlignmentRunable	component: genome-20091201, torque_flags: -l pmem=5gb	11
-39	2010-01-14 15:50:36.091624	SmallRNA::Runable::PatmanAlignmentRunable	component: ests, torque_flags: -l pmem=5gb	11
-40	2010-01-14 15:50:36.091624	SmallRNA::Runable::PatmanAlignmentRunable	component: concat_ests, ignore_poly_a: yes, torque_flags: -l pmem=5gb	11
-41	2010-01-14 15:50:36.091624	SmallRNA::Runable::PatmanAlignmentRunable	component: genome, torque_flags: -l pmem=5gb	11
-42	2010-01-14 15:50:36.091624	SmallRNA::Runable::PatmanAlignmentRunable	component: mirbase-mature, target: "Arabidopsis thaliana", torque_flags: -l pmem=5gb	11
-43	2010-01-14 15:50:36.091624	SmallRNA::Runable::BWASearchRunable	component: genome	3
-44	2010-01-14 15:50:36.091624	SmallRNA::Runable::PatmanAlignmentRunable	component: genome, target: "Arabidopsis thaliana", mismatches: 1, torque_flags: -l pmem=20gb	11
-45	2010-01-14 15:50:36.091624	SmallRNA::Runable::PatmanAlignmentRunable	component: mrna, target: "Arabidopsis thaliana", mismatches: 1, torque_flags: -l pmem=20gb	11
-46	2010-01-14 15:50:36.091624	SmallRNA::Runable::GenomeMatchingReadsRunable	\N	7
-47	2010-01-14 15:50:36.091624	SmallRNA::Runable::GFF3ToSAMRunable	\N	10
-48	2010-01-14 15:50:36.091624	SmallRNA::Runable::GFF3ToGFF2Runable	\N	9
-49	2010-01-14 15:50:36.091624	SmallRNA::Runable::SAMToBAMRunable	\N	13
-50	2010-01-14 15:50:36.091624	SmallRNA::Runable::SAMToBAMRunable	\N	13
-51	2010-01-14 15:50:36.091624	SmallRNA::Runable::SAMToBAMRunable	\N	13
-52	2010-01-14 15:50:36.091624	SmallRNA::Runable::SAMToBAMRunable	target: "Arabidopsis thaliana"	13
+0	2010-01-14 17:11:18.385641	\N	Sainsbury	14
+1	2010-01-14 17:11:18.385641	\N	CRI	14
+2	2010-01-14 17:11:18.385641	\N	BGI	14
+3	2010-01-14 17:11:18.385641	\N	CSHL	14
+4	2010-01-14 17:11:18.385641	\N	Edinburgh	14
+5	2010-01-14 17:11:18.385641	SmallRNA::Runable::SRFToFastqRunable	\N	15
+6	2010-01-14 17:11:18.385641	SmallRNA::Runable::TrimRunable	action: remove_adaptors	18
+7	2010-01-14 17:11:18.385641	SmallRNA::Runable::TrimRunable	action: passthrough	18
+8	2010-01-14 17:11:18.385641	SmallRNA::Runable::TrimRunable	action: trim	18
+9	2010-01-14 17:11:18.385641	SmallRNA::Runable::TrimRunable	action: remove_adaptors	18
+10	2010-01-14 17:11:18.385641	SmallRNA::Runable::TrimRunable	action: passthrough	18
+11	2010-01-14 17:11:18.385641	SmallRNA::Runable::FastStatsRunable	\N	4
+12	2010-01-14 17:11:18.385641	SmallRNA::Runable::FastStatsRunable	\N	4
+13	2010-01-14 17:11:18.385641	SmallRNA::Runable::FastStatsRunable	\N	4
+14	2010-01-14 17:11:18.385641	SmallRNA::Runable::FastStatsRunable	\N	4
+15	2010-01-14 17:11:18.385641	SmallRNA::Runable::FastStatsRunable	\N	4
+16	2010-01-14 17:11:18.385641	SmallRNA::Runable::FastStatsRunable	\N	4
+17	2010-01-14 17:11:18.385641	SmallRNA::Runable::FastStatsRunable	\N	4
+18	2010-01-14 17:11:18.385641	SmallRNA::Runable::FastStatsRunable	\N	4
+19	2010-01-14 17:11:18.385641	SmallRNA::Runable::FastStatsRunable	\N	4
+20	2010-01-14 17:11:18.385641	SmallRNA::Runable::FastStatsRunable	\N	4
+21	2010-01-14 17:11:18.385641	SmallRNA::Runable::SizeFilterRunable	min_size: 15	6
+22	2010-01-14 17:11:18.385641	SmallRNA::Runable::FirstBaseCompSummaryRunable	\N	17
+23	2010-01-14 17:11:18.385641	SmallRNA::Runable::FirstBaseCompSummaryRunable	\N	17
+24	2010-01-14 17:11:18.385641	SmallRNA::Runable::FirstBaseCompSummaryRunable	\N	17
+25	2010-01-14 17:11:18.385641	SmallRNA::Runable::FirstBaseCompSummaryRunable	\N	17
+26	2010-01-14 17:11:18.385641	SmallRNA::Runable::FirstBaseCompSummaryRunable	\N	17
+27	2010-01-14 17:11:18.385641	SmallRNA::Runable::FirstBaseCompSummaryRunable	\N	17
+28	2010-01-14 17:11:18.385641	SmallRNA::Runable::NonRedundantFastaRunable	\N	12
+29	2010-01-14 17:11:18.385641	SmallRNA::Runable::CreateIndexRunable	\N	8
+30	2010-01-14 17:11:18.385641	SmallRNA::Runable::CreateIndexRunable	\N	5
+31	2010-01-14 17:11:18.385641	SmallRNA::Runable::PatmanAlignmentRunable	component: genome, torque_flags: -l pmem=5gb	11
+32	2010-01-14 17:11:18.385641	SmallRNA::Runable::PatmanAlignmentRunable	component: genome-tair9, torque_flags: -l pmem=5gb	11
+33	2010-01-14 17:11:18.385641	SmallRNA::Runable::PatmanAlignmentRunable	component: trna	11
+34	2010-01-14 17:11:18.385641	SmallRNA::Runable::PatmanAlignmentRunable	component: mirbase-hairpin	11
+35	2010-01-14 17:11:18.385641	SmallRNA::Runable::PatmanAlignmentRunable	component: mirbase-mature	11
+36	2010-01-14 17:11:18.385641	SmallRNA::Runable::PatmanAlignmentRunable	component: mirbase-maturestar	11
+37	2010-01-14 17:11:18.385641	SmallRNA::Runable::PatmanAlignmentRunable	component: genome, torque_flags: -l pmem=5gb	11
+38	2010-01-14 17:11:18.385641	SmallRNA::Runable::PatmanAlignmentRunable	component: genome-20091201, torque_flags: -l pmem=5gb	11
+39	2010-01-14 17:11:18.385641	SmallRNA::Runable::PatmanAlignmentRunable	component: ests, torque_flags: -l pmem=5gb	11
+40	2010-01-14 17:11:18.385641	SmallRNA::Runable::PatmanAlignmentRunable	component: concat_ests, ignore_poly_a: yes, torque_flags: -l pmem=5gb	11
+41	2010-01-14 17:11:18.385641	SmallRNA::Runable::PatmanAlignmentRunable	component: genome, torque_flags: -l pmem=5gb	11
+42	2010-01-14 17:11:18.385641	SmallRNA::Runable::PatmanAlignmentRunable	component: mirbase-mature, target: "Arabidopsis thaliana", torque_flags: -l pmem=5gb	11
+43	2010-01-14 17:11:18.385641	SmallRNA::Runable::BWASearchRunable	component: genome	3
+44	2010-01-14 17:11:18.385641	SmallRNA::Runable::PatmanAlignmentRunable	component: genome, target: "Arabidopsis thaliana", mismatches: 1, torque_flags: -l pmem=20gb	11
+45	2010-01-14 17:11:18.385641	SmallRNA::Runable::PatmanAlignmentRunable	component: mrna, target: "Arabidopsis thaliana", mismatches: 1, torque_flags: -l pmem=20gb	11
+46	2010-01-14 17:11:18.385641	SmallRNA::Runable::GenomeMatchingReadsRunable	\N	7
+47	2010-01-14 17:11:18.385641	SmallRNA::Runable::GFF3ToSAMRunable	\N	10
+48	2010-01-14 17:11:18.385641	SmallRNA::Runable::GFF3ToGFF2Runable	\N	9
+49	2010-01-14 17:11:18.385641	SmallRNA::Runable::SAMToBAMRunable	\N	13
+50	2010-01-14 17:11:18.385641	SmallRNA::Runable::SAMToBAMRunable	\N	13
+51	2010-01-14 17:11:18.385641	SmallRNA::Runable::SAMToBAMRunable	\N	13
+52	2010-01-14 17:11:18.385641	SmallRNA::Runable::SAMToBAMRunable	target: "Arabidopsis thaliana"	13
 \.
 
 
@@ -2851,54 +2851,54 @@ COPY process_conf (process_conf_id, created_stamp, runable_name, detail, type) F
 --
 
 COPY process_conf_input (process_conf_input_id, created_stamp, process_conf, format_type, content_type, ecotype, biosample_type) FROM stdin;
-1	2010-01-14 15:50:36.091624	5	54	40	\N	\N
-2	2010-01-14 15:50:36.091624	6	48	40	\N	25
-3	2010-01-14 15:50:36.091624	7	48	40	\N	22
-4	2010-01-14 15:50:36.091624	8	48	40	\N	21
-5	2010-01-14 15:50:36.091624	9	48	40	\N	24
-6	2010-01-14 15:50:36.091624	10	48	40	\N	23
-7	2010-01-14 15:50:36.091624	11	48	40	\N	\N
-8	2010-01-14 15:50:36.091624	12	47	45	\N	\N
-9	2010-01-14 15:50:36.091624	13	47	34	\N	\N
-10	2010-01-14 15:50:36.091624	14	47	39	\N	\N
-11	2010-01-14 15:50:36.091624	15	47	30	\N	\N
-12	2010-01-14 15:50:36.091624	16	47	44	\N	\N
-13	2010-01-14 15:50:36.091624	17	47	43	\N	\N
-14	2010-01-14 15:50:36.091624	18	47	42	\N	\N
-15	2010-01-14 15:50:36.091624	19	47	41	\N	\N
-16	2010-01-14 15:50:36.091624	20	47	38	\N	\N
-17	2010-01-14 15:50:36.091624	21	47	45	\N	\N
-18	2010-01-14 15:50:36.091624	22	47	45	\N	\N
-19	2010-01-14 15:50:36.091624	23	47	34	\N	\N
-20	2010-01-14 15:50:36.091624	24	47	39	\N	\N
-21	2010-01-14 15:50:36.091624	25	47	40	\N	\N
-22	2010-01-14 15:50:36.091624	26	47	30	\N	\N
-23	2010-01-14 15:50:36.091624	27	47	41	\N	\N
-24	2010-01-14 15:50:36.091624	28	47	34	\N	\N
-25	2010-01-14 15:50:36.091624	29	51	30	\N	\N
-26	2010-01-14 15:50:36.091624	30	47	39	\N	\N
-27	2010-01-14 15:50:36.091624	31	47	39	1	\N
-28	2010-01-14 15:50:36.091624	32	47	39	1	\N
-29	2010-01-14 15:50:36.091624	33	47	39	1	\N
-30	2010-01-14 15:50:36.091624	34	47	39	1	\N
-31	2010-01-14 15:50:36.091624	35	47	39	1	\N
-32	2010-01-14 15:50:36.091624	36	47	39	1	\N
-33	2010-01-14 15:50:36.091624	37	47	39	16	\N
-34	2010-01-14 15:50:36.091624	38	47	39	16	\N
-35	2010-01-14 15:50:36.091624	39	47	39	16	\N
-36	2010-01-14 15:50:36.091624	40	47	39	16	\N
-37	2010-01-14 15:50:36.091624	41	47	39	7	\N
-38	2010-01-14 15:50:36.091624	42	47	39	20	\N
-39	2010-01-14 15:50:36.091624	43	47	39	1	\N
-40	2010-01-14 15:50:36.091624	44	47	39	11	\N
-41	2010-01-14 15:50:36.091624	45	47	39	11	\N
-42	2010-01-14 15:50:36.091624	46	51	30	\N	\N
-43	2010-01-14 15:50:36.091624	47	51	30	\N	\N
-44	2010-01-14 15:50:36.091624	48	51	30	\N	\N
-45	2010-01-14 15:50:36.091624	49	52	30	1	\N
-46	2010-01-14 15:50:36.091624	50	52	30	16	\N
-47	2010-01-14 15:50:36.091624	51	52	30	7	\N
-48	2010-01-14 15:50:36.091624	52	52	30	11	\N
+1	2010-01-14 17:11:18.385641	5	50	36	\N	\N
+2	2010-01-14 17:11:18.385641	6	44	36	\N	25
+3	2010-01-14 17:11:18.385641	7	44	36	\N	22
+4	2010-01-14 17:11:18.385641	8	44	36	\N	21
+5	2010-01-14 17:11:18.385641	9	44	36	\N	24
+6	2010-01-14 17:11:18.385641	10	44	36	\N	23
+7	2010-01-14 17:11:18.385641	11	44	36	\N	\N
+8	2010-01-14 17:11:18.385641	12	43	41	\N	\N
+9	2010-01-14 17:11:18.385641	13	43	30	\N	\N
+10	2010-01-14 17:11:18.385641	14	43	35	\N	\N
+11	2010-01-14 17:11:18.385641	15	43	26	\N	\N
+12	2010-01-14 17:11:18.385641	16	43	40	\N	\N
+13	2010-01-14 17:11:18.385641	17	43	39	\N	\N
+14	2010-01-14 17:11:18.385641	18	43	38	\N	\N
+15	2010-01-14 17:11:18.385641	19	43	37	\N	\N
+16	2010-01-14 17:11:18.385641	20	43	34	\N	\N
+17	2010-01-14 17:11:18.385641	21	43	41	\N	\N
+18	2010-01-14 17:11:18.385641	22	43	41	\N	\N
+19	2010-01-14 17:11:18.385641	23	43	30	\N	\N
+20	2010-01-14 17:11:18.385641	24	43	35	\N	\N
+21	2010-01-14 17:11:18.385641	25	43	36	\N	\N
+22	2010-01-14 17:11:18.385641	26	43	26	\N	\N
+23	2010-01-14 17:11:18.385641	27	43	37	\N	\N
+24	2010-01-14 17:11:18.385641	28	43	30	\N	\N
+25	2010-01-14 17:11:18.385641	29	47	26	\N	\N
+26	2010-01-14 17:11:18.385641	30	43	35	\N	\N
+27	2010-01-14 17:11:18.385641	31	43	35	1	\N
+28	2010-01-14 17:11:18.385641	32	43	35	1	\N
+29	2010-01-14 17:11:18.385641	33	43	35	1	\N
+30	2010-01-14 17:11:18.385641	34	43	35	1	\N
+31	2010-01-14 17:11:18.385641	35	43	35	1	\N
+32	2010-01-14 17:11:18.385641	36	43	35	1	\N
+33	2010-01-14 17:11:18.385641	37	43	35	16	\N
+34	2010-01-14 17:11:18.385641	38	43	35	16	\N
+35	2010-01-14 17:11:18.385641	39	43	35	16	\N
+36	2010-01-14 17:11:18.385641	40	43	35	16	\N
+37	2010-01-14 17:11:18.385641	41	43	35	7	\N
+38	2010-01-14 17:11:18.385641	42	43	35	20	\N
+39	2010-01-14 17:11:18.385641	43	43	35	1	\N
+40	2010-01-14 17:11:18.385641	44	43	35	11	\N
+41	2010-01-14 17:11:18.385641	45	43	35	11	\N
+42	2010-01-14 17:11:18.385641	46	47	26	\N	\N
+43	2010-01-14 17:11:18.385641	47	47	26	\N	\N
+44	2010-01-14 17:11:18.385641	48	47	26	\N	\N
+45	2010-01-14 17:11:18.385641	49	48	26	1	\N
+46	2010-01-14 17:11:18.385641	50	48	26	16	\N
+47	2010-01-14 17:11:18.385641	51	48	26	7	\N
+48	2010-01-14 17:11:18.385641	52	48	26	11	\N
 \.
 
 
@@ -2948,14 +2948,14 @@ COPY sequencing_sample (sequencing_sample_id, name) FROM stdin;
 --
 
 COPY sequencingrun (sequencingrun_id, created_stamp, identifier, sequencing_sample, initial_pipedata, sequencing_centre, initial_pipeprocess, submission_date, run_date, data_received_date, quality, sequencing_type, multiplexing_type) FROM stdin;
-1	2010-01-14 15:50:36.83111	RUN_SL11	1	1	3	1	\N	\N	\N	89	92	61
-2	2010-01-14 15:50:36.83111	RUN_SL54	2	2	3	2	\N	\N	\N	89	92	61
-3	2010-01-14 15:50:36.83111	RUN_SL55	3	3	3	3	\N	\N	\N	89	92	61
-4	2010-01-14 15:50:36.83111	RUN_SL136	4	4	2	4	2008-06-24	2008-09-11	2008-09-11	89	92	61
-5	2010-01-14 15:50:36.83111	RUN_SL165_1	5	5	2	5	2008-08-27	2008-09-11	2008-09-11	89	92	61
-6	2010-01-14 15:50:36.83111	RUN_SL234_BCF	6	6	2	6	2009-01-20	2009-02-10	2009-02-10	89	92	60
-7	2010-01-14 15:50:36.83111	RUN_SL236	7	7	2	7	2009-02-10	2009-03-09	2009-03-09	89	92	61
-8	2010-01-14 15:50:36.83111	RUN_SL285	8	8	2	8	2009-07-14	2009-07-24	2009-07-24	89	92	60
+1	2010-01-14 17:11:19.532592	RUN_SL11	1	1	3	1	\N	\N	\N	89	92	61
+2	2010-01-14 17:11:19.532592	RUN_SL54	2	2	3	2	\N	\N	\N	89	92	61
+3	2010-01-14 17:11:19.532592	RUN_SL55	3	3	3	3	\N	\N	\N	89	92	61
+4	2010-01-14 17:11:19.532592	RUN_SL136	4	4	2	4	2008-06-24	2008-09-11	2008-09-11	89	92	61
+5	2010-01-14 17:11:19.532592	RUN_SL165_1	5	5	2	5	2008-08-27	2008-09-11	2008-09-11	89	92	61
+6	2010-01-14 17:11:19.532592	RUN_SL234_BCF	6	6	2	6	2009-01-20	2009-02-10	2009-02-10	89	92	60
+7	2010-01-14 17:11:19.532592	RUN_SL236	7	7	2	7	2009-02-10	2009-03-09	2009-03-09	89	92	61
+8	2010-01-14 17:11:19.532592	RUN_SL285	8	8	2	8	2009-07-14	2009-07-24	2009-07-24	89	92	60
 \.
 
 
@@ -2964,34 +2964,34 @@ COPY sequencingrun (sequencingrun_id, created_stamp, identifier, sequencing_samp
 --
 
 COPY tissue (tissue_id, created_stamp, organism, description) FROM stdin;
-1	2010-01-14 15:50:35.948928	1	unspecified
-2	2010-01-14 15:50:35.948928	1	unopened flowers (stage 0-12)
-3	2010-01-14 15:50:35.948928	1	open flowers (stage 13)
-4	2010-01-14 15:50:35.948928	1	young siliques (<7 dpf)
-5	2010-01-14 15:50:35.948928	1	mature siliques (>7 dpf)
-6	2010-01-14 15:50:35.948928	1	young leaves (<14 days)
-7	2010-01-14 15:50:35.948928	1	mature leaves (>14 days)
-8	2010-01-14 15:50:35.948928	1	vegetative meristem
-9	2010-01-14 15:50:35.948928	1	floral meristem
-10	2010-01-14 15:50:35.948928	1	roots (including meristem)
-11	2010-01-14 15:50:35.948928	1	seedlings (roots, cotyledons, leaves, and meristem)
-12	2010-01-14 15:50:35.948928	1	cauline leaves
-13	2010-01-14 15:50:35.948928	1	stem
-14	2010-01-14 15:50:35.948928	2	unspecified
-15	2010-01-14 15:50:35.948928	2	vegetative cells
-16	2010-01-14 15:50:35.948928	2	gametes
-17	2010-01-14 15:50:35.948928	3	unspecified
-18	2010-01-14 15:50:35.948928	4	unspecified
-19	2010-01-14 15:50:35.948928	5	unspecified
-20	2010-01-14 15:50:35.948928	7	unspecified
-21	2010-01-14 15:50:35.948928	10	unspecified
-22	2010-01-14 15:50:35.948928	12	unspecified
-23	2010-01-14 15:50:35.948928	14	unspecified
-24	2010-01-14 15:50:35.948928	15	unspecified
-25	2010-01-14 15:50:35.948928	13	unspecified
-26	2010-01-14 15:50:35.948928	16	unspecified
-27	2010-01-14 15:50:35.948928	17	unspecified
-28	2010-01-14 15:50:35.948928	18	unspecified
+1	2010-01-14 17:11:18.243476	1	unspecified
+2	2010-01-14 17:11:18.243476	1	unopened flowers (stage 0-12)
+3	2010-01-14 17:11:18.243476	1	open flowers (stage 13)
+4	2010-01-14 17:11:18.243476	1	young siliques (<7 dpf)
+5	2010-01-14 17:11:18.243476	1	mature siliques (>7 dpf)
+6	2010-01-14 17:11:18.243476	1	young leaves (<14 days)
+7	2010-01-14 17:11:18.243476	1	mature leaves (>14 days)
+8	2010-01-14 17:11:18.243476	1	vegetative meristem
+9	2010-01-14 17:11:18.243476	1	floral meristem
+10	2010-01-14 17:11:18.243476	1	roots (including meristem)
+11	2010-01-14 17:11:18.243476	1	seedlings (roots, cotyledons, leaves, and meristem)
+12	2010-01-14 17:11:18.243476	1	cauline leaves
+13	2010-01-14 17:11:18.243476	1	stem
+14	2010-01-14 17:11:18.243476	2	unspecified
+15	2010-01-14 17:11:18.243476	2	vegetative cells
+16	2010-01-14 17:11:18.243476	2	gametes
+17	2010-01-14 17:11:18.243476	3	unspecified
+18	2010-01-14 17:11:18.243476	4	unspecified
+19	2010-01-14 17:11:18.243476	5	unspecified
+20	2010-01-14 17:11:18.243476	7	unspecified
+21	2010-01-14 17:11:18.243476	10	unspecified
+22	2010-01-14 17:11:18.243476	12	unspecified
+23	2010-01-14 17:11:18.243476	14	unspecified
+24	2010-01-14 17:11:18.243476	15	unspecified
+25	2010-01-14 17:11:18.243476	13	unspecified
+26	2010-01-14 17:11:18.243476	16	unspecified
+27	2010-01-14 17:11:18.243476	17	unspecified
+28	2010-01-14 17:11:18.243476	18	unspecified
 \.
 
 
@@ -3092,14 +3092,6 @@ ALTER TABLE ONLY biosample_pipeproject
 
 
 --
--- Name: coded_sample_id_pk; Type: CONSTRAINT; Schema: public; Owner: kmr44; Tablespace: 
---
-
-ALTER TABLE ONLY coded_sample
-    ADD CONSTRAINT coded_sample_id_pk PRIMARY KEY (coded_sample_id);
-
-
---
 -- Name: cv_c1; Type: CONSTRAINT; Schema: public; Owner: kmr44; Tablespace: 
 --
 
@@ -3193,6 +3185,14 @@ ALTER TABLE ONLY dbxref
 
 ALTER TABLE ONLY ecotype
     ADD CONSTRAINT ecotype_id_pk PRIMARY KEY (ecotype_id);
+
+
+--
+-- Name: library_id_pk; Type: CONSTRAINT; Schema: public; Owner: kmr44; Tablespace: 
+--
+
+ALTER TABLE ONLY library
+    ADD CONSTRAINT library_id_pk PRIMARY KEY (library_id);
 
 
 --
@@ -3677,46 +3677,6 @@ ALTER TABLE ONLY biosample
 
 
 --
--- Name: coded_sample_adaptor_fkey; Type: FK CONSTRAINT; Schema: public; Owner: kmr44
---
-
-ALTER TABLE ONLY coded_sample
-    ADD CONSTRAINT coded_sample_adaptor_fkey FOREIGN KEY (adaptor) REFERENCES cvterm(cvterm_id) DEFERRABLE INITIALLY DEFERRED;
-
-
---
--- Name: coded_sample_barcode_fkey; Type: FK CONSTRAINT; Schema: public; Owner: kmr44
---
-
-ALTER TABLE ONLY coded_sample
-    ADD CONSTRAINT coded_sample_barcode_fkey FOREIGN KEY (barcode) REFERENCES barcode(barcode_id) DEFERRABLE INITIALLY DEFERRED;
-
-
---
--- Name: coded_sample_biosample_fkey; Type: FK CONSTRAINT; Schema: public; Owner: kmr44
---
-
-ALTER TABLE ONLY coded_sample
-    ADD CONSTRAINT coded_sample_biosample_fkey FOREIGN KEY (biosample) REFERENCES biosample(biosample_id) DEFERRABLE INITIALLY DEFERRED;
-
-
---
--- Name: coded_sample_coded_sample_type_fkey; Type: FK CONSTRAINT; Schema: public; Owner: kmr44
---
-
-ALTER TABLE ONLY coded_sample
-    ADD CONSTRAINT coded_sample_coded_sample_type_fkey FOREIGN KEY (coded_sample_type) REFERENCES cvterm(cvterm_id) DEFERRABLE INITIALLY DEFERRED;
-
-
---
--- Name: coded_sample_sequencing_sample_fkey; Type: FK CONSTRAINT; Schema: public; Owner: kmr44
---
-
-ALTER TABLE ONLY coded_sample
-    ADD CONSTRAINT coded_sample_sequencing_sample_fkey FOREIGN KEY (sequencing_sample) REFERENCES sequencing_sample(sequencing_sample_id) DEFERRABLE INITIALLY DEFERRED;
-
-
---
 -- Name: cvterm_cv_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: kmr44
 --
 
@@ -3762,6 +3722,46 @@ ALTER TABLE ONLY dbxref
 
 ALTER TABLE ONLY ecotype
     ADD CONSTRAINT ecotype_organism_fkey FOREIGN KEY (organism) REFERENCES organism(organism_id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: library_adaptor_fkey; Type: FK CONSTRAINT; Schema: public; Owner: kmr44
+--
+
+ALTER TABLE ONLY library
+    ADD CONSTRAINT library_adaptor_fkey FOREIGN KEY (adaptor) REFERENCES cvterm(cvterm_id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: library_barcode_fkey; Type: FK CONSTRAINT; Schema: public; Owner: kmr44
+--
+
+ALTER TABLE ONLY library
+    ADD CONSTRAINT library_barcode_fkey FOREIGN KEY (barcode) REFERENCES barcode(barcode_id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: library_biosample_fkey; Type: FK CONSTRAINT; Schema: public; Owner: kmr44
+--
+
+ALTER TABLE ONLY library
+    ADD CONSTRAINT library_biosample_fkey FOREIGN KEY (biosample) REFERENCES biosample(biosample_id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: library_library_type_fkey; Type: FK CONSTRAINT; Schema: public; Owner: kmr44
+--
+
+ALTER TABLE ONLY library
+    ADD CONSTRAINT library_library_type_fkey FOREIGN KEY (library_type) REFERENCES cvterm(cvterm_id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: library_sequencing_sample_fkey; Type: FK CONSTRAINT; Schema: public; Owner: kmr44
+--
+
+ALTER TABLE ONLY library
+    ADD CONSTRAINT library_sequencing_sample_fkey FOREIGN KEY (sequencing_sample) REFERENCES sequencing_sample(sequencing_sample_id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --

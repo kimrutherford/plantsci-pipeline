@@ -141,7 +141,7 @@ my %terms = (
               'fasta index' =>
                 'Create an index of FASTA file',
              },
-             'tracking coded sample types' =>
+             'tracking library types' =>
              {
               'initial run' => 'initial sequencing run',
               'technical replicate' => 'technical replicate/re-run',
