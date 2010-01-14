@@ -66,16 +66,16 @@ sub run
     }
     my $input_pipedata = $input_pipedatas[0];
 
-    my @samples = $input_pipedata->samples();
+    my @biosamples = $input_pipedata->biosamples();
 
-    if (@samples > 1) {
+    if (@biosamples > 1) {
       croak ("pipedata for pipeprocess ", $pipeprocess->pipeprocess_id(),
-             " has more than one sample\n")
+             " has more than one biosample\n")
     }
 
-    my $sample = $samples[0];
+    my $biosample = $biosamples[0];
 
-    my $sample_name = $sample->name();
+    my $biosample_name = $biosample->name();
 
     my $input_format_type = $input_pipedata->format_type()->name();
     my $input_content_type = $input_pipedata->content_type()->name();
@@ -94,7 +94,7 @@ sub run
     if ($output_file_name =~ s/\.$input_format_type$/.$output_type/) {
       SmallRNA::Process::GFF3ToGFF2Process::run(input_file_name => $input_file_name,
                                                 output_file_name => $output_file_name,
-                                                sample_name => $sample_name);
+                                                biosample_name => $biosample_name);
 
       $self->store_pipedata(generating_pipeprocess => $self->pipeprocess(),
                             file_name => $output_file_name,

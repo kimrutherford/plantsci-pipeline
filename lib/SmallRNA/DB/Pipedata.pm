@@ -41,6 +41,11 @@ __PACKAGE__->add_columns(
 __PACKAGE__->set_primary_key("pipedata_id");
 __PACKAGE__->add_unique_constraint("pipedata_id_pk", ["pipedata_id"]);
 __PACKAGE__->add_unique_constraint("pipedata_file_name_key", ["file_name"]);
+__PACKAGE__->has_many(
+  "biosample_pipedatas",
+  "SmallRNA::DB::BiosamplePipedata",
+  { "foreign.pipedata" => "self.pipedata_id" },
+);
 __PACKAGE__->belongs_to(
   "generating_pipeprocess",
   "SmallRNA::DB::Pipeprocess",
@@ -67,11 +72,6 @@ __PACKAGE__->has_many(
   { "foreign.pipedata" => "self.pipedata_id" },
 );
 __PACKAGE__->has_many(
-  "sample_pipedatas",
-  "SmallRNA::DB::SamplePipedata",
-  { "foreign.pipedata" => "self.pipedata_id" },
-);
-__PACKAGE__->has_many(
   "sequencingruns",
   "SmallRNA::DB::Sequencingrun",
   { "foreign.initial_pipedata" => "self.pipedata_id" },
@@ -79,11 +79,11 @@ __PACKAGE__->has_many(
 
 
 # Created by DBIx::Class::Schema::Loader v0.04006
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:ZNOEegd+e3iazertF/pbxQ
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:tORzJ5uGmRlVOJWx0DWXfQ
 
 __PACKAGE__->many_to_many(next_pipeprocesses => 'pipeprocess_in_pipedatas',
                           'pipeprocess');
 
-__PACKAGE__->many_to_many('samples' => 'sample_pipedatas', 'sample');
+__PACKAGE__->many_to_many('biosamples' => 'biosample_pipedatas', 'biosample');
 
 1;

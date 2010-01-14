@@ -1,4 +1,4 @@
-package SmallRNA::DB::CodedSample;
+package SmallRNA::DB::Library;
 
 use strict;
 use warnings;
@@ -6,12 +6,12 @@ use warnings;
 use base 'DBIx::Class';
 
 __PACKAGE__->load_components("Core");
-__PACKAGE__->table("coded_sample");
+__PACKAGE__->table("library");
 __PACKAGE__->add_columns(
-  "coded_sample_id",
+  "library_id",
   {
     data_type => "integer",
-    default_value => "nextval('coded_sample_coded_sample_id_seq'::regclass)",
+    default_value => "nextval('library_library_id_seq'::regclass)",
     is_nullable => 0,
     size => 4,
   },
@@ -29,7 +29,7 @@ __PACKAGE__->add_columns(
     is_nullable => 1,
     size => undef,
   },
-  "coded_sample_type",
+  "library_type",
   { data_type => "integer", default_value => undef, is_nullable => 0, size => 4 },
   "biosample",
   { data_type => "integer", default_value => undef, is_nullable => 0, size => 4 },
@@ -40,17 +40,17 @@ __PACKAGE__->add_columns(
   "barcode",
   { data_type => "integer", default_value => undef, is_nullable => 1, size => 4 },
 );
-__PACKAGE__->set_primary_key("coded_sample_id");
-__PACKAGE__->add_unique_constraint("coded_sample_id_pk", ["coded_sample_id"]);
+__PACKAGE__->set_primary_key("library_id");
+__PACKAGE__->add_unique_constraint("library_id_pk", ["library_id"]);
 __PACKAGE__->belongs_to(
   "sequencing_sample",
   "SmallRNA::DB::SequencingSample",
   { sequencing_sample_id => "sequencing_sample" },
 );
 __PACKAGE__->belongs_to(
-  "coded_sample_type",
+  "library_type",
   "SmallRNA::DB::Cvterm",
-  { cvterm_id => "coded_sample_type" },
+  { cvterm_id => "library_type" },
 );
 __PACKAGE__->belongs_to(
   "barcode",
@@ -66,7 +66,7 @@ __PACKAGE__->belongs_to("adaptor", "SmallRNA::DB::Cvterm", { cvterm_id => "adapt
 
 
 # Created by DBIx::Class::Schema::Loader v0.04006
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:nASqDg3YfqbE1jwgs2XEKA
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:hC4pG8dieW4TCjAfXc8MvQ
 
 
 # You can replace this text with custom content, and it will be preserved on regeneration

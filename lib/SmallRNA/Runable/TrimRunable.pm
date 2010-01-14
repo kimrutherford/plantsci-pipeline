@@ -75,9 +75,21 @@ sub _find_barcode_set_and_adaptor
   my $pipeprocess = shift;
 
   my $input_pipedata = ($pipeprocess->input_pipedatas())[0];
-  my $seq_run_process = $input_pipedata->generating_pipeprocess();
+  my $fastq_generating_pipeprocess = $input_pipedata->generating_pipeprocess();
+
+  my $seq_run_process = undef;
+
+  if ($fastq_generating_pipeprocess->input_pipedatas() > 0) {
+    # the fastq file we are processing was generated from an SRF file, which 
+    # we need go back to to get the pipeprocess that the sequencingruns hang off
+    my $srf_pipedata = ($fastq_generating_pipeprocess->input_pipedatas())[0];
+    $seq_run_process = $srf_pipedata->generating_pipeprocess();
+  } else {
+    $seq_run_process = $fastq_generating_pipeprocess;
+  }
 
   my @sequencingruns = $seq_run_process->sequencingruns();
+
   my $sequencing_sample = $sequencingruns[0]->sequencing_sample();
   my @coded_samples = $sequencing_sample->coded_samples();
 
@@ -105,7 +117,7 @@ sub _find_sequencingrun_from_pipedata
   return $sequencingruns[0];
 }
 
-sub _find_sample_from_code
+sub _find_biosample_from_code
 {
   my $pipedata = shift;
   my $code = shift;
@@ -116,20 +128,20 @@ sub _find_sample_from_code
 
   my @coded_samples = $sequencing_sample->coded_samples();
 
-  my $sample = undef;
+  my $biosample = undef;
 
   for my $coded_sample (@coded_samples) {
     if ($coded_sample->barcode()->code() eq $code) {
-      if (defined $sample) {
-        croak ("two samples used the same barcode: ", $sample->sample_id(),
-               " and ", $coded_sample->sample());
+      if (defined $biosample) {
+        croak ("two biosamples used the same barcode: ", $biosample->biosample_id(),
+               " and ", $coded_sample->biosample());
       } else {
-        $sample = $coded_sample->sample();
+        $biosample = $coded_sample->biosample();
       }
     }
   }
 
-  return $sample;
+  return $biosample;
 }
 
 sub _check_terms
@@ -180,19 +192,19 @@ sub run
 
   my $input_pipedata = $input_pipedatas[0];
 
-  my $sample_type;
+  my $biosample_type;
 
-  my @samples = $input_pipedata->samples();
+  my @biosamples = $input_pipedata->biosamples();
 
-  for my $sample (@samples) {
-    if (defined $sample_type) {
-      if ($sample->sample_type()->name() ne $sample_type) {
+  for my $biosample (@biosamples) {
+    if (defined $biosample_type) {
+      if ($biosample->biosample_type()->name() ne $biosample_type) {
         croak ('pipedata ' . $input_pipedata->pipedata_id() . 
-               ' has more than 1 sample, but with differing sample_types ' .
+               ' has more than 1 biosample, but with differing biosample_types ' .
                ' - not supported');
       }
     } else {
-      $sample_type = $sample->sample_type()->name();
+      $biosample_type = $biosample->biosample_type()->name();
     }
   }
 
@@ -248,7 +260,7 @@ sub run
                                                      );
 
       for my $code (keys %{$output}) {
-        my $sample = _find_sample_from_code(@input_pipedatas, $code);
+        my $biosample = _find_biosample_from_code(@input_pipedatas, $code);
 
         my $code_name = $barcodes_map{$code};
 
@@ -260,14 +272,14 @@ sub run
 
         my $content_type_name;
 
-        my @samples = ();
+        my @biosamples = ();
 
-        if (defined $sample) {
-          push @samples, $sample;
+        if (defined $biosample) {
+          push @biosamples, $biosample;
 
-          my $sample_name = $sample->name();
-          mkpath($output_dir . '/' . $sample_name);
-          if (!($new_file_name =~ s|(?:$sequencingrun_identifier\.)?(.*?)(?:\.$code_name)\.fasta$|$sample_name/$sample_name.$kept_term_name.fasta|)) {
+          my $biosample_name = $biosample->name();
+          mkpath($output_dir . '/' . $biosample_name);
+          if (!($new_file_name =~ s|(?:$sequencingrun_identifier\.)?(.*?)(?:\.$code_name)\.fasta$|$biosample_name/$biosample_name.$kept_term_name.fasta|)) {
             croak "pattern match failed for $new_file_name\n";
           }
           $content_type_name = $kept_term_name;
@@ -283,7 +295,7 @@ sub run
                               file_name => $new_file_name,
                               format_type_name => 'fasta',
                               content_type_name => $content_type_name,
-                              samples => [@samples],
+                              biosamples => [@biosamples],
                               properties => { 'multiplexing code' => $code_name });
       }
     } else {
@@ -295,8 +307,7 @@ sub run
                                                       adaptor_sequence => $adaptor->definition()
                                                      );
 
-      my @samples = $input_pipedata->samples();
-      my $sample = $samples[0];
+      my $biosample = $biosamples[0];
 
       my $temp_dir_output_file_name = "$temp_output_dir/$output";
 
@@ -304,19 +315,19 @@ sub run
         croak "output file $temp_dir_output_file_name missing from TrimProcess->run()\n";
       }
 
-      # the directory is just the sample name
-      my $sample_name = $sample->name();
+      # the directory is just the biosample name
+      my $biosample_name = $biosample->name();
       my $new_output_name = $output;
-      $new_output_name =~ s|(.*)\.fasta$|$sample_name/$sample_name.$kept_term_name.fasta|;
+      $new_output_name =~ s|(.*)\.fasta$|$biosample_name/$biosample_name.$kept_term_name.fasta|;
 
-      mkpath("$data_dir/$sample_name");
+      mkpath("$data_dir/$biosample_name");
       move($temp_dir_output_file_name, "$data_dir/$new_output_name");
 
       $self->store_pipedata(generating_pipeprocess => $self->pipeprocess(),
                             file_name => $new_output_name,
                             format_type_name => 'fasta',
                             content_type_name => $kept_term_name,
-                            samples => \@samples);
+                            biosamples => \@biosamples);
     }
 
     # store reject file
@@ -337,7 +348,7 @@ sub run
                           file_name => $new_reject_file_name,
                           format_type_name => 'fasta',
                           content_type_name => $reject_term_name,
-                          samples => [$input_pipedata->samples()]);
+                          biosamples => [$input_pipedata->biosamples()]);
 
     # store n-reject file (reads containing 'N's)
     my $new_n_reject_file_name = $n_reject_file_name;
@@ -357,7 +368,7 @@ sub run
                           file_name => $new_n_reject_file_name,
                           format_type_name => 'fasta',
                           content_type_name => $n_reject_term_name,
-                          samples => [$input_pipedata->samples()]);
+                          biosamples => [$input_pipedata->biosamples()]);
 
     my $new_fasta_file_name = $fasta_file_name;
 
@@ -376,7 +387,7 @@ sub run
                           file_name => $new_fasta_file_name,
                           format_type_name => 'fasta',
                           content_type_name => $fasta_output_term_name,
-                          samples => [$input_pipedata->samples()]);
+                          biosamples => [$input_pipedata->biosamples()]);
   };
   $self->schema->txn_do($code);
 }

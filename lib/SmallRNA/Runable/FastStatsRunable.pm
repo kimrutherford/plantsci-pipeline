@@ -101,20 +101,20 @@ sub run
       }
     }
 
-    my @samples = $input_pipedata->samples();
+    my @biosamples = $input_pipedata->biosamples();
 
     $self->store_pipedata(generating_pipeprocess => $self->pipeprocess(),
                           file_name => $out_file_name,
                           format_type_name => 'text',
                           content_type_name => $stats_term_name,
-                          samples => \@samples);
+                          biosamples => \@biosamples);
 
     if (keys %{$results->{'top-n-mers'}}) {
       $self->store_pipedata(generating_pipeprocess => $self->pipeprocess(),
                             file_name => $n_mer_file_name,
                             format_type_name => 'text',
                             content_type_name => 'n_mer_stats',
-                            samples => \@samples);
+                            biosamples => \@biosamples);
 
     }
   };

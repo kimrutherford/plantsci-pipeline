@@ -17,7 +17,7 @@ my ($fh, $temp_output_file_name) =
 
 SmallRNA::Process::GFF3ToSAMProcess::run(input_file_name => $input_file_name,
                                          output_file_name => $temp_output_file_name,
-                                         sample_name => 'SL260');
+                                         biosample_name => 'SL260');
 
 ok(-s $temp_output_file_name, 'has output');
 

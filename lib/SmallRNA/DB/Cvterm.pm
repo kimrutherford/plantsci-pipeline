@@ -48,6 +48,31 @@ __PACKAGE__->has_many(
   { "foreign.position_in_read" => "self.cvterm_id" },
 );
 __PACKAGE__->has_many(
+  "biosample_processing_requirements",
+  "SmallRNA::DB::Biosample",
+  { "foreign.processing_requirement" => "self.cvterm_id" },
+);
+__PACKAGE__->has_many(
+  "biosample_treatment_types",
+  "SmallRNA::DB::Biosample",
+  { "foreign.treatment_type" => "self.cvterm_id" },
+);
+__PACKAGE__->has_many(
+  "biosample_biosample_types",
+  "SmallRNA::DB::Biosample",
+  { "foreign.biosample_type" => "self.cvterm_id" },
+);
+__PACKAGE__->has_many(
+  "biosample_molecule_types",
+  "SmallRNA::DB::Biosample",
+  { "foreign.molecule_type" => "self.cvterm_id" },
+);
+__PACKAGE__->has_many(
+  "biosample_fractionation_types",
+  "SmallRNA::DB::Biosample",
+  { "foreign.fractionation_type" => "self.cvterm_id" },
+);
+__PACKAGE__->has_many(
   "coded_sample_coded_sample_types",
   "SmallRNA::DB::CodedSample",
   { "foreign.coded_sample_type" => "self.cvterm_id" },
@@ -95,14 +120,14 @@ __PACKAGE__->has_many(
   { "foreign.type" => "self.cvterm_id" },
 );
 __PACKAGE__->has_many(
-  "process_conf_input_sample_types",
-  "SmallRNA::DB::ProcessConfInput",
-  { "foreign.sample_type" => "self.cvterm_id" },
-);
-__PACKAGE__->has_many(
   "process_conf_input_format_types",
   "SmallRNA::DB::ProcessConfInput",
   { "foreign.format_type" => "self.cvterm_id" },
+);
+__PACKAGE__->has_many(
+  "process_conf_input_biosample_types",
+  "SmallRNA::DB::ProcessConfInput",
+  { "foreign.biosample_type" => "self.cvterm_id" },
 );
 __PACKAGE__->has_many(
   "process_conf_input_content_types",
@@ -113,31 +138,6 @@ __PACKAGE__->has_many(
   "pubs",
   "SmallRNA::DB::Pub",
   { "foreign.type_id" => "self.cvterm_id" },
-);
-__PACKAGE__->has_many(
-  "sample_processing_requirements",
-  "SmallRNA::DB::Sample",
-  { "foreign.processing_requirement" => "self.cvterm_id" },
-);
-__PACKAGE__->has_many(
-  "sample_treatment_types",
-  "SmallRNA::DB::Sample",
-  { "foreign.treatment_type" => "self.cvterm_id" },
-);
-__PACKAGE__->has_many(
-  "sample_sample_types",
-  "SmallRNA::DB::Sample",
-  { "foreign.sample_type" => "self.cvterm_id" },
-);
-__PACKAGE__->has_many(
-  "sample_fractionation_types",
-  "SmallRNA::DB::Sample",
-  { "foreign.fractionation_type" => "self.cvterm_id" },
-);
-__PACKAGE__->has_many(
-  "sample_molecule_types",
-  "SmallRNA::DB::Sample",
-  { "foreign.molecule_type" => "self.cvterm_id" },
 );
 __PACKAGE__->has_many(
   "sequencingrun_qualities",
@@ -157,7 +157,7 @@ __PACKAGE__->has_many(
 
 
 # Created by DBIx::Class::Schema::Loader v0.04006
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:mTWiPvlKmfON7E5o1zw9/Q
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:1mTAaxhEOySvuv4N7gMetg
 
 __PACKAGE__->many_to_many(dbxrefs => 'cvterm_dbxrefs', 'dbxref');
 

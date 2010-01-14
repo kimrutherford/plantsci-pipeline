@@ -81,13 +81,13 @@ sub run
                                                  output_file_name =>
                                                    "$data_dir/" . $out_file_name);
 
-    my @samples = $input_pipedata->samples();
+    my @biosamples = $input_pipedata->biosamples();
 
     $self->store_pipedata(generating_pipeprocess => $self->pipeprocess(),
                           file_name => $out_file_name,
                           format_type_name => 'text',
                           content_type_name => $summary_term_name,
-                          samples => \@samples);
+                          biosamples => \@biosamples);
   };
   $self->schema->txn_do($code);
 }

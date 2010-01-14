@@ -43,6 +43,11 @@ __PACKAGE__->set_primary_key("dbxref_id");
 __PACKAGE__->add_unique_constraint("dbxref_pkey", ["dbxref_id"]);
 __PACKAGE__->add_unique_constraint("dbxref_c1", ["db_id", "accession", "version"]);
 __PACKAGE__->has_many(
+  "biosample_dbxrefs",
+  "SmallRNA::DB::BiosampleDbxref",
+  { "foreign.dbxref_id" => "self.dbxref_id" },
+);
+__PACKAGE__->has_many(
   "cvterms",
   "SmallRNA::DB::Cvterm",
   { "foreign.dbxref_id" => "self.dbxref_id" },
@@ -63,15 +68,10 @@ __PACKAGE__->has_many(
   "SmallRNA::DB::PubDbxref",
   { "foreign.dbxref_id" => "self.dbxref_id" },
 );
-__PACKAGE__->has_many(
-  "sample_dbxrefs",
-  "SmallRNA::DB::SampleDbxref",
-  { "foreign.dbxref_id" => "self.dbxref_id" },
-);
 
 
 # Created by DBIx::Class::Schema::Loader v0.04006
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:fDeBNA6DZ4Nm/gtYv/7ZIQ
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:ODt2nqHzrUAkaocSYh/SbA
 
 __PACKAGE__->many_to_many(extra_cvterms => 'cvterm_dbxrefs', 'cvterm');
 

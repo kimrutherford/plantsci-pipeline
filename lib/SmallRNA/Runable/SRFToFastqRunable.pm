@@ -84,7 +84,7 @@ sub run
 
     my $output_file_name = $input_file_name;
 
-    if ($output_file_name =~ s/\.($input_format_type)$/.$output_type/) {
+    if ($output_file_name =~ s:srf/(.*)\.$input_format_type$:fastq/$1.$output_type:) {
       my $c = $self->config()->{programs}{srf2fastq};
       my $exec_path = $c->{path};
 

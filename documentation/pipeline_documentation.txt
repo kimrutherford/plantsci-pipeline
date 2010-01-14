@@ -107,7 +107,7 @@ dependencies.
     Columns of this table:
  - =name= :: The user friendly name for this =barcode_set=
 *** =coded_sample=
-    This table connects a [[sequencing_sample][sequencing sample]], a [[sample]] and a [[barcode]].  The bar
+    This table connects a [[sequencing_sample][sequencing sample]], a [[biosample]] and a [[barcode]].  The bar
     code is optional as a sequencing sample isn't always multiplexed.
 
     Columns of this table:
@@ -202,15 +202,15 @@ dependencies.
     Columns of this table:
 *** =pub=
 *** =pub_dbxref=
-*** =sample=
+*** =biosample=
     Columns of this table:
-*** =sample_dbxref=
+*** =biosample_dbxref=
     Columns of this table:
-*** =sample_ecotype=
+*** =biosample_ecotype=
     Columns of this table:
-*** =sample_pipedata=
+*** =biosample_pipedata=
     Columns of this table:
-*** =sample_pipeproject=
+*** =biosample_pipeproject=
     Columns of this table:
 *** =sequencing_sample=
     Columns of this table:

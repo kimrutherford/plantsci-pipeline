@@ -15,7 +15,7 @@ if (@ARGV != 3) {
 error: needs three arguments
 
 usage:
-  $0 <sequencing_centre_short_name> <sample_identifier> <sequencing_run_identifier>
+  $0 <sequencing_centre_short_name> <biosample_identifier> <sequencing_run_identifier>
 EOF
 }
 
@@ -27,16 +27,16 @@ my $password = SmallRNA::Config->db_password();
 my $schema = SmallRNA::DB->connect($connect_string, $username, $password);
 
 my $sequencingcentre_short_name = shift;
-my $sample_identifier = shift;
+my $biosample_identifier = shift;
 my $sequencing_run_identifier = shift;
 
-my $sample_rs = $schema->resultset('Sample');
-my $sample = $sample_rs->find({
-                               name => $sample_identifier
+my $biosample_rs = $schema->resultset('Biosample');
+my $biosample = $biosample_rs->find({
+                               name => $biosample_identifier
                               });
 
-if (!defined $sample) {
-  die "couldn't find sample with name: $sample_identifier\n";
+if (!defined $biosample) {
+  die "couldn't find biosample with name: $biosample_identifier\n";
 }
 
 my $sequencingtype = $schema->find_with_type('Cvterm', 'name', 'Illumina');
@@ -48,7 +48,7 @@ my $sequencing_rs = $schema->resultset('Sequencingrun');
 
 $sequencing_rs->create({
                         identifier => $sequencing_run_identifier,
-                        sample => $sample,
+                        biosample => $biosample,
                         submissiondate => DateTime->now(),
                         sequencingtype => $sequencingtype,
                         sequencingcentre => $sequencingcentre

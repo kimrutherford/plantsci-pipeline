@@ -30,20 +30,20 @@ __PACKAGE__->add_columns(
   { data_type => "integer", default_value => undef, is_nullable => 1, size => 4 },
   "ecotype",
   { data_type => "integer", default_value => undef, is_nullable => 1, size => 4 },
-  "sample_type",
+  "biosample_type",
   { data_type => "integer", default_value => undef, is_nullable => 1, size => 4 },
 );
 __PACKAGE__->set_primary_key("process_conf_input_id");
 __PACKAGE__->add_unique_constraint("process_conf_input_id_pk", ["process_conf_input_id"]);
 __PACKAGE__->belongs_to(
-  "sample_type",
-  "SmallRNA::DB::Cvterm",
-  { cvterm_id => "sample_type" },
-);
-__PACKAGE__->belongs_to(
   "format_type",
   "SmallRNA::DB::Cvterm",
   { cvterm_id => "format_type" },
+);
+__PACKAGE__->belongs_to(
+  "biosample_type",
+  "SmallRNA::DB::Cvterm",
+  { cvterm_id => "biosample_type" },
 );
 __PACKAGE__->belongs_to(
   "process_conf",
@@ -63,7 +63,7 @@ __PACKAGE__->belongs_to(
 
 
 # Created by DBIx::Class::Schema::Loader v0.04006
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:m98e9XQYFi/fP4WpVYD1Cg
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:OkJhd5JXiLOxVy/rAxJflA
 
 sub description
 {

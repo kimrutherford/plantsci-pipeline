@@ -164,24 +164,24 @@ sub get_project
   return $projects{$project_name};
 }
 
-sub create_sample
+sub create_biosample
 {
   my $project = shift;
-  my $sample_name = shift;
+  my $biosample_name = shift;
   my $description = shift;
   my $molecule_type = shift;
   my $ecotypes_ref = shift;
   my @ecotypes = @$ecotypes_ref;
   my $do_processing = shift;
-  my $sample_type = shift;
+  my $biosample_type = shift;
 
-  if (length $sample_type == 0) {
-    $sample_type = 'smallRNA';
+  if (length $biosample_type == 0) {
+    $biosample_type = 'smallRNA';
   }
 
   my $protocol = find('Protocol', name => 'unknown');
   my $molecule_type_term = find('Cvterm', name => $molecule_type);
-  my %sample_type_map = (
+  my %biosample_type_map = (
     smallRNA => 'small_rnas',
     Sequenced => 'small_rnas',
     sequenced => 'small_rnas',
@@ -193,13 +193,13 @@ sub create_sample
     DNA => 'dna_seq',
     ChipSeq => 'chip_seq'
   );
-  my $sample_type_cvterm_name = $sample_type_map{$sample_type};
+  my $biosample_type_cvterm_name = $biosample_type_map{$biosample_type};
 
-  if (!defined $sample_type_cvterm_name) {
-    croak(qq(can't find cvterm name for "$sample_type" from the spreadsheet));
+  if (!defined $biosample_type_cvterm_name) {
+    croak(qq(can't find cvterm name for "$biosample_type" from the spreadsheet));
   }
 
-  my $sample_type_term = find('Cvterm', name => $sample_type_cvterm_name);
+  my $biosample_type_term = find('Cvterm', name => $biosample_type_cvterm_name);
   my $processing_type_term = find('Cvterm',
                                   name => ($do_processing ?
                                            'needs processing' :
@@ -207,43 +207,43 @@ sub create_sample
 
   die "can't find term for $molecule_type" unless defined $molecule_type_term;
 
-  my $sample_args = {
-                     name => $sample_name,
+  my $biosample_args = {
+                     name => $biosample_name,
                      description => $description,
                      molecule_type => $molecule_type_term,
                      processing_requirement => $processing_type_term,
                      protocol => $protocol,
-                     sample_type => $sample_type_term
+                     biosample_type => $biosample_type_term
                     };
 
-  my $sample = create('Sample', $sample_args);
+  my $biosample = create('Biosample', $biosample_args);
 
-  map { $sample->add_to_ecotypes($_); } @ecotypes;
-  $sample->add_to_pipeprojects($project);
+  map { $biosample->add_to_ecotypes($_); } @ecotypes;
+  $biosample->add_to_pipeprojects($project);
 
-  return $sample;
+  return $biosample;
 }
 
 sub create_coded_sample
 {
-  my $sample = shift;
+  my $biosample = shift;
   my $sequencing_sample = shift;
   my $is_replicate = shift;
   my $barcode = shift;
   my $adaptor = shift;
 
   my %coded_sample_args = (
-                        sample => $sample,
+                        biosample => $biosample,
                         sequencing_sample => $sequencing_sample,
                        );
 
   if (defined $barcode) {
     $coded_sample_args{barcode} = $barcode;
     $coded_sample_args{description} =
-      'barcoded sample for: ' . $sample->name() . ' using barcode: '
+      'barcoded sample for: ' . $biosample->name() . ' using barcode: '
         . $barcode->identifier();
   } else {
-    $coded_sample_args{description} = 'non-barcoded sample for: ' . $sample->name();
+    $coded_sample_args{description} = 'non-barcoded sample for: ' . $biosample->name();
   }
 
   if ($is_replicate) {
@@ -316,9 +316,9 @@ sub create_pipedata
   my $sequencing_run = shift;
   my $file_name = shift;
   my $molecule_type = shift;
-  my $samples = shift;
+  my $biosamples = shift;
 
-  my @samples = @$samples;
+  my @biosamples = @$biosamples;
 
   my ($pipedata, $pipeprocess) =
     $loader->add_sequencingrun_pipedata($config, $sequencing_run,
@@ -327,7 +327,7 @@ sub create_pipedata
   $sequencing_run->initial_pipedata($pipedata);
   $sequencing_run->initial_pipeprocess($pipeprocess);
 
-  map { $pipedata->add_to_samples($_); } @samples;
+  map { $pipedata->add_to_biosamples($_); } @biosamples;
 
   $sequencing_run->update();
 
@@ -442,7 +442,7 @@ sub process_row
         $description, $organism_name, $genotype, 
         $barcode, $barcode_set, $submitter, $institution,
         $date_submitted, $date_received, $time_taken,
-        $quality, $quality_note, $smallrna_adaptor, $sample_type, $run_type,
+        $quality, $quality_note, $smallrna_adaptor, $biosample_type, $run_type,
         $require_number_of_reads, $sample_concentration) = @columns;
 
     $date_submitted = fix_date($date_submitted);
@@ -499,7 +499,7 @@ sub process_row
 
     # match SL + (_num)? + (_letters)?
     if ($solexa_library =~ /((?:T|SL)\d+)(?:_([A-Z]+))?(?:_(\d+))?/) {
-      my $sample_prefix = $1;
+      my $biosample_prefix = $1;
       if (defined $barcodes) {
         croak "barcodes set in the library name ($solexa_library) and in the "
           . "spreadsheet barcodes column ($barcodes)\n";
@@ -549,8 +549,8 @@ sub process_row
       my $molecule_type;
 
       if ($solexa_library eq 'SL54' || $solexa_library eq 'SL55' ||
-          $sample_type eq 'DNA' || $sample_type eq 'ChipSeq' || 
-          $sample_type eq 'Expression') {
+          $biosample_type eq 'DNA' || $biosample_type eq 'ChipSeq' || 
+          $biosample_type eq 'Expression') {
         $molecule_type = 'DNA';
       } else {
         $molecule_type = 'RNA';
@@ -618,7 +618,7 @@ sub process_row
 
         my $sequencing_sample = create_sequencing_sample($solexa_library);
 
-        my @all_samples = ();
+        my @all_biosamples = ();
 
         if ($multiplexed) {
           my @barcode_identifiers = ($barcodes =~ /(\w)/g);
@@ -643,34 +643,34 @@ sub process_row
                                }
                               );
 
-            my $new_sample_name = $sample_prefix . '_' . $barcode_identifier;
+            my $new_biosample_name = $biosample_prefix . '_' . $barcode_identifier;
 
             if (defined $replicate_identifier) {
-              $new_sample_name .=  '_' . $replicate_identifier;
+              $new_biosample_name .=  '_' . $replicate_identifier;
             }
 
             my $desc_with_barcode =
               $description . ' - barcode ' . $barcode->identifier();
 
-            my $sample = create_sample($proj, $new_sample_name,
-                                       $desc_with_barcode, $molecule_type,
-                                       [@ecotypes], $do_processing, $sample_type);
+            my $biosample = create_biosample($proj, $new_biosample_name,
+                                             $desc_with_barcode, $molecule_type,
+                                             [@ecotypes], $do_processing, $biosample_type);
 
-            push @all_samples, $sample;
-            create_coded_sample($sample, $sequencing_sample, $is_replicate, $barcode, $adaptor);
+            push @all_biosamples, $biosample;
+            create_coded_sample($biosample, $sequencing_sample, $is_replicate, $barcode, $adaptor);
           }
         } else {
-          my $sample_name = $sample_prefix;
+          my $biosample_name = $biosample_prefix;
 
           if (defined $replicate_identifier) {
-            $sample_name .= '_' . $replicate_identifier;
+            $biosample_name .= '_' . $replicate_identifier;
           }
 
-          my $sample = create_sample($proj, $sample_name, $description,
-                                     $molecule_type,
-                                     [@ecotypes], $do_processing, $sample_type);
-          push @all_samples, $sample;
-          create_coded_sample($sample, $sequencing_sample, $is_replicate, undef, $adaptor);
+          my $biosample = create_biosample($proj, $biosample_name, $description,
+                                           $molecule_type,
+                                           [@ecotypes], $do_processing, $biosample_type);
+          push @all_biosamples, $biosample;
+          create_coded_sample($biosample, $sequencing_sample, $is_replicate, undef, $adaptor);
         }
 
         my $sequencing_run =
@@ -679,16 +679,16 @@ sub process_row
                                 $date_submitted, $date_received);
 
         my $pipedata = create_pipedata($sequencing_run, $file_name, $molecule_type,
-                                       \@all_samples);
+                                       \@all_biosamples);
 
         $pipedata->update();
 
         my $pipeprocess = $pipedata->generating_pipeprocess();
 
-        my $samples_str = join ', ', map { $_->name() } @all_samples;
+        my $biosamples_str = join ', ', map { $_->name() } @all_biosamples;
 
         my $new_description =
-          $pipeprocess->description() . ' for: ' . $samples_str;
+          $pipeprocess->description() . ' for: ' . $biosamples_str;
         $pipeprocess->description($new_description);
         $pipeprocess->update();
       }

@@ -157,7 +157,7 @@ my %terms = (
               'local' => 'Local user - full access to all data but not full delete/edit privileges',
               'external' => 'External user - access only to selected data, no delete/edit privileges',
              },
-             'tracking sample types' =>
+             'tracking biosample types' =>
              {
                small_rnas => 'Small RNA sequences',
                chip_seq => 'Chromatin immunoprecipitation (ChIP) and sequencing',
@@ -653,7 +653,7 @@ my @analyses = (
                  runable_name => 'SmallRNA::Runable::TrimRunable',
                  inputs => [
                      {
-                       sample_type => 'small_rnas',
+                       biosample_type => 'small_rnas',
                        format_type => 'fastq',
                        content_type => 'raw_reads',
                      }
@@ -665,7 +665,7 @@ my @analyses = (
                  runable_name => 'SmallRNA::Runable::TrimRunable',
                  inputs => [
                      {
-                       sample_type => 'dna_seq',
+                       biosample_type => 'dna_seq',
                        format_type => 'fastq',
                        content_type => 'raw_reads',
                      }
@@ -677,7 +677,7 @@ my @analyses = (
                  runable_name => 'SmallRNA::Runable::TrimRunable',
                  inputs => [
                      {
-                       sample_type => 'chip_seq',
+                       biosample_type => 'chip_seq',
                        format_type => 'fastq',
                        content_type => 'raw_reads',
                      }
@@ -689,7 +689,7 @@ my @analyses = (
                  runable_name => 'SmallRNA::Runable::TrimRunable',
                  inputs => [
                      {
-                       sample_type => 'sage_expression',
+                       biosample_type => 'sage_expression',
                        format_type => 'fastq',
                        content_type => 'raw_reads',
                      }
@@ -701,7 +701,7 @@ my @analyses = (
                  runable_name => 'SmallRNA::Runable::TrimRunable',
                  inputs => [
                      {
-                       sample_type => 'mrna_expression',
+                       biosample_type => 'mrna_expression',
                        format_type => 'fastq',
                        content_type => 'raw_reads',
                      }
@@ -1216,8 +1216,8 @@ $schema->txn_do(sub {
         $args{ecotype} = $ecotype_objs{$input->{ecotype_name}};
       }
 
-      if (defined $input->{sample_type}) {
-        $args{sample_type} = _get_cvterm($input->{sample_type});
+      if (defined $input->{biosample_type}) {
+        $args{biosample_type} = _get_cvterm($input->{biosample_type});
       }
 
       $schema->find_or_create_with_type('ProcessConfInput', { %args });

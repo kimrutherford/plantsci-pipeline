@@ -46,7 +46,7 @@ if (!-f $config_file_path) {
 }
 
 my $config = SmallRNA::Config->new($config_file_path);
-my $schema = SmallRNA::DB->schema($config);
+my $schema = SmallRNA::DB->new($config);
 
 my $started_status = $schema->find_with_type('Cvterm', name => 'started');
 

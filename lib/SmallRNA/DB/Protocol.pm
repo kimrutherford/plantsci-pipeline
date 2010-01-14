@@ -34,14 +34,14 @@ __PACKAGE__->set_primary_key("protocol_id");
 __PACKAGE__->add_unique_constraint("protocol_id_pk", ["protocol_id"]);
 __PACKAGE__->add_unique_constraint("protocol_name_key", ["name"]);
 __PACKAGE__->has_many(
-  "samples",
-  "SmallRNA::DB::Sample",
+  "biosamples",
+  "SmallRNA::DB::Biosample",
   { "foreign.protocol" => "self.protocol_id" },
 );
 
 
 # Created by DBIx::Class::Schema::Loader v0.04006
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:RU0Rg2gXbvw6T+FpEGbUGA
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:ozFvSdiQdqGicK8Z6Xs7/A
 
 
 # You can replace this text with custom content, and it will be preserved on regeneration

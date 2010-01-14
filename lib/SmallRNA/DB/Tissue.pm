@@ -35,8 +35,8 @@ __PACKAGE__->add_columns(
 __PACKAGE__->set_primary_key("tissue_id");
 __PACKAGE__->add_unique_constraint("tissue_id_pk", ["tissue_id"]);
 __PACKAGE__->has_many(
-  "samples",
-  "SmallRNA::DB::Sample",
+  "biosamples",
+  "SmallRNA::DB::Biosample",
   { "foreign.tissue" => "self.tissue_id" },
 );
 __PACKAGE__->belongs_to(
@@ -47,7 +47,7 @@ __PACKAGE__->belongs_to(
 
 
 # Created by DBIx::Class::Schema::Loader v0.04006
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:Q+wxaOUshIEMuOhUAFVMDQ
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:aaHSKelmY2NyY47aWlPQbg
 
 
 # You can replace this text with custom content, and it will be preserved on regeneration

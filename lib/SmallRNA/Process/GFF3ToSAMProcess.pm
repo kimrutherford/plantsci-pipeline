@@ -51,19 +51,19 @@ use warnings;
                                                        $in_file_name,
                                                      output_file_name =>
                                                        $out_file_name,
-                                                     sample_name =>
-                                                       $sample_name);
+                                                     biosample_name =>
+                                                       $biosample_name);
  Function: Convert a GFF3 file to a SAM file
  Args    : input_file_name - the input file name
            output_file_name - the name of the file to write the SAM output to
-           sample_name - the name of the sample that generated this file
+           biosample_name - the name of the biosample that generated this file
  Returns : nothing - either succeeds or calls croak()
 
 =cut
 sub run
 {
   my %params = validate(@_, { input_file_name => 1, output_file_name => 1,
-                              sample_name => 1 });
+                              biosample_name => 1 });
 
   if (!-e $params{input_file_name}) {
     croak "can't find input file: $params{input_file_name}";

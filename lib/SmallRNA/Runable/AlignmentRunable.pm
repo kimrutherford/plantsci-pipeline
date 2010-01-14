@@ -78,16 +78,16 @@ sub run_alignment
 
     my $input_pipedata = $input_pipedatas[0];
 
-    my @samples = $input_pipedata->samples();
+    my @biosamples = $input_pipedata->biosamples();
 
-    if (@samples != 1) {
-      croak("pipedata has more than one sample, can't continue: ",
+    if (@biosamples != 1) {
+      croak("pipedata has more than one biosample, can't continue: ",
             $input_pipedata->file_name(), "\n");
     }
 
     my $c = $self->config()->{programs}{$alignment_program};
 
-    my $sample = $samples[0];
+    my $biosample = $biosamples[0];
 
     my $data_dir = $self->config()->data_directory();
     my $process_conf = $pipeprocess->process_conf();
@@ -102,7 +102,7 @@ sub run_alignment
 
     if ($detail =~ /component: ([^,]+)/) {
       my $component = $1;
-      my @sample_ecotypes = $sample->ecotypes();
+      my @biosample_ecotypes = $biosample->ecotypes();
 
       my $org_full_name;
 
@@ -125,7 +125,7 @@ sub run_alignment
       }
 
       if (!defined $org_config) {
-        croak "can't find organism configuration for ", $sample->name(), "\n";
+        croak "can't find organism configuration for ", $biosample->name(), "\n";
       }
 
       if (!defined $org_config->{database_files}{$component}) {
@@ -161,7 +161,7 @@ use $process_class;
 
 ${process_class}::run(input_file_name =>
                         "\$data_dir/" . \$input_file_name,
-                      gff_source_name => \$sample->name(),
+                      gff_source_name => \$biosample->name(),
                       executable_path => \$executable_path,
                       output_gff_file_name =>
                         "\$data_dir/" . \$gff_file_name,

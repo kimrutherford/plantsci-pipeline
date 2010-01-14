@@ -43,23 +43,23 @@ __PACKAGE__->add_columns(
 );
 __PACKAGE__->set_primary_key("pipeproject_id");
 __PACKAGE__->add_unique_constraint("pipeproject_id_pk", ["pipeproject_id"]);
+__PACKAGE__->has_many(
+  "biosample_pipeprojects",
+  "SmallRNA::DB::BiosamplePipeproject",
+  { "foreign.pipeproject" => "self.pipeproject_id" },
+);
 __PACKAGE__->belongs_to(
   "funder",
   "SmallRNA::DB::Organisation",
   { organisation_id => "funder" },
 );
 __PACKAGE__->belongs_to("owner", "SmallRNA::DB::Person", { person_id => "owner" });
-__PACKAGE__->has_many(
-  "sample_pipeprojects",
-  "SmallRNA::DB::SamplePipeproject",
-  { "foreign.pipeproject" => "self.pipeproject_id" },
-);
 
 
 # Created by DBIx::Class::Schema::Loader v0.04006
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:D8ELs1re+H+R1WbiB/62iA
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:zBckvqQYwXoBWnelrLWF1w
 
-__PACKAGE__->many_to_many('samples' => 'sample_pipeprojects', 'sample');
+__PACKAGE__->many_to_many('biosamples' => 'biosample_pipeprojects', 'biosample');
 
 # You can replace this text with custom content, and it will be preserved on regeneration
 1;

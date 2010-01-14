@@ -75,8 +75,8 @@ sub input_files
            file_name - the file to add
            format_type_name - the cvterm name of the format of the file
            content_type_name - the cvterm name of the content type of the file
-           samples - a list of the sample(s) that this pipedata comes from, or
-             empty list if we should use the samples from the input pipedata
+           biosamples - a list of the biosample(s) that this pipedata comes from, or
+             empty list if we should use the biosamples from the input pipedata
              for the generating_pipeprocess
            properties - a hash of property type (from the cvterm table) to
              property value (any string), which will be stored in the
@@ -92,7 +92,7 @@ sub store_pipedata
                               file_name => 1,
                               format_type_name => 1,
                               content_type_name => 1,
-                              samples => 0,
+                              biosamples => 0,
                               properties => 0,
                             });
 
@@ -132,13 +132,13 @@ sub store_pipedata
                       };
   my $pipedata = $schema->create_with_type('Pipedata', $pipedata_args);
 
-  if (defined $params{samples}) {
-    map { $pipedata->add_to_samples($_); } @{$params{samples}};
+  if (defined $params{biosamples}) {
+    map { $pipedata->add_to_biosamples($_); } @{$params{biosamples}};
   } else {
     my @prev_pipedata =
       $params{generating_pipeprocess}->pipeprocess_in_pipedatas()->search_related('pipedata');
-    my @prev_samples = map { $_->samples() } @prev_pipedata;
-    map { $pipedata->add_to_samples($_); } @prev_samples;
+    my @prev_biosamples = map { $_->biosamples() } @prev_pipedata;
+    map { $pipedata->add_to_biosamples($_); } @prev_biosamples;
   }
 
   $pipedata->update();
@@ -171,14 +171,14 @@ sub get_pipeprocess_details
 
   my $input_pipedata = $input_pipedatas[0];
 
-  my @samples = $input_pipedata->samples();
+  my @biosamples = $input_pipedata->biosamples();
 
-  if (@samples != 1) {
-    croak("pipedata has more than one sample, can't continue: ",
+  if (@biosamples != 1) {
+    croak("pipedata has more than one biosample, can't continue: ",
           $input_pipedata->file_name(), "\n");
   }
 
-  my $sample = $samples[0];
+  my $biosample = $biosamples[0];
 
   my $process_conf = $pipeprocess->process_conf();
   my $detail = $process_conf->detail();
@@ -211,7 +211,7 @@ sub get_pipeprocess_details
   }
 
   if (!defined $org_config) {
-    croak "can't find organism configuration for ", $sample->name(), "\n";
+    croak "can't find organism configuration for ", $biosample->name(), "\n";
   }
 
   my $component = undef;
