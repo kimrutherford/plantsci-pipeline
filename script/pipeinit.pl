@@ -53,6 +53,14 @@ Directory used by the pipeline code
 Sub-driectory of pipeline-directory where the results of processing will be
 stored
 
+=item B<-C>, B<--config-file>
+
+The name of the config file to create
+
+=item B<-T>, B<--template-file>
+
+The name of the template for the configuration file
+
 =item B<-f>, B<--args-from>
 
 Reads the values for the arguments above from the given file
@@ -87,6 +95,8 @@ my %opt_config = (
                   "database-password|P=s" => undef,
                   "database-name|D=s" => undef,
                   "database-host|H=s" => undef,
+                  "template-file|T=s" => undef,
+                  "config-file|C=s" => undef,
                   "pipeline-directory|d=s" => undef,
                   "pipeline-process-directory|p=s" => undef,
                   "help|?" => \$need_help,
