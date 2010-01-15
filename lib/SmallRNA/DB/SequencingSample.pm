@@ -41,6 +41,44 @@ __PACKAGE__->has_many(
 # Created by DBIx::Class::Schema::Loader v0.04006
 # DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:jvmegVm4leQYlfsGaVC7kg
 
+=head2 display_name
+
+ Usage   : my $is_multiplexed = $seq_samp->is_multiplexed()
+ Function: return true if and only if this sample is a multiplex of more than
+           one library
+
+=cut
+sub is_multiplexed {
+  my $self = shift;
+
+  my @libraries = $self->libraries();
+
+  if (@libraries > 1) {
+    return 1;
+  }
+}
+
+=head2 display_name
+
+ Usage   : my $has_barcoded_libraries = $seq_samp->has_barcoded_libraries()
+ Function: return true if and only if this sample contains one or more libraries
+           that have been barcoded
+
+=cut
+sub has_barcoded_libraries {
+  my $self = shift;
+
+  my @libraries = $self->libraries();
+
+  for my $library (@libraries) {
+    if (defined $library->barcode()) {
+      return 1;
+    }
+  }
+
+  return 0;
+}
+
 
 # You can replace this text with custom content, and it will be preserved on regeneration
 1;
