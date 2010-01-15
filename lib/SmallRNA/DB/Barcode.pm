@@ -69,7 +69,7 @@ sub long_identifier
   my $barcode_identifier = $self->identifier();
   my $barcode_code = $self->code();
 
-  return "$barcode_set_name $barcode_identifier ($barcode_code)";
+  return "$barcode_identifier ($barcode_code) from $barcode_set_name";
 }
 
 
