@@ -93,13 +93,13 @@ sub _find_barcode_set_and_adaptor
   my $sequencing_sample = $sequencingruns[0]->sequencing_sample();
   my @libraries = $sequencing_sample->libraries();
 
-  my $sample_barcode = $libraries[0]->barcode();
-  my $sample_adaptor = $libraries[0]->adaptor();
+  my $library_barcode = $libraries[0]->barcode();
+  my $library_adaptor = $libraries[0]->adaptor();
 
-  if (defined $sample_barcode) {
-    return ($sample_barcode->barcode_set(), $sample_adaptor);
+  if (defined $library_barcode) {
+    return ($library_barcode->barcode_set(), $library_adaptor);
   } else {
-    return (undef, $sample_adaptor);
+    return (undef, $library_adaptor);
   }
 }
 
