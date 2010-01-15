@@ -469,8 +469,6 @@ CREATE TABLE sequencingrun (
        data_received_date date,
        quality integer REFERENCES cvterm(cvterm_id) DEFERRABLE INITIALLY DEFERRED NOT NULL,
        sequencing_type integer REFERENCES cvterm(cvterm_id) DEFERRABLE INITIALLY DEFERRED NOT NULL,
-       multiplexing_type integer REFERENCES cvterm(cvterm_id) DEFERRABLE INITIALLY DEFERRED NOT NULL,
-       -- set when analysis starts:
        CHECK (CASE WHEN run_date IS NULL THEN data_received_date IS NULL ELSE TRUE END)
 );
 CREATE TABLE library (

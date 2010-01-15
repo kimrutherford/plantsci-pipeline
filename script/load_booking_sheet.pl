@@ -281,21 +281,11 @@ sub create_sequencing_run
   my $run_identifier = shift;
   my $seq_centre_name = shift;
   my $sequencing_sample = shift;
-  my $multiplexed = shift;
   my $date_submitted = shift;
   my $date_received = shift;
 
-  my $multiplexing_type_name;
-
-  if ($multiplexed) {
-    $multiplexing_type_name = 'multiplexed';
-  } else {
-    $multiplexing_type_name = 'non-multiplexed';
-  }
-
   my $sequencing_run = $loader->add_sequencingrun(run_identifier => $run_identifier,
                                                   sequencing_centre_name => $seq_centre_name,
-                                                  multiplexing_type_name => $multiplexing_type_name,
                                                   sequencing_sample => $sequencing_sample,
                                                   sequencing_type_name => 'Illumina');
 
@@ -675,8 +665,7 @@ sub process_row
 
         my $sequencing_run =
           create_sequencing_run($sequencing_run_identifier, $seq_centre_name,
-                                $sequencing_sample, $multiplexed,
-                                $date_submitted, $date_received);
+                                $sequencing_sample, $date_submitted, $date_received);
 
         my $pipedata = create_pipedata($sequencing_run, $file_name, $molecule_type,
                                        \@all_biosamples);

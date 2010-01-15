@@ -47,8 +47,6 @@ __PACKAGE__->add_columns(
   { data_type => "integer", default_value => undef, is_nullable => 0, size => 4 },
   "sequencing_type",
   { data_type => "integer", default_value => undef, is_nullable => 0, size => 4 },
-  "multiplexing_type",
-  { data_type => "integer", default_value => undef, is_nullable => 0, size => 4 },
 );
 __PACKAGE__->set_primary_key("sequencingrun_id");
 __PACKAGE__->add_unique_constraint("sequencingrun_identifier_key", ["identifier"]);
@@ -63,11 +61,6 @@ __PACKAGE__->belongs_to(
   "sequencing_sample",
   "SmallRNA::DB::SequencingSample",
   { sequencing_sample_id => "sequencing_sample" },
-);
-__PACKAGE__->belongs_to(
-  "multiplexing_type",
-  "SmallRNA::DB::Cvterm",
-  { cvterm_id => "multiplexing_type" },
 );
 __PACKAGE__->belongs_to(
   "sequencing_centre",
@@ -87,7 +80,7 @@ __PACKAGE__->belongs_to(
 
 
 # Created by DBIx::Class::Schema::Loader v0.04006
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:VLi7QRpPfDa6MVG3RbrdBQ
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:1lQ04VTWHcQRgaajWSM2Kw
 
 
 # You can replace this text with custom content, and it will be preserved on regeneration

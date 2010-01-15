@@ -74,11 +74,6 @@ my %terms = (
              {
               'Illumina' => 'Illumina sequencing method',
              },
-             'tracking multiplexing types' =>
-             {
-              'non-multiplexed' => 'One sample per sequencing run',
-              'multiplexed' => 'multiplexed sequencing run using barcodes',
-             },
              'tracking molecule types' =>
              {
               'DNA' => 'Deoxyribonucleic acid',

@@ -126,13 +126,11 @@ sub add_person
  Usage   : my $sequencing_run =
              $loader->add_sequencingrun(run_identifier => 'SL1.XXXXXXX',
                                         sequencing_centre_name => 'CRUK CRI',
-                                        multiplexing_type_name => 'non-multiplexed',
                                         sequencing_type_name => 'Illumina' });
  Function: Create and return a Sequencingrun object
  Args    : run_identifier - a (unique) name for the run, generally supplied by
                             the sequencing facility
            sequencing_centre_name - a Organisation name that did the sequencing
-           multiplexing_type_name - a cvterm describing the multiplexing type
            sequencing_type_name - a cvterm describing sequencing type
 
 =cut
@@ -142,21 +140,17 @@ sub add_sequencingrun
 
   my %params = validate(@_, { run_identifier => 1,
                               sequencing_centre_name => 1,
-                              multiplexing_type_name => 1,
                               sequencing_sample => 1,
                               sequencing_type_name => 1 });
 
 
   my $run_identifier = $params{run_identifier};
   my $sequencing_centre_name = $params{sequencing_centre_name};
-  my $multiplexing_type_name = $params{multiplexing_type_name};
   my $sequencing_sample = $params{sequencing_sample};
   my $sequencing_type_name = $params{sequencing_type_name};
 
   my $seq_centre = $self->_find('Organisation',
                                                    name => $sequencing_centre_name);
-  my $multiplexing_type = $self->_find('Cvterm',
-                                                name => $multiplexing_type_name);
   my $sequencing_type = $self->_find('Cvterm',
                                               name => $sequencing_type_name);
   my $unknown_quality = $self->_find('Cvterm',
@@ -164,7 +158,6 @@ sub add_sequencingrun
   my %sequencing_run_args = (
                              identifier => $run_identifier,
                              sequencing_type => $sequencing_type,
-                             multiplexing_type => $multiplexing_type,
                              sequencing_centre => $seq_centre,
                              sequencing_sample => $sequencing_sample,
                              quality => $unknown_quality
@@ -206,14 +199,6 @@ sub add_sequencingrun_pipedata
   my $process_conf;
 
   my $seq_centre_name = $sequencing_run->sequencing_centre()->name();
-  my $multiplexing_type_name = $sequencing_run->multiplexing_type()->name();
-  my $multiplexed;
-
-  if ($multiplexing_type_name eq 'non-multiplexed') {
-    $multiplexed = 0;
-  } else {
-    $multiplexed = 1;
-  }
 
   if ($seq_centre_name eq 'CRUK CRI' || $seq_centre_name eq 'Sirocco') {
     $process_conf = $self->_find('ProcessConf',
