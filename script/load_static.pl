@@ -99,7 +99,7 @@ my %terms = (
               'finished' => 'Processing is done',
               'failed' => 'Processing failed',
              },
-             'tracking sample processing requirements' =>
+             'tracking biosample processing requirements' =>
              {
               'no processing' => 'Processing should not be performed for this sample',
               'needs processing' =>' Processing should be performed for this sample',
