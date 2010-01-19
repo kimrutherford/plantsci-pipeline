@@ -40,7 +40,7 @@ under the same terms as Perl itself.
 
 use strict;
 use warnings;
-use Mouse;
+use Moose;
 use Carp;
 use File::Path;
 use Params::Validate qw(:all);

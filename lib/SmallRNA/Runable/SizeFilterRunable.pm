@@ -38,7 +38,7 @@ under the same terms as Perl itself.
 use strict;
 use warnings;
 use Carp;
-use Mouse;
+use Moose;
 
 use SmallRNA::Process::SizeFilterProcess;
 

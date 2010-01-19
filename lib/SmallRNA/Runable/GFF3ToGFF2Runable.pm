@@ -39,7 +39,7 @@ use strict;
 use warnings;
 use Carp;
 
-use Mouse;
+use Moose;
 
 use SmallRNA::Process::GFF3ToGFF2Process;
 

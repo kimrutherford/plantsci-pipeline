@@ -42,7 +42,7 @@ none - see SmallRNA::RunableI;
 
 use strict;
 use warnings;
-use Mouse;
+use Moose;
 use Carp;
 use File::Temp qw(tempdir);
 use File::Path;
