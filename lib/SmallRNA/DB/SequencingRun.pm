@@ -1,4 +1,4 @@
-package SmallRNA::DB::Sequencingrun;
+package SmallRNA::DB::SequencingRun;
 
 use strict;
 use warnings;
@@ -6,12 +6,12 @@ use warnings;
 use base 'DBIx::Class';
 
 __PACKAGE__->load_components("Core");
-__PACKAGE__->table("sequencingrun");
+__PACKAGE__->table("sequencing_run");
 __PACKAGE__->add_columns(
-  "sequencingrun_id",
+  "sequencing_run_id",
   {
     data_type => "integer",
-    default_value => "nextval('sequencingrun_sequencingrun_id_seq'::regclass)",
+    default_value => "nextval('sequencing_run_sequencing_run_id_seq'::regclass)",
     is_nullable => 0,
     size => 4,
   },
@@ -48,13 +48,39 @@ __PACKAGE__->add_columns(
   "sequencing_type",
   { data_type => "integer", default_value => undef, is_nullable => 0, size => 4 },
 );
-__PACKAGE__->set_primary_key("sequencingrun_id");
-__PACKAGE__->add_unique_constraint("sequencingrun_identifier_key", ["identifier"]);
-__PACKAGE__->add_unique_constraint("sequencingrun_id_pk", ["sequencingrun_id"]);
+__PACKAGE__->set_primary_key("sequencing_run_id");
+__PACKAGE__->add_unique_constraint("sequencing_run_identifier_key", ["identifier"]);
+__PACKAGE__->add_unique_constraint("sequencing_run_id_pk", ["sequencing_run_id"]);
+__PACKAGE__->belongs_to(
+  "sequencing_sample",
+  "SmallRNA::DB::SequencingSample",
+  { sequencing_sample_id => "sequencing_sample" },
+);
+__PACKAGE__->belongs_to("quality", "SmallRNA::DB::Cvterm", { cvterm_id => "quality" });
+__PACKAGE__->belongs_to(
+  "sequencing_type",
+  "SmallRNA::DB::Cvterm",
+  { cvterm_id => "sequencing_type" },
+);
+__PACKAGE__->belongs_to(
+  "sequencing_centre",
+  "SmallRNA::DB::Organisation",
+  { organisation_id => "sequencing_centre" },
+);
+__PACKAGE__->belongs_to(
+  "initial_pipeprocess",
+  "SmallRNA::DB::Pipeprocess",
+  { pipeprocess_id => "initial_pipeprocess" },
+);
+__PACKAGE__->belongs_to(
+  "initial_pipedata",
+  "SmallRNA::DB::Pipedata",
+  { pipedata_id => "initial_pipedata" },
+);
 
 
 # Created by DBIx::Class::Schema::Loader v0.04006
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:dZavG3hL8QLq0yLe5spbaw
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:pScTuIJ8DjCgk9exUKLuyg
 
 
 # You can replace this text with custom content, and it will be preserved on regeneration

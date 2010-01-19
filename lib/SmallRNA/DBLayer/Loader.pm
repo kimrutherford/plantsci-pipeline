@@ -121,20 +121,20 @@ sub add_person
                      });
 }
 
-=head2 add_sequencingrun
+=head2 add_sequencing_run
 
  Usage   : my $sequencing_run =
-             $loader->add_sequencingrun(run_identifier => 'SL1.XXXXXXX',
+             $loader->add_sequencing_run(run_identifier => 'SL1.XXXXXXX',
                                         sequencing_centre_name => 'CRUK CRI',
                                         sequencing_type_name => 'Illumina' });
- Function: Create and return a Sequencingrun object
+ Function: Create and return a SequencingRun object
  Args    : run_identifier - a (unique) name for the run, generally supplied by
                             the sequencing facility
            sequencing_centre_name - a Organisation name that did the sequencing
            sequencing_type_name - a cvterm describing sequencing type
 
 =cut
-sub add_sequencingrun
+sub add_sequencing_run
 {
   my $self = shift;
 
@@ -163,26 +163,26 @@ sub add_sequencingrun
                              quality => $unknown_quality
                             );
 
-  return $self->_create('Sequencingrun',
+  return $self->_create('SequencingRun',
                                  {
                                   %sequencing_run_args
                                  });
 }
 
-=head2 add_sequencingrun_pipedata
+=head2 add_sequencing_run_pipedata
 
  Usage   : my $pipedata =
-             $loader->add_sequencingrun_pipedata($smallrna_config,
+             $loader->add_sequencing_run_pipedata($smallrna_config,
                                                  $sequencing_run,
                                                  $file_name, 'RNA');
  Function: Create and return a new Pipedata object for the given sequencing_run
  Args    : config - a SmallRNA::Config object
-           sequencing_run - a Sequencingrun object
+           sequencing_run - a SequencingRun object
            file_name - a file name of a fastq file from the sequencing run
            molecule_type - 'DNA' or 'RNA'
 
 =cut
-sub add_sequencingrun_pipedata
+sub add_sequencing_run_pipedata
 {
   my $self = shift;
   my $config = shift;

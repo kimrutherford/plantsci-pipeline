@@ -50,14 +50,14 @@ __PACKAGE__->has_many(
   { "foreign.funder" => "self.organisation_id" },
 );
 __PACKAGE__->has_many(
-  "sequencingruns",
-  "SmallRNA::DB::Sequencingrun",
+  "sequencing_runs",
+  "SmallRNA::DB::SequencingRun",
   { "foreign.sequencing_centre" => "self.organisation_id" },
 );
 
 
 # Created by DBIx::Class::Schema::Loader v0.04006
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:YXQR0Ct+zEgb087MGxyJhA
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:2rP4IS4EysyBavOcStgdnw
 
 
 # You can replace this text with custom content, and it will be preserved on regeneration

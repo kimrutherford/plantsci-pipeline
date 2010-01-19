@@ -140,19 +140,19 @@ __PACKAGE__->has_many(
   { "foreign.type_id" => "self.cvterm_id" },
 );
 __PACKAGE__->has_many(
-  "sequencingrun_qualities",
-  "SmallRNA::DB::Sequencingrun",
+  "sequencing_run_qualities",
+  "SmallRNA::DB::SequencingRun",
   { "foreign.quality" => "self.cvterm_id" },
 );
 __PACKAGE__->has_many(
-  "sequencingrun_sequencing_types",
-  "SmallRNA::DB::Sequencingrun",
+  "sequencing_run_sequencing_types",
+  "SmallRNA::DB::SequencingRun",
   { "foreign.sequencing_type" => "self.cvterm_id" },
 );
 
 
 # Created by DBIx::Class::Schema::Loader v0.04006
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:nr7CqNPriJJ6BkHqr00Ggg
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:4O7X77Z/ABLfs+cbtm6k6g
 
 __PACKAGE__->many_to_many(dbxrefs => 'cvterm_dbxrefs', 'dbxref');
 

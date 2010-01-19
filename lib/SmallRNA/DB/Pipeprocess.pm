@@ -86,14 +86,14 @@ __PACKAGE__->has_many(
   { "foreign.pipeprocess_id" => "self.pipeprocess_id" },
 );
 __PACKAGE__->has_many(
-  "sequencingruns",
-  "SmallRNA::DB::Sequencingrun",
+  "sequencing_runs",
+  "SmallRNA::DB::SequencingRun",
   { "foreign.initial_pipeprocess" => "self.pipeprocess_id" },
 );
 
 
 # Created by DBIx::Class::Schema::Loader v0.04006
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:KY5krrJEkvbJf/AK3nisQQ
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:Iew4HvcYOj3kQvrOmD3W6Q
 
 __PACKAGE__->many_to_many(input_pipedatas => 'pipeprocess_in_pipedatas',
                           'pipedata' );

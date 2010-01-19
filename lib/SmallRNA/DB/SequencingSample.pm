@@ -32,14 +32,14 @@ __PACKAGE__->has_many(
   { "foreign.sequencing_sample" => "self.sequencing_sample_id" },
 );
 __PACKAGE__->has_many(
-  "sequencingruns",
-  "SmallRNA::DB::Sequencingrun",
+  "sequencing_runs",
+  "SmallRNA::DB::SequencingRun",
   { "foreign.sequencing_sample" => "self.sequencing_sample_id" },
 );
 
 
 # Created by DBIx::Class::Schema::Loader v0.04006
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:jvmegVm4leQYlfsGaVC7kg
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:iCSj1P+nn8fNkHIpdMi+kQ
 
 =head2 display_name
 

@@ -214,7 +214,7 @@ dependencies.
     Columns of this table:
 *** =sequencing_sample=
     Columns of this table:
-*** =sequencingrun=
+*** =sequencing_run=
     Columns of this table:
 *** =tissue=
     Columns of this table:

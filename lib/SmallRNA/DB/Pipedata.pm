@@ -72,14 +72,14 @@ __PACKAGE__->has_many(
   { "foreign.pipedata" => "self.pipedata_id" },
 );
 __PACKAGE__->has_many(
-  "sequencingruns",
-  "SmallRNA::DB::Sequencingrun",
+  "sequencing_runs",
+  "SmallRNA::DB::SequencingRun",
   { "foreign.initial_pipedata" => "self.pipedata_id" },
 );
 
 
 # Created by DBIx::Class::Schema::Loader v0.04006
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:tORzJ5uGmRlVOJWx0DWXfQ
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:zHSZu2ycs40knkAsc4yWcg
 
 __PACKAGE__->many_to_many(next_pipeprocesses => 'pipeprocess_in_pipedatas',
                           'pipeprocess');

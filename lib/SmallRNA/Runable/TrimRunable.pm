@@ -81,16 +81,16 @@ sub _find_barcode_set_and_adaptor
 
   if ($fastq_generating_pipeprocess->input_pipedatas() > 0) {
     # the fastq file we are processing was generated from an SRF file, which 
-    # we need go back to to get the pipeprocess that the sequencingruns hang off
+    # we need go back to to get the pipeprocess that the sequencing_runs hang off
     my $srf_pipedata = ($fastq_generating_pipeprocess->input_pipedatas())[0];
     $seq_run_process = $srf_pipedata->generating_pipeprocess();
   } else {
     $seq_run_process = $fastq_generating_pipeprocess;
   }
 
-  my @sequencingruns = $seq_run_process->sequencingruns();
+  my @sequencing_runs = $seq_run_process->sequencing_runs();
 
-  my $sequencing_sample = $sequencingruns[0]->sequencing_sample();
+  my $sequencing_sample = $sequencing_runs[0]->sequencing_sample();
   my @libraries = $sequencing_sample->libraries();
 
   my $library_barcode = $libraries[0]->barcode();
@@ -103,18 +103,18 @@ sub _find_barcode_set_and_adaptor
   }
 }
 
-sub _find_sequencingrun_from_pipedata
+sub _find_sequencing_run_from_pipedata
 {
   my $pipedata = shift;
 
-  my @sequencingruns = $pipedata->sequencingruns();
+  my @sequencing_runs = $pipedata->sequencing_runs();
 
-  if (@sequencingruns > 1) {
+  if (@sequencing_runs > 1) {
     croak ("pipedata ", $pipedata->pipedata_id(),
-           " has more than one sequencingrun object\n");
+           " has more than one sequencing_run object\n");
   }
 
-  return $sequencingruns[0];
+  return $sequencing_runs[0];
 }
 
 sub _find_biosample_from_code
@@ -122,9 +122,9 @@ sub _find_biosample_from_code
   my $pipedata = shift;
   my $code = shift;
 
-  my $sequencingrun = _find_sequencingrun_from_pipedata($pipedata);
+  my $sequencing_run = _find_sequencing_run_from_pipedata($pipedata);
 
-  my $sequencing_sample = $sequencingrun->sequencing_sample();
+  my $sequencing_sample = $sequencing_run->sequencing_sample();
 
   my @libraries = $sequencing_sample->libraries();
 
@@ -217,7 +217,7 @@ sub run
 
   my $fasta_output_term_name = $raw_reads;
 
-  my $sequencingrun = _find_sequencingrun_from_pipedata($input_pipedata);
+  my $sequencing_run = _find_sequencing_run_from_pipedata($input_pipedata);
 
   my $code = sub {
     my @input_files = $self->input_files();
@@ -268,7 +268,7 @@ sub run
         mkpath($output_dir . "/$unknown_barcode_term_name");
         my $temp_file_name = $output->{$code};
         my $new_file_name = $temp_file_name;
-        my $sequencingrun_identifier = $sequencingrun->identifier();
+        my $sequencing_run_identifier = $sequencing_run->identifier();
 
         my $content_type_name;
 
@@ -279,7 +279,7 @@ sub run
 
           my $biosample_name = $biosample->name();
           mkpath($output_dir . '/' . $biosample_name);
-          if (!($new_file_name =~ s|(?:$sequencingrun_identifier\.)?(.*?)(?:\.$code_name)\.fasta$|$biosample_name/$biosample_name.$kept_term_name.fasta|)) {
+          if (!($new_file_name =~ s|(?:$sequencing_run_identifier\.)?(.*?)(?:\.$code_name)\.fasta$|$biosample_name/$biosample_name.$kept_term_name.fasta|)) {
             croak "pattern match failed for $new_file_name\n";
           }
           $content_type_name = $kept_term_name;

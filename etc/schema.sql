@@ -1,4 +1,4 @@
-DROP TABLE sequencingrun CASCADE;
+DROP TABLE sequencing_run CASCADE;
 DROP TABLE process_conf_input CASCADE;
 DROP TABLE process_conf CASCADE;
 DROP TABLE pipeprocess CASCADE;
@@ -454,8 +454,8 @@ CREATE TABLE sequencing_sample (
        sequencing_sample_id serial CONSTRAINT sequencing_sample_id_pk PRIMARY KEY,
        name text NOT NULL UNIQUE
 );
-CREATE TABLE sequencingrun (
-       sequencingrun_id serial CONSTRAINT sequencingrun_id_pk PRIMARY KEY,
+CREATE TABLE sequencing_run (
+       sequencing_run_id serial CONSTRAINT sequencing_run_id_pk PRIMARY KEY,
        created_stamp timestamp NOT NULL DEFAULT now(),
        identifier text NOT NULL UNIQUE,
        sequencing_sample integer NOT NULL REFERENCES sequencing_sample(sequencing_sample_id) DEFERRABLE INITIALLY DEFERRED,

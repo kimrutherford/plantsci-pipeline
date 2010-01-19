@@ -263,14 +263,14 @@ sub create_library
   return create('Library', {%library_args});
 }
 
-my %file_name_to_sequencingrun = ();
+my %file_name_to_sequencing_run = ();
 
 sub run_exists
 {
   my $run_identifier = shift;
 
   my $existing_run =
-    $schema->resultset('Sequencingrun')->find({identifier => $run_identifier});
+    $schema->resultset('SequencingRun')->find({identifier => $run_identifier});
 
   if (defined $existing_run) {
     return 1;
@@ -279,7 +279,7 @@ sub run_exists
   }
 }
 
-# process a file and make a sequencingrun object for it
+# process a file and make a sequencing_run object for it
 sub create_sequencing_run
 {
   my $run_identifier = shift;
@@ -288,7 +288,7 @@ sub create_sequencing_run
   my $date_submitted = shift;
   my $date_received = shift;
 
-  my $sequencing_run = $loader->add_sequencingrun(run_identifier => $run_identifier,
+  my $sequencing_run = $loader->add_sequencing_run(run_identifier => $run_identifier,
                                                   sequencing_centre_name => $seq_centre_name,
                                                   sequencing_sample => $sequencing_sample,
                                                   sequencing_type_name => 'Illumina');
@@ -315,7 +315,7 @@ sub create_pipedata
   my @biosamples = @$biosamples;
 
   my ($pipedata, $pipeprocess) =
-    $loader->add_sequencingrun_pipedata($config, $sequencing_run,
+    $loader->add_sequencing_run_pipedata($config, $sequencing_run,
                                         $file_name, $molecule_type);
 
   $sequencing_run->initial_pipedata($pipedata);
@@ -606,7 +606,7 @@ sub process_row
         my $sequencing_run_identifier = 'RUN_' . $solexa_library;
 
         if (run_exists($sequencing_run_identifier)) {
-          warn "a sequencingrun entry exists for $solexa_library - skipping\n";
+          warn "a sequencing_run entry exists for $solexa_library - skipping\n";
           return;
         }
 

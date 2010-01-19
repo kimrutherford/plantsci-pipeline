@@ -66,7 +66,7 @@ sub new
 
  Usage   : $track->add_new_data(fastq_file_name => $filename);
  Function: Add a new input file to the tracking system.  The type is guessed
-           based on the extension.  The sequencingrun identifier is extracted
+           based on the extension.  The sequencing_run identifier is extracted
            from the filename
  Args    : none
 
@@ -88,24 +88,24 @@ sub add_new_data
 
     my $file_type = 'fastq';
 
-    my $sequencingrun_rs = $self->{schema}->resultset('Sequencingrun');
-    my $sequencingrun = $sequencingrun_rs->find({
+    my $sequencing_run_rs = $self->{schema}->resultset('SequencingRun');
+    my $sequencing_run = $sequencing_run_rs->find({
                                                  identifier => $run_id
                                                 });
 
-    if (!defined $sequencingrun) {
-      $sequencingrun = $sequencingrun_rs->find({
+    if (!defined $sequencing_run) {
+      $sequencing_run = $sequencing_run_rs->find({
                                                 identifier => $run_id . "_run"
                                                });
 
-      if (!defined $sequencingrun) {
-        croak "couldn't find a sequencingrun with identifier: $run_id\n";
+      if (!defined $sequencing_run) {
+        croak "couldn't find a sequencing_run with identifier: $run_id\n";
       }
     }
 
-    if (defined $sequencingrun->seqdatafile()) {
+    if (defined $sequencing_run->seqdatafile()) {
       croak ("error: a $file_type file has already been registered for $run_id: " .
-             $sequencingrun->seqdatafile()->filename());
+             $sequencing_run->seqdatafile()->filename());
     }
 
     my $datafile_rs = $self->{schema}->resultset('Seqdatafile');
@@ -145,8 +145,8 @@ sub add_new_data
       my $new_datafile = $datafile_rs->create({ filename => $basename,
                                                 seqanalysis => $seqanalysis,
                                                 type => $file_type_cvterm });
-      $sequencingrun->seqdatafile($new_datafile);
-      $sequencingrun->update();
+      $sequencing_run->seqdatafile($new_datafile);
+      $sequencing_run->update();
     };
 
     $self->{schema}->txn_do($txn_code);

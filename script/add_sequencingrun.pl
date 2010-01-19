@@ -44,7 +44,7 @@ my $sequencingtype = $schema->find_with_type('Cvterm', 'name', 'Illumina');
 my $sequencingcentre = $schema->find_with_type('Organisation', 'name',
                                                $sequencingcentre_short_name);
 
-my $sequencing_rs = $schema->resultset('Sequencingrun');
+my $sequencing_rs = $schema->resultset('SequencingRun');
 
 $sequencing_rs->create({
                         identifier => $sequencing_run_identifier,
