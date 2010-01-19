@@ -22,6 +22,13 @@ __PACKAGE__->add_columns(
     is_nullable => 0,
     size => 8,
   },
+  "name",
+  {
+    data_type => "text",
+    default_value => undef,
+    is_nullable => 0,
+    size => undef,
+  },
   "description",
   {
     data_type => "text",
@@ -42,6 +49,7 @@ __PACKAGE__->add_columns(
 );
 __PACKAGE__->set_primary_key("library_id");
 __PACKAGE__->add_unique_constraint("library_id_pk", ["library_id"]);
+__PACKAGE__->add_unique_constraint("library_name_key", ["name"]);
 __PACKAGE__->belongs_to(
   "sequencing_sample",
   "SmallRNA::DB::SequencingSample",
@@ -66,7 +74,7 @@ __PACKAGE__->belongs_to("adaptor", "SmallRNA::DB::Cvterm", { cvterm_id => "adapt
 
 
 # Created by DBIx::Class::Schema::Loader v0.04006
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:hC4pG8dieW4TCjAfXc8MvQ
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:6Qbq6Ki1SxoN2C2/rqNTrQ
 
 
 # You can replace this text with custom content, and it will be preserved on regeneration

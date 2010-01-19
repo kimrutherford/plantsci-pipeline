@@ -256,6 +256,10 @@ sub create_library
 
   $library_args{adaptor} = $adaptor;
 
+  my $library_name = $biosample->name() . '_L1';
+
+  $library_args{name} = $library_name;
+
   return create('Library', {%library_args});
 }
 

@@ -474,6 +474,7 @@ CREATE TABLE sequencingrun (
 CREATE TABLE library (
        library_id serial CONSTRAINT library_id_pk PRIMARY KEY,
        created_stamp timestamp NOT NULL DEFAULT now(),
+       name text NOT NULL UNIQUE,
        description text,
        library_type integer REFERENCES cvterm(cvterm_id) DEFERRABLE INITIALLY DEFERRED NOT NULL,
        biosample integer REFERENCES biosample(biosample_id) DEFERRABLE INITIALLY DEFERRED NOT NULL,
