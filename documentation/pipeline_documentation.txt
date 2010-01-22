@@ -106,6 +106,16 @@ dependencies.
 
     Columns of this table:
  - =name= :: The user friendly name for this =barcode_set=
+*** =biosample=
+    Columns of this table:
+*** =biosample_dbxref=
+    Columns of this table:
+*** =biosample_ecotype=
+    Columns of this table:
+*** =biosample_pipedata=
+    Columns of this table:
+*** =biosample_pipeproject=
+    Columns of this table:
 *** =cv=
     Controlled vocabulary table copied from the [[http://gmod.org/wiki/Chado][Chado]] [[http://gmod.org/wiki/Chado_CV_Module][CV Module]].
 *** =cvterm=
@@ -206,16 +216,6 @@ dependencies.
     Columns of this table:
 *** =pub=
 *** =pub_dbxref=
-*** =biosample=
-    Columns of this table:
-*** =biosample_dbxref=
-    Columns of this table:
-*** =biosample_ecotype=
-    Columns of this table:
-*** =biosample_pipedata=
-    Columns of this table:
-*** =biosample_pipeproject=
-    Columns of this table:
 *** =sequencing_sample=
     Columns of this table:
 *** =sequencing_run=
