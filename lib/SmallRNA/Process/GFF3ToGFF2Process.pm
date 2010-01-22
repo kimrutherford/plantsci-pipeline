@@ -39,7 +39,7 @@ under the same terms as Perl itself.
 
 use strict;
 use Carp;
-use Bio::SeqIO;
+
 use Params::Validate qw(:all);
 use warnings;
 
