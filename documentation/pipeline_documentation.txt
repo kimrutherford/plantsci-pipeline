@@ -106,14 +106,6 @@ dependencies.
 
     Columns of this table:
  - =name= :: The user friendly name for this =barcode_set=
-*** =library=
-    This table connects a [[sequencing_sample][sequencing sample]], a [[biosample]] and a [[barcode]].  The bar
-    code is optional as a sequencing sample isn't always multiplexed.
-
-    Columns of this table:
- - =library_type= :: specifies whether this =library= is an initial
-   run or a technical replicate or biological replicate.
- - =description= :: an optional description
 *** =cv=
     Controlled vocabulary table copied from the [[http://gmod.org/wiki/Chado][Chado]] [[http://gmod.org/wiki/Chado_CV_Module][CV Module]].
 *** =cvterm=
@@ -129,6 +121,18 @@ dependencies.
 
     Columns of this table:
     - =description= :: the common/standard description of the ecotype
+*** =library=
+    A library is a biosample that has been prepared for sequencing.  It will
+    have adaptors, which may include barcodes.  If there is multiplexing two
+    or more libraries will be combined into one sequencing_sample.
+
+    Columns of this table:
+ - =biosample= :: the biological sample used to make this library
+ - =library_type= :: specifies whether this =library= is an initial
+   run or a technical replicate or biological replicate
+ - =description= :: an optional description
+ - =barcode= :: the optional barcode for this library
+ - =adaptor= :: the adaptor used for this library, as stored in the cvterm table
 *** =organisation=
     Each person is a member of an =organisation= and sequencing centres are
     organisations in this schema.  A =pipeproject= has an optional =funder=
