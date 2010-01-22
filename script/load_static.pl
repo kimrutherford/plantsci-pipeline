@@ -61,8 +61,10 @@ my %terms = (
                 'Non-redundant (unique) reads that have been aligned against a reference',
               'redundant_aligned_reads' =>
                 'Redundant reads that align against the a reference - one FASTA record for each read from the original redundant file that matches',
-              'non_aligned_reads' =>
+              'redundant_non_aligned_reads' =>
                 'Reads that did not align against the reference',
+              'non_redundant_non_aligned_reads' =>
+                'Unique reads that did not align against the reference',
               'gff3_index' =>
                 'An index of a gff3 file that has the read sequence as the key',
               'fasta_index' =>
@@ -117,6 +119,9 @@ my %terms = (
               'remove redundant reads' =>
                 'Read a fasta file of short sequences, remove redundant reads '
                   . 'and add a count to the header',
+              'make redundant fasta' =>
+                'Read a non-redundant fasta file of short sequences that has '
+                  . 'counts in the header and create a redundant fasta file',
               'ssaha alignment' =>
                 'Align reads against a sequence database with SSAHA',
               'patman alignment' =>
@@ -798,7 +803,17 @@ my @analyses = (
                  inputs => [
                      {
                        format_type => 'fasta',
-                       content_type => 'non_aligned_reads',
+                       content_type => 'redundant_non_aligned_reads',
+                     }
+                    ]
+                },
+                {
+                 type_term_name => 'calculate fasta or fastq file statistics',
+                 runable_name => 'SmallRNA::Runable::FastStatsRunable',
+                 inputs => [
+                     {
+                       format_type => 'fasta',
+                       content_type => 'non_redundant_non_aligned_reads',
                      }
                     ]
                 },
@@ -810,6 +825,16 @@ my @analyses = (
                      {
                        format_type => 'fasta',
                        content_type => 'trimmed_reads'
+                     }
+                    ]
+                },
+                {
+                 type_term_name => 'summarise fasta first base',
+                 runable_name => 'SmallRNA::Runable::FirstBaseCompSummaryRunable',
+                 inputs => [
+                     {
+                       format_type => 'fasta',
+                       content_type => 'trim_rejects',
                      }
                     ]
                 },
@@ -860,6 +885,26 @@ my @analyses = (
                      {
                        format_type => 'fasta',
                        content_type => 'aligned_reads',
+                     }
+                    ]
+                },
+                {
+                 type_term_name => 'summarise fasta first base',
+                 runable_name => 'SmallRNA::Runable::FirstBaseCompSummaryRunable',
+                 inputs => [
+                     {
+                       format_type => 'fasta',
+                       content_type => 'redundant_non_aligned_reads',
+                     }
+                    ]
+                },
+                {
+                 type_term_name => 'summarise fasta first base',
+                 runable_name => 'SmallRNA::Runable::FirstBaseCompSummaryRunable',
+                 inputs => [
+                     {
+                       format_type => 'fasta',
+                       content_type => 'non_redundant_non_aligned_reads',
                      }
                     ]
                 },
@@ -1157,6 +1202,16 @@ my @analyses = (
                        ecotype_name => 'unspecified Cleome gynandra',
                      }
                    ]
+                },
+                {
+                 type_term_name => 'make redundant fasta',
+                 runable_name => 'SmallRNA::Runable::MakeRedundantFastaRunable',
+                 inputs => [
+                     {
+                       format_type => 'fasta',
+                       content_type => 'non_redundant_non_aligned_reads',
+                     }
+                    ]
                 },
                );
 

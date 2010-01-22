@@ -185,7 +185,7 @@ EVAL_BLOCK
         $self->store_pipedata(generating_pipeprocess => $self->pipeprocess(),
                               file_name => $non_aligned_file_name,
                               format_type_name => 'fasta',
-                              content_type_name => 'non_aligned_reads',
+                              content_type_name => 'non_redundant_non_aligned_reads',
                               properties => { 'alignment component' => $component,
                                               'alignment ecotype' => $org_full_name,
                                               'alignment program' => $alignment_program });

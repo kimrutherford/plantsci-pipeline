@@ -1,11 +1,11 @@
-package SmallRNA::Runable::NonRedundantFastaRunable;
+package SmallRNA::Runable::MakeRedundantFastaRunable;
 
 =head1 NAME
 
-SmallRNA::Runable::NonRedundantFastaRunable
+SmallRNA::Runable::MakeRedundantFastaRunable
 
-Creates a non-redundant version of FASTA file, with counts in the
-header
+Creates a redundant version of FASTA file, from a non-redundant FASTA file
+(ie. with counts in the header)
 
 =head1 SYNOPSIS
 
@@ -21,7 +21,7 @@ Please report any bugs or feature requests to C<kmr44@cam.ac.uk>.
 
 You can find documentation for this module with the perldoc command.
 
-    perldoc SmallRNA::Runable::NonRedundantFastaRunable
+    perldoc SmallRNA::Runable::MakeRedundantFastaRunable
 
 =over 4
 
@@ -44,13 +44,13 @@ use Carp;
 
 use Moose;
 
-use SmallRNA::Process::NonRedundantFastaProcess;
+use SmallRNA::Process::MakeRedundantFastaProcess;
 
 extends 'SmallRNA::Runable::SmallRNARunable';
 
 =head2
 
- Function: Run NonRedundantFastaProcess for this Runable/pipeprocess and store
+ Function: Run MakeRedundantFastaProcess for this Runable/pipeprocess and store
            the name of the result file in the pipedata table.
  Returns : nothing - either succeeds or calls die()
 
@@ -71,9 +71,9 @@ sub run
     my $input_pipedata = $input_pipedatas[0];
 
     my $input_type = $input_pipedata->content_type()->name();
-    my $output_type = 'non_redundant_' . $input_type;
+    my $output_type = $input_type;
 
-    $output_type =~ s/_filtered_trimmed_/_/;
+    $output_type =~ s/non_redundant_/redundant_/;
 
     my $data_dir = $self->config()->data_directory();
 
@@ -85,10 +85,10 @@ sub run
       $output_file_name =~ s/\.(fa|fasta)$/.$output_type.fasta/g
     }
 
-    SmallRNA::Process::NonRedundantFastaProcess::run(input_file_name =>
-                                                       "$data_dir/" . $input_file_name,
-                                                     output_file_name =>
-                                                       "$data_dir/" . $output_file_name);
+    SmallRNA::Process::MakeRedundantFastaProcess::run(input_file_name =>
+                                                        "$data_dir/" . $input_file_name,
+                                                      output_file_name =>
+                                                        "$data_dir/" . $output_file_name);
 
 
     # copy properties to new file
