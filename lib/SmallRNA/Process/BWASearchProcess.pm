@@ -41,8 +41,6 @@ use Carp;
 use Params::Validate qw(:all);
 use File::Temp qw(tempfile);
 
-use Bio::SeqIO;
-
 use SmallRNA::Process::Utils qw(do_system);
 
 my $BWA_ARGS = "";
