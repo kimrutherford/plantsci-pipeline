@@ -90,11 +90,11 @@ sub long_description
         }
         $description .= $_->ecotype()->long_description();
       }
-      if (defined $_->sample_type()) {
+      if (defined $_->biosample_type()) {
         if (length $description > 0) {
           $description .= ', ';
         }
-        $description .= $_->sample_type()->name();
+        $description .= $_->biosample_type()->name();
       }
       $description;
     } @inputs;
