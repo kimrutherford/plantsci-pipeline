@@ -429,11 +429,11 @@ sub process_row
 
     my $barcodes = undef;
 
-    my ($file_names_column, $solexa_library, 
+    my ($file_names_column, $solexa_library,
         $project_desc, $do_processing,
         $dcb_validated, $funding,
         $sheet_seq_centre_name,
-        $description, $organism_name, $genotype, 
+        $description, $organism_name, $genotype,
         $barcode, $barcode_set, $submitter, $institution,
         $date_submitted, $date_received, $time_taken,
         $quality, $quality_note, $smallrna_adaptor, $biosample_type, $run_type,
@@ -543,7 +543,7 @@ sub process_row
       my $molecule_type;
 
       if ($solexa_library eq 'SL54' || $solexa_library eq 'SL55' ||
-          $biosample_type eq 'DNA' || $biosample_type eq 'ChipSeq' || 
+          $biosample_type eq 'DNA' || $biosample_type eq 'ChipSeq' ||
           $biosample_type eq 'Expression') {
         $molecule_type = 'DNA';
       } else {
@@ -630,7 +630,7 @@ sub process_row
             }
 
             my $barcode_set = find('BarcodeSet', name => $barcode_set_name);
-            my $barcode = find('Barcode', 
+            my $barcode = find('Barcode',
                                {
                                  identifier => $barcode_identifier,
                                  barcode_set => $barcode_set
@@ -700,7 +700,7 @@ sub process
 # test data
 process_row('T1.test_data.fasta', 'T1', '', '', 'NO', '', 'CRI', 'Test data', 'Arabidosis thaliana', '', 'Kim Rutherford', 'DCB', '', '', '', '', '', 'smallRNA', '', '', '');
 process_row('T2.test_data.fasta', 'T2', '', '', 'NO', '', 'CRI', 'Test data', 'Arabidosis thaliana', '', 'Kim Rutherford', 'DCB', '', '', '', '', '', 'smallRNA', '', '', '');
- 
+
 eval {
   $schema->txn_do(\&process);
 };
