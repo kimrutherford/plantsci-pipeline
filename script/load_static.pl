@@ -210,7 +210,7 @@ $schema->txn_do(sub {
     my %cvterms = %{$terms{$term_cv_name}};
 
     for my $cvterm_name (sort keys %cvterms) {
-      my $dbxref = $schema->find_or_create_with_type('Dbxref', 
+      my $dbxref = $schema->find_or_create_with_type('Dbxref',
                                              { accession => $cvterm_name,
                                                db => $pipeline_db });
 
@@ -1235,12 +1235,12 @@ $schema->txn_do(sub {
     });
 
     my $key = "$type_cvterm " . ($conf{detail} || '') . ' ' .
-      ($conf{runable_name} || '') . " inputs:" . 
+      ($conf{runable_name} || '') . " inputs:" .
       map {
         ($_->{content_type} || '') . ' ' . ($_->{format_type} || '') .
           ($_->{ecotype_name} || '');
       } @{$conf{inputs}};
-    
+
     if (exists $seen{$key}) {
       die "already processed process_conf: $key\n";
     } else {
