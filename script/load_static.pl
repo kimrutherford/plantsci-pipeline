@@ -1,7 +1,5 @@
 #!/usr/bin/perl -w
 
-# script to populate the barcode table
-
 use strict;
 use warnings;
 use Carp;
