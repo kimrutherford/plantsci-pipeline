@@ -344,8 +344,21 @@ my %barcode_sets = (
         J2 => 'CTGTC',
         K2 => 'GTGTG',
       }
-     }
-   );
+     },
+  "GEX Adaptor barcodes" => {
+    code_position => "5-prime",
+    codes => {
+      '2.1' => 'GACCT',
+      '2.2' => 'GACGA',
+      '2.3' => 'GAGCA',
+      '2.4' => 'GAGGT',
+      '2.5' => 'GCAAG',
+      '2.6' => 'GCATC',
+      '2.7' => 'GCTAC',
+      '2.8' => 'GCTTG',
+    },
+  }
+ );
 
 $schema->txn_do(sub {
   my $set_rs = $schema->resultset('BarcodeSet');
