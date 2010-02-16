@@ -80,7 +80,7 @@ sub _find_barcode_set_and_adaptor
   my $seq_run_process = undef;
 
   if ($fastq_generating_pipeprocess->input_pipedatas() > 0) {
-    # the fastq file we are processing was generated from an SRF file, which 
+    # the fastq file we are processing was generated from an SRF file, which
     # we need go back to to get the pipeprocess that the sequencing_runs hang off
     my $srf_pipedata = ($fastq_generating_pipeprocess->input_pipedatas())[0];
     $seq_run_process = $srf_pipedata->generating_pipeprocess();
@@ -199,7 +199,7 @@ sub run
   for my $biosample (@biosamples) {
     if (defined $biosample_type) {
       if ($biosample->biosample_type()->name() ne $biosample_type) {
-        croak ('pipedata ' . $input_pipedata->pipedata_id() . 
+        croak ('pipedata ' . $input_pipedata->pipedata_id() .
                ' has more than 1 biosample, but with differing biosample_types ' .
                ' - not supported');
       }
