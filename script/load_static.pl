@@ -172,6 +172,7 @@ my %terms = (
              {
                'illumina old adaptor' => "TCGTATGCCGTCTTCTGCTTGT",
                'illumina v1.5 adaptor' => "ATCTCGTATGCCGTCTTCTGCTTG",
+               'GEX adaptor' => "TCGTATGCCGTCTTCTGCTTGAGTAGCT",
              },
              'tracking publication types' =>
                {
@@ -346,7 +347,7 @@ my %barcode_sets = (
       }
      },
   "GEX Adaptor barcodes" => {
-    code_position => "5-prime",
+    code_position => "3-prime",
     codes => {
       '2.1' => 'GACCT',
       '2.2' => 'GACGA',
