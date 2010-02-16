@@ -260,7 +260,7 @@ sub run
                                                      );
 
       for my $code (keys %{$output}) {
-        my $biosample = _find_biosample_from_code(@input_pipedatas, $code);
+        my $biosample = _find_biosample_from_code($input_pipedata, $code);
 
         my $code_name = $barcodes_map{$code};
 
