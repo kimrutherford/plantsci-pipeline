@@ -114,7 +114,22 @@ sub _find_sequencing_run_from_pipedata
            " has more than one sequencing_run object\n");
   }
 
-  return $sequencing_runs[0];
+  if (@sequencing_runs > 0) {
+    return $sequencing_runs[0];
+  } else {
+    # this FastQ was generated from an SRF file so find that
+    my $generating_pipeprocess = $pipedata->generating_pipeprocess();
+    my @input_pipedatas = $generating_pipeprocess->input_pipedatas();
+    if (@input_pipedatas == 0) {
+      croak "can't find the sequencing run for pipedata: ", $pipedata->file_name();
+    } else {
+      if (@input_pipedatas > 1) {
+        croak "too many pipedata when looking for a sequencing run for pipedata: ", $pipedata->file_name();
+      } else {
+        return _find_sequencing_run_from_pipedata($input_pipedatas[0]);
+      }
+    }
+  }
 }
 
 sub _find_biosample_from_code
