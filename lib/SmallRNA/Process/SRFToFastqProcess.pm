@@ -71,7 +71,7 @@ sub run
     croak "can't find input file: $infile_name}";
   }
 
-  my $command = "$params{exec_path} $infile_name";
+  my $command = "$params{exec_path} -c $infile_name";
 
   do_system "$command 2>> $log_file_name > $outfile_name";
 }
