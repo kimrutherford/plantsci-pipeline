@@ -91,48 +91,62 @@ dependencies.
 ** Configuration in the database
    Settings that may need to be configured after the pipeline is running are
    stored in the database.  See the documentation for the following tables:
-   [[=barcode=][barcode]], [[=barcode_set=][barcode_set]], [[=cvterm=][cvterm]], [[=ecotype=][ecotype]], [[=organisation=][organisation]], [[=organism=][organism]], [[=person=][person]],
-   [[=process_conf=][process_conf]] and [[=process_conf_input=][process_conf_input]]
+   [[barcode][=barcode=]], [[barcode_set][=barcode_set=]], [[cvterm][=cvterm=]], [[ecotype][=ecotype=]], [[organisation][=organisation=]], [[organism][=organism=]], [[person][=person=]],
+   [[process_conf][=process_conf=]] and [[process_conf_input][=process_conf_input=]]
 
 * Database structure
 ** Tables
 *** =barcode=
+# <<barcode>>
     Sequence and short name (code) used for multiplexed sequencing runs.
 
     Columns of this table:
  - =identifier= :: the user friendly identifier of this barcode
  - =code= :: the barcode
 *** =barcode_set=
+# <<barcode_set>>
     A collection of barcodes that are used together.
 
     Columns of this table:
  - =name= :: The user friendly name for this =barcode_set=
 *** =biosample=
+# <<biosample>>
     Columns of this table:
 *** =biosample_dbxref=
+# <<biosample_dbxref>>
     Columns of this table:
 *** =biosample_ecotype=
+# <<biosample_ecotype>>
     Columns of this table:
 *** =biosample_pipedata=
+# <<biosample_pipedata>>
     Columns of this table:
 *** =biosample_pipeproject=
+# <<biosample_pipeproject>>
     Columns of this table:
 *** =cv=
+# <<cv>>
     Controlled vocabulary table copied from the [[http://gmod.org/wiki/Chado][Chado]] [[http://gmod.org/wiki/Chado_CV_Module][CV Module]].
 *** =cvterm=
+# <<cvterm>>
     Controlled vocabulary term table from the [[http://gmod.org/wiki/Chado][Chado]] [[http://gmod.org/wiki/Chado_CV_Module][CV Module]].
 *** =cvterm_dbxref=
+# <<cvterm_dbxref>>
     A link table connecting references to cvterms.
 *** =db=
+# <<db>>
     Database table from the [[http://gmod.org/wiki/Chado][Chado]] [[http://gmod.org/wiki/Chado_CV_Module][CV Module]].
 *** =dbxref=
+# <<dbxref>>
     [[http://gmod.org/wiki/Chado_General_Module#Table:_dbxref][Database cross reference]] table from the [[http://gmod.org/wiki/Chado][Chado]] [[http://gmod.org/wiki/Chado_General_Module][General Module]].
 *** =ecotype=
+# <<ecotype>>
     An ecotype (also known as a strain or stock) of an [[organism]]
 
     Columns of this table:
     - =description= :: the common/standard description of the ecotype
 *** =library=
+# <<library>>
     A library is a biosample that has been prepared for sequencing.  It will
     have adaptors, which may include barcodes.  If there is multiplexing two
     or more libraries will be combined into one sequencing_sample.
@@ -145,18 +159,23 @@ dependencies.
  - =barcode= :: the optional barcode for this library
  - =adaptor= :: the adaptor used for this library, as stored in the cvterm table
 *** =organisation=
+# <<organisation>>
     Each person is a member of an =organisation= and sequencing centres are
     organisations in this schema.  A =pipeproject= has an optional =funder=
     that is also an =organisation=.
 *** =organism=
+# <<organism>>
     Organism table from the [[http://gmod.org/wiki/Chado][Chado]] [[http://gmod.org/wiki/Chado_Organism_Module][Organism Module]].
 *** =organism_dbxref=
+# <<organism_dbxref>>
     Organism to reference link table from the [[http://gmod.org/wiki/Chado][Chado]] [[http://gmod.org/wiki/Chado_Organism_Module][Organism Module]].
 *** =person=
+# <<person>>
     Notable columns of this table:
     - =role= :: the role is used by the tracking application to control
       capabilities.
 *** =pipedata=
+# <<pipedata>>
     The pipeline creates a row in this table for each file that a
     [[Pipeline processes][process]] creates and records the file location (in =file_name=) and its
     size.  This table also tracks the content type and
@@ -172,6 +191,7 @@ dependencies.
     - =generating_pipeprocess= :: the id of the [[=pipeprocess=]] that generated
       this =pipedata=
 *** =pipedata_property=
+# <<pipedata_property>>
     Key/value pairs for a =pipedata= entry.
 
     Columns of this table:
@@ -179,6 +199,7 @@ dependencies.
     - =value= :: the value as text
     - =pipedata= :: the =pipedata= for the property
 *** =pipeprocess=
+# <<pipeprocess>>
     This table records the tasks performed by the pipeline.  Each row
     references the =process_conf= that holds the configuration for this
     process.  Each process is run by the [[The pipeline worker][pipeline worker]] script
@@ -201,27 +222,38 @@ dependencies.
     - =time_finished= :: the time when this process moved to the "finished" state,
       otherwise null.
 *** =pipeprocess_in_pipedata=
+# <<pipeprocess_in_pipedata>>
     This table contains the input files ([[=pipedata=]] entries) for the
     pipeprocesses.
 
     Columns of this table:
 *** =pipeprocess_pub=
+# <<pipeprocess_pub>>
     Columns of this table:
 *** =pipeproject=
+# <<pipeproject>>
     Columns of this table:
 *** =process_conf=
+# <<process_conf>>
     Columns of this table:
 *** =process_conf_input=
+# <<process_conf_input>>
     Columns of this table:
 *** =protocol=
+# <<protocol>>
     Columns of this table:
 *** =pub=
+# <<pub>>
 *** =pub_dbxref=
+# <<pub_dbxref>>
 *** =sequencing_sample=
+# <<sequencing_sample>>
     Columns of this table:
 *** =sequencing_run=
+# <<sequencing_run>>
     Columns of this table:
 *** =tissue=
+# <<tissue>>
     Columns of this table:
 * Operation
 ** Pipeline processes
