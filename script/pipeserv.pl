@@ -20,18 +20,26 @@ use Carp;
 use DateTime;
 use FindBin qw($Bin);
 use Cwd qw(realpath);
+use Time::HiRes qw(usleep);
+use Getopt::Long;
+use POSIX ":sys_wait_h";
 
 use SmallRNA::DB;
 use SmallRNA::Config;
 use SmallRNA::DBLayer::Loader;
 use SmallRNA::ProcessManager;
 
-my $run_locally = 0;
+my $max_jobs = $ENV{'PIPESERV_MAX_JOBS'} || 0;
 
-if (@ARGV && $ARGV[0] eq '-l') {
-  $run_locally = 1;
+my $exec_host = undef;
+
+if (@ARGV && $ARGV[0] eq '-h') {
+  shift;
+  $exec_host = $ARGV[0];
   shift;
 }
+
+my $run_locally = defined $exec_host;
 
 my $config_file_name = shift;
 
@@ -49,6 +57,8 @@ my $not_started_status = $schema->find_with_type('Cvterm', name => 'not_started'
 
 my $test_mode = $ENV{SMALLRNA_PIPELINE_TEST} || 0;
 my $pipework_path = "$Bin/pipework.pl";
+
+$pipework_path =~ s:/export/:/:;
 
 sub submit_torque_job {
   my $pipeprocess = shift;
@@ -95,6 +105,8 @@ sub submit_torque_job {
   return $qsub_jobid;
 }
 
+my $child_count = 0;
+
 sub submit_local_job {
   my $pipeprocess = shift;
   my $pipeprocess_id = $pipeprocess->pipeprocess_id();
@@ -105,20 +117,50 @@ sub submit_local_job {
     if ($pid) {
       # parent
       warn "started job for pipeprocess #$pipeprocess_id, job #$pid\n";
+      # sleep to allow the child to exec()
     } else {
       # wait for parent to finish writing to the pipeprocess table
       sleep(1);
       $ENV{PIPEPROCESS_ID} = $pipeprocess_id;
       $ENV{CONFIG_FILE_PATH} = $config_file_full_path;
       $ENV{SMALLRNA_PIPELINE_TEST} = $test_mode;
-      exec $pipework_path;
+
+      my $command = "PIPEPROCESS_ID=$pipeprocess_id CONFIG_FILE_PATH=$config_file_full_path SMALLRNA_PIPELINE_TEST=$test_mode $pipework_path";
+
+      if ($exec_host && $exec_host ne 'localhost') {
+        my $ssh_command = qq(ssh $exec_host $command);
+        exec "$ssh_command >out.$$.err 2>&1";
+      } else {
+        exec $command;
+      }
     }
   } else {
     croak "fork() failed\n";
   }
 
+  $child_count++;
+
   return $pid;
 }
+
+sub count_current_jobs
+{
+  if ($run_locally) {
+    return $child_count;
+  } else {
+    my $count = 0;
+    open PIPE, "qstat|" or die "can't open pipe to qstat: $?\n";
+
+    while (defined (my $line = <PIPE>)) {
+      $count++ if $line =~ / [QR] batch/;
+    }
+
+    close PIPE or die "can't close pipe to qstat: $?\n";
+    return $count;
+  }
+}
+
+my @local_jobs = ();
 
 while (1) {
   warn "creating new Pipeprocess objects\n";
@@ -140,6 +182,9 @@ while (1) {
       my $job_id;
       if ($run_locally) {
         $job_id = submit_local_job($pipeprocess);
+
+        push @local_jobs, $job_id;
+
       } else {
         $job_id = submit_torque_job($pipeprocess);
       }
@@ -150,24 +195,25 @@ while (1) {
 
     $schema->txn_do($code);
 
-    if (!$run_locally && defined $ENV{'PIPESERV_MAX_JOBS'} && $ENV{'PIPESERV_MAX_JOBS'} > 0) {
+    if ($max_jobs > 0) {
       for (1..1000) { # don't do it forever, in case there's a problem
-        my $count = 0;
+        my $count = count_current_jobs();
 
-        open PIPE, "qstat|" or die "can't open pipe to qstat: $?\n";
-
-        while (defined (my $line = <PIPE>)) {
-          $count++ if $line =~ / [QR] batch/;
-        }
-
-        close PIPE or die "can't close pipe to qstat: $?\n";
-
-        if ($count >= $ENV{'PIPESERV_MAX_JOBS'}) {
+        if ($count >= $max_jobs) {
           warn "$count jobs running - sleeping\n";
           if ($test_mode) {
             sleep (1);
           } else {
             sleep (20);
+          }
+          if ($run_locally) {
+            my $kid;
+            do {
+              $kid = waitpid(-1, WNOHANG);
+              if ($kid > 0) {
+                $child_count--;
+              }
+            } while $kid > 0;
           }
         } else {
           last;
