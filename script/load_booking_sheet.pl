@@ -433,7 +433,7 @@ sub process_row
         $project_desc, $do_processing,
         $dcb_validated, $funding,
         $sheet_seq_centre_name,
-        $description, $organism_name, $genotype,
+        $description, $organism_name, $ecotype, $genotype,
         $barcode, $barcode_set, $submitter, $institution,
         $date_submitted, $date_received, $time_taken,
         $quality, $quality_note, $smallrna_adaptor, $biosample_type, $run_type,
