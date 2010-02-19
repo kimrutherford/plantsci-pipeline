@@ -452,7 +452,8 @@ CREATE TABLE biosample_ecotype (
 );
 CREATE TABLE sequencing_sample (
        sequencing_sample_id serial CONSTRAINT sequencing_sample_id_pk PRIMARY KEY,
-       name text NOT NULL UNIQUE
+       name text NOT NULL UNIQUE,
+       sequencing_centre_identifier text UNIQUE
 );
 CREATE TABLE sequencing_run (
        sequencing_run_id serial CONSTRAINT sequencing_run_id_pk PRIMARY KEY,
@@ -475,6 +476,7 @@ CREATE TABLE library (
        library_id serial CONSTRAINT library_id_pk PRIMARY KEY,
        created_stamp timestamp NOT NULL DEFAULT now(),
        name text NOT NULL UNIQUE,
+       sequencing_centre_identifier text UNIQUE,
        description text,
        library_type integer REFERENCES cvterm(cvterm_id) DEFERRABLE INITIALLY DEFERRED NOT NULL,
        biosample integer REFERENCES biosample(biosample_id) DEFERRABLE INITIALLY DEFERRED NOT NULL,

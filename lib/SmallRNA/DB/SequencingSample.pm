@@ -22,8 +22,19 @@ __PACKAGE__->add_columns(
     is_nullable => 0,
     size => undef,
   },
+  "sequencing_centre_identifier",
+  {
+    data_type => "text",
+    default_value => undef,
+    is_nullable => 1,
+    size => undef,
+  },
 );
 __PACKAGE__->set_primary_key("sequencing_sample_id");
+__PACKAGE__->add_unique_constraint(
+  "sequencing_sample_sequencing_centre_identifier_key",
+  ["sequencing_centre_identifier"],
+);
 __PACKAGE__->add_unique_constraint("sequencing_sample_name_key", ["name"]);
 __PACKAGE__->add_unique_constraint("sequencing_sample_id_pk", ["sequencing_sample_id"]);
 __PACKAGE__->has_many(
@@ -39,7 +50,7 @@ __PACKAGE__->has_many(
 
 
 # Created by DBIx::Class::Schema::Loader v0.04006
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:iCSj1P+nn8fNkHIpdMi+kQ
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:XIDJiXdFHATfd4cg6+88TQ
 
 =head2 display_name
 

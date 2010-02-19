@@ -26,6 +26,25 @@ my $config = SmallRNA::Config->new($config_file_name);
 
 my $spreadsheet_file = shift;
 
+my $slx_sl_mapping_file_name = shift;
+
+my %sl_to_slx = ();
+
+my %used_sl_slx_ids = ();
+
+open my $slx_sl_mapping_file, '<', $slx_sl_mapping_file_name or
+  die "can't open $slx_sl_mapping_file_name: $!\n";
+
+while (defined (my $line = <$slx_sl_mapping_file>)) {
+  if ($line =~ /(SL\S+)\s+(\S+)/) {
+    $sl_to_slx{$1} = $2;
+  } else {
+    die "can't parse: $line\n";
+  }
+}
+
+close $slx_sl_mapping_file or die;
+
 my $csv = Text::CSV->new({binary => 1});
 
 open my $io, '<', $spreadsheet_file;
@@ -256,9 +275,17 @@ sub create_library
 
   $library_args{adaptor} = $adaptor;
 
+  my $slx_identifier = $sl_to_slx{$biosample->name()};
+
+  $used_sl_slx_ids{$biosample->name()} = 1;
+
   my $library_name = $biosample->name() . '_L1';
 
   $library_args{name} = $library_name;
+
+  if (defined $slx_identifier) {
+    $library_args{sequencing_centre_identifier} = $slx_identifier;
+  }
 
   return create('Library', {%library_args});
 }
@@ -420,7 +447,12 @@ sub create_sequencing_sample
 {
   my $solexa_library_name = shift;
 
-  return create('SequencingSample', { name => "CRI_$solexa_library_name" });
+  my $slx_number = $sl_to_slx{$solexa_library_name};
+
+  $used_sl_slx_ids{$solexa_library_name} = 1;
+
+  return create('SequencingSample', { name => "CRI_$solexa_library_name",
+                                      sequencing_centre_identifier => $slx_number });
 }
 
 sub process_row
@@ -740,4 +772,9 @@ eval {
 };
 if ($@) {
   die "ROLLBACK called: $@\n";
+}
+
+print "SL identifiers missing from the spreadsheet:\n";
+for my $sl (sort keys %sl_to_slx) {
+  print "$sl\n" if not exists $used_sl_slx_ids{$sl};
 }
