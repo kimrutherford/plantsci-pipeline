@@ -107,6 +107,17 @@ sub submit_torque_job {
 
 my $child_count = 0;
 
+sub _get_exec_host
+{
+  if ($exec_host =~ /^(.*?),(.*)/) {
+    # hack to rotate the exec hosts:
+    $exec_host = "$2,$1";
+    return $1;
+  } else {
+    return $exec_host;
+  }
+}
+
 sub submit_local_job {
   my $pipeprocess = shift;
   my $pipeprocess_id = $pipeprocess->pipeprocess_id();
@@ -128,8 +139,10 @@ sub submit_local_job {
       my $command = "PIPEPROCESS_ID=$pipeprocess_id CONFIG_FILE_PATH=$config_file_full_path SMALLRNA_PIPELINE_TEST=$test_mode $pipework_path";
 
       if ($exec_host && $exec_host ne 'localhost') {
-        my $ssh_command = qq(ssh $exec_host $command);
-        exec "$ssh_command >out.$$.err 2>&1";
+        my $real_exec_host = _get_exec_host();
+        my $ssh_command = qq(ssh $real_exec_host $command);
+        warn "execuiting $ssh_command\n";
+        exec "$ssh_command 2>&1 | tee out.$$.err";
       } else {
         exec $command;
       }
