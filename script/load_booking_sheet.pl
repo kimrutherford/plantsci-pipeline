@@ -371,11 +371,7 @@ sub fix_name
 
 my %dir_files = ();
 
-my @sub_dirs = qw(fastq T1 T2 SL4 SL9 SL11 SL12 SL18 SL19 SL21 SL22 SL1000 SL1001 SL1002 SL1007 SL1008 SL1009 SL1010);
-
-if ($test_mode) {
-  unshift @sub_dirs, 'srf';
-}
+my @sub_dirs = qw(srf fastq T1 T2 SL4 SL9 SL11 SL12 SL18 SL19 SL21 SL22 SL1000 SL1001 SL1002 SL1007 SL1008 SL1009 SL1010);
 
 for my $sub_dir (@sub_dirs) {
   my $dir_name = $config->data_directory() . "/$sub_dir";
