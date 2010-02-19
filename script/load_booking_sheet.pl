@@ -643,8 +643,6 @@ sub process_row
             @barcode_identifiers = ($barcodes =~ /(\w)/g);
           }
 
-          warn "barcodes: @barcode_identifiers\n";
-
           for my $barcode_identifier (@barcode_identifiers) {
             my $barcode_set_name;
 
