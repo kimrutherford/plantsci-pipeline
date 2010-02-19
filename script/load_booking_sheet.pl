@@ -24,11 +24,11 @@ if ($ARGV[0] eq '-test') {
 my $config_file_name = shift;
 my $config = SmallRNA::Config->new($config_file_name);
 
-my $file = shift;
+my $spreadsheet_file = shift;
 
 my $csv = Text::CSV->new({binary => 1});
 
-open my $io, '<', $file;
+open my $io, '<', $spreadsheet_file;
 
 my $schema = SmallRNA::DB->new($config);
 
