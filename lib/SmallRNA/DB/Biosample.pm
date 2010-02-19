@@ -194,7 +194,7 @@ sub get_pipedata_property
 
   my $biosample_name = $biosample->name();
 
-  if (!exists $_fasta_counts_cache{$biosample_name} || 
+  if (!exists $_fasta_counts_cache{$biosample_name} ||
       !defined $_cache_time ||
       (time() - $_cache_time > $MAX_CACHE_AGE)) {
     my $schema = $biosample->result_source->schema();
