@@ -578,7 +578,7 @@ my @people = (
               ['Becky Mosher', 'becky_mosher', 'DCB'],
               ['Kanu Patel', 'kanu_patel', 'DCB'],
               ['Anna Peters', 'anna_peters', 'DCB'],
-              ['Kim Rutherford', 'kim_rutherford', 'DCB', 'admin'],
+              ['Kim Rutherford', 'kr1', 'DCB', 'admin'],
               ['Iain Searle', 'iain_searle', 'DCB'],
               ['Padubidri Shivaprasad', 'padubidri_shivaprasad', 'DCB'],
               ['Shuoya Tang', 'shuoya_tang', 'DCB'],
@@ -587,7 +587,7 @@ my @people = (
               ['Natasha Yelina', 'natasha_yelina', 'DCB'],
               ['Krys Kelly', 'krys_kelly', 'DCB'],
               ['Hannes V', 'hannes_v', 'DCB'],
-              ['Antonis Giakountis', 'antonis_giakountis', 'DCB'],
+              ['Antonis Giakountis', 'ag1', 'DCB'],
              );
 
 $schema->txn_do(sub {
