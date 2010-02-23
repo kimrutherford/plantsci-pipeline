@@ -454,7 +454,7 @@ CREATE TABLE sequencing_sample (
        sequencing_sample_id serial CONSTRAINT sequencing_sample_id_pk PRIMARY KEY,
        name text NOT NULL UNIQUE,
        sequencing_centre_identifier text UNIQUE,
-       sample_creator NOT NULL REFERENCES person(person_id) DEFERRABLE INITIALLY DEFERRED
+       sample_creator integer REFERENCES person(person_id) NOT NULL DEFERRABLE INITIALLY DEFERRED
 );
 CREATE TABLE sequencing_run (
        sequencing_run_id serial CONSTRAINT sequencing_run_id_pk PRIMARY KEY,
