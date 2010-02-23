@@ -442,13 +442,15 @@ sub get_ecotype_by_org
 sub create_sequencing_sample
 {
   my $solexa_library_name = shift;
+  my $sample_creator = shift;
 
   my $slx_number = $sl_to_slx{$solexa_library_name};
 
   $used_sl_slx_ids{$solexa_library_name} = 1;
 
   return create('SequencingSample', { name => "CRI_$solexa_library_name",
-                                      sequencing_centre_identifier => $slx_number });
+                                      sequencing_centre_identifier => $slx_number,
+                                      sample_creator => $sample_creator });
 }
 
 sub process_row
@@ -660,7 +662,8 @@ sub process_row
           return;
         }
 
-        my $sequencing_sample = create_sequencing_sample($solexa_library);
+        my $sequencing_sample =
+          create_sequencing_sample($solexa_library, $person_obj);
 
         my @all_biosamples = ();
 
