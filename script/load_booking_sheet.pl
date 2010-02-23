@@ -505,7 +505,9 @@ sub process_row
       return;
     }
 
-    my $ecotype = get_ecotype_by_org($org_obj);
+    if (!$ecotype) {
+      $ecotype = get_ecotype_by_org($org_obj);
+    }
 
     my @ecotypes = ($ecotype);
 
