@@ -70,10 +70,15 @@ __PACKAGE__->has_many(
   "SmallRNA::DB::Pipeproject",
   { "foreign.owner" => "self.person_id" },
 );
+__PACKAGE__->has_many(
+  "sequencing_samples",
+  "SmallRNA::DB::SequencingSample",
+  { "foreign.sample_creator" => "self.person_id" },
+);
 
 
 # Created by DBIx::Class::Schema::Loader v0.04006
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:z0dV34FjKHliSsSPMPnfXw
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:ETU0JxYWlI8asrMBDU/Eog
 
 sub full_name {
   my $self = shift;

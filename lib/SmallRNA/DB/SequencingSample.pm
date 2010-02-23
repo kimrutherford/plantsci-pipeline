@@ -29,6 +29,8 @@ __PACKAGE__->add_columns(
     is_nullable => 1,
     size => undef,
   },
+  "sample_creator",
+  { data_type => "integer", default_value => undef, is_nullable => 0, size => 4 },
 );
 __PACKAGE__->set_primary_key("sequencing_sample_id");
 __PACKAGE__->add_unique_constraint(
@@ -47,10 +49,15 @@ __PACKAGE__->has_many(
   "SmallRNA::DB::SequencingRun",
   { "foreign.sequencing_sample" => "self.sequencing_sample_id" },
 );
+__PACKAGE__->belongs_to(
+  "sample_creator",
+  "SmallRNA::DB::Person",
+  { person_id => "sample_creator" },
+);
 
 
 # Created by DBIx::Class::Schema::Loader v0.04006
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:XIDJiXdFHATfd4cg6+88TQ
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:l/KPNIrnraU+nWdD+7im8A
 
 =head2 display_name
 
