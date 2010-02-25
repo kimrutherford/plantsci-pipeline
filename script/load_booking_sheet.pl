@@ -420,6 +420,26 @@ sub find_real_file_name
   }
 }
 
+sub get_ecotype_object
+{
+  my $org_obj = shift;
+  my $ecotype_name = shift;
+
+  my $ecotype = $schema->resultset('Ecotype')->find(
+      {
+        organism => $org_obj->organism_id(),
+        description => 'unspecified'
+      }
+    );
+
+  if (!defined $ecotype) {
+    croak("failed to find ecotype for $ecotype_name in ",
+          $org_obj->full_name());
+  }
+
+  return $ecotype;
+}
+
 sub get_ecotype_by_org
 {
   my $org_obj = shift;
@@ -463,7 +483,7 @@ sub process_row
         $project_desc, $do_processing,
         $dcb_validated, $funding,
         $sheet_seq_centre_name,
-        $description, $organism_name, $ecotype, $genotype,
+        $description, $organism_name, $ecotype_name, $genotype,
         $barcode, $barcode_set, $submitter, $institution,
         $date_submitted, $date_received, $time_taken,
         $quality, $quality_note, $smallrna_adaptor, $biosample_type, $run_type,
@@ -507,11 +527,15 @@ sub process_row
       return;
     }
 
-    if (!$ecotype) {
-      $ecotype = get_ecotype_by_org($org_obj);
+    my $ecotype_obj;
+
+    if ($ecotype_name) {
+      $ecotype_obj = get_ecotype_object($org_obj, $ecotype_name);
+    } else {
+      $ecotype_obj = get_ecotype_by_org($org_obj);
     }
 
-    my @ecotypes = ($ecotype);
+    my @ecotypes = ($ecotype_obj);
 
     if (defined $virus_name) {
       my $virus_obj = $org_objs{$virus_name};
