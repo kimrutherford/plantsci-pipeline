@@ -149,7 +149,7 @@ sub create_with_type
   };
   if ($@) {
     my $data_string = '{' . (join ', ', map {
-      "'$_'" . ' => ' . "'" . $field_data->{$_} . "'"
+      "'$_'" . ' => ' . "'" . ($field_data->{$_} // 'undef') . "'"
     } keys %$field_data) . '}';
     croak "error while creating $type: $@ with args: $data_string\n";
   }
