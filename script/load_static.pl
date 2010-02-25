@@ -463,6 +463,7 @@ my @ecotypes = (
     { description => "WS", org => "Arabidopsis thaliana" },
     { description => "Ler", org => "Arabidopsis thaliana" },
     { description => "C24 (stock: 3539)", org => "Arabidopsis thaliana" },
+    { description => "Col-0 (stock: 3541) x C24 (stock: 3539)", org => "Arabidopsis thaliana" },
     { description => "Cvi", org => "Arabidopsis thaliana" },
     { description => "unspecified", org => "Chlamydomonas reinhardtii" },
     { description => "unspecified", org => "Cardamine hirsuta" },
