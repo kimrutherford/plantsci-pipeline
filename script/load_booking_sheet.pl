@@ -281,13 +281,13 @@ sub create_library
 
   my $library_name = $biosample->name() . '_L1';
 
-  $library_args{name} = $library_name;
+  $library_args{identifier} = $library_name;
 
   if (defined $slx_identifier) {
     $library_args{sequencing_centre_identifier} = $slx_identifier;
   }
 
-  return create('Library', {%library_args});
+  return create('Library', { %library_args });
 }
 
 my %file_name_to_sequencing_run = ();
@@ -468,7 +468,7 @@ sub create_sequencing_sample
 
   $used_sl_slx_ids{$solexa_library_name} = 1;
 
-  return create('SequencingSample', { name => "CRI_$solexa_library_name",
+  return create('SequencingSample', { identifier => "CRI_$solexa_library_name",
                                       sequencing_centre_identifier => $slx_number,
                                       sample_creator => $sample_creator });
 }
