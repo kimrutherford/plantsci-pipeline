@@ -27,6 +27,7 @@ my $config = SmallRNA::Config->new('t/test_config.yaml')->{programs}{srf2fastq};
 SmallRNA::Process::SRFToFastqProcess::run(input_file_name => $temp_srf_file_name,
                                           output_file_name => $temp_output_file_name,
                                           exec_path => $config->{path},
+                                          use_calibrated_quality_values => 0
                                          );
 
 ok(-s $temp_output_file_name, 'has output');

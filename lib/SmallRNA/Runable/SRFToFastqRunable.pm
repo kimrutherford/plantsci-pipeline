@@ -90,7 +90,8 @@ sub run
 
       SmallRNA::Process::SRFToFastqProcess::run(input_file_name => $input_file_name,
                                                 output_file_name => $output_file_name,
-                                                exec_path => $exec_path);
+                                                exec_path => $exec_path,
+                                                use_calibrated_quality_values => 1);
 
       $self->store_pipedata(generating_pipeprocess => $self->pipeprocess(),
                             file_name => $output_file_name,

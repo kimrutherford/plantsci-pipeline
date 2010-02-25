@@ -60,7 +60,8 @@ use SmallRNA::Process::Utils qw(do_system);
 sub run
 {
   my %params = validate(@_, { input_file_name => 1, output_file_name => 1,
-                              exec_path => 1 });
+                              exec_path => 1,
+                              use_calibrated_quality_values => 1 });
 
   my $infile_name = $params{input_file_name};
   my $outfile_name = $params{output_file_name};
@@ -71,7 +72,15 @@ sub run
     croak "can't find input file: $infile_name}";
   }
 
-  my $command = "$params{exec_path} -c $infile_name";
+  my $cnf1_flag;
+
+  if ($params{use_calibrated_quality_values}) {
+    $cnf1_flag = '-c';
+  } else {
+    $cnf1_flag = '';
+  }
+
+  my $command = "$params{exec_path} $cnf1_flag $infile_name";
 
   do_system "$command 2>> $log_file_name > $outfile_name";
 }
