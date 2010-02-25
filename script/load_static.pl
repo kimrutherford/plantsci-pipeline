@@ -459,10 +459,10 @@ $schema->txn_do(sub {
 
 my @ecotypes = (
     { description => "unspecified", org => "Arabidopsis thaliana" },
-    { description => "Col", org => "Arabidopsis thaliana" },
+    { description => "Col-0 (stock: 3541)", org => "Arabidopsis thaliana" },
     { description => "WS", org => "Arabidopsis thaliana" },
     { description => "Ler", org => "Arabidopsis thaliana" },
-    { description => "C24", org => "Arabidopsis thaliana" },
+    { description => "C24 (stock: 3539)", org => "Arabidopsis thaliana" },
     { description => "Cvi", org => "Arabidopsis thaliana" },
     { description => "unspecified", org => "Chlamydomonas reinhardtii" },
     { description => "unspecified", org => "Cardamine hirsuta" },
