@@ -1,0 +1,6 @@
+executable = ./pipework.pl
+universe = vanilla
+output = host.$ENV(PIPEPROCESS_ID).out
+error = error.$ENV(PIPEPROCESS_ID).out
+environment = PIPEPROCESS_ID=$ENV(PIPEPROCESS_ID);SMALLRNA_PIPELINE_TEST=$ENV(SMALLRNA_PIPELINE_TEST);CONFIG_FILE_PATH=$ENV(CONFIG_FILE_PATH)
+queue
