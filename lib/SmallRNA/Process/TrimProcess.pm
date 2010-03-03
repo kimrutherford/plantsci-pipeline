@@ -96,23 +96,33 @@ sub _get_file_for_code
                          default: 0
            barcodes - a map from barcode sequence to barcode id (TACCT => 'A',
                       TACGA => 'B', ...)
+           barcode_position - "3-prime" if the barcode is between the sequence
+                              and the adaptor, "5-prime" otherwise
+           adaptor_sequence - if processing_type is remove_adaptors, this
+                              specifies the adaptor sequence to trim
 
 This method a two modes - multiplexed and non-multiplexed.
 
 If there is no barcodes argument, non-multiplexed is assumed.  In that
-mode run() returns a list with two element.  The first is file name
-(relative to the directory given by $output_dir_name) containing the
-sequences that were rejected during processing.  Reasons for rejection
-include:
- - the sequence doesn't have a valid adaptor sequence
- - the sequence contains only one base, repeated
+mode run() returns an array with four file names as elements.  Each file
+name is relative to the directory given by the output_dir_name argument.
+The four files contain the following:
+ 1. the sequences that were rejected during processing for these reasons:
+     - the sequence doesn't have a valid adaptor sequence
+     - the sequence contains only one base, repeated
+ 2. the name of the file containing those sequences that were rejected because
+    they contain "N"s
+ 3. the file name of a FASTA file containing _all_ the reads from the FastQ
+    file, including those in the reject files
+ 4. the trimmed reads that haven't been rejected in FASTA format
 
 If there is a barcodes argument, run() attempts to de-multiplex while
-removing the adaptor.  The result in this case is a list with two
-element, with the first being the name of the file with the rejected
-sequences, the second being a map from barcode identifier ('A', 'B',
-...) to the name of a file containing those sequences that contained
-that barcode.
+removing the adaptor.  The result in this case is an array with four
+elements.  The first three files are the same as those from the
+non-multiplexed mode described above.  The fourth argument is a map
+from the barcode identifier (from the barcodes map) to FASTA file
+name.  There will be an entry in the map for each barcode seen during
+de-multiplexing.
 
 =cut
 sub run
@@ -121,7 +131,7 @@ sub run
                               processing_type => 1, trim_bases => 0,
                               trim_offset => 0,
                               barcodes => 0, barcode_position => 0,
-                              adaptor_sequence => 1 });
+                              adaptor_sequence => 0 });
 
   my $input_file_name = $params{input_file_name};
   my $output_dir_name = $params{output_dir_name};
@@ -150,15 +160,7 @@ sub run
 
   my $default_out_file_fasta;
 
-  my $adaptor_start;
-
   my $multiplexed = defined $barcodes_map_ref;
-
-  if ($multiplexed) {
-    $adaptor_start = substr($adaptor_sequence, 0, 3);
-  } else {
-    $adaptor_start = substr($adaptor_sequence, 0, 8);
-  }
 
   my $output_file_base = $input_file_name;
   $output_file_base =~ s{.*/(.*?)(?:\.(?:fq|fastq))?$}{$output_dir_name/$1};
@@ -210,6 +212,14 @@ sub run
   my $process_re;
 
   if ($processing_type eq 'remove_adaptors') {
+    my $adaptor_start;
+
+    if ($multiplexed) {
+      $adaptor_start = substr($adaptor_sequence, 0, 3);
+    } else {
+      $adaptor_start = substr($adaptor_sequence, 0, 8);
+    }
+
     $process_re =  qr/^($five_prime_code_re)(.+)($three_prime_code_re)($adaptor_start.*)/;
   } else {
     if ($processing_type eq 'trim') {
