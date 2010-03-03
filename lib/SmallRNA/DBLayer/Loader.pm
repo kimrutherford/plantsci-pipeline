@@ -267,6 +267,49 @@ sub add_sequencing_run_pipedata
   return ($pipedata, $pipeprocess);
 }
 
+=head2 create_initial_pipedata
+
+ Usage   : my $pipedata =
+             $loader->create_initial_pipedata($smallrna_config,
+                                              $sequencing_run,
+                                              $file_name, 'RNA',
+                                              $biosamples_ref);
+ Function: Create and return a new Pipedata object for the given sequencing_run
+ Args    : config - a SmallRNA::Config object
+           sequencing_run - a SequencingRun object
+           file_name - a file name of a fastq file from the sequencing run
+           molecule_type - 'DNA' or 'RNA'
+           biosamples_ref - a reference to an array of biosamples that generated
+                            this pipedata
+
+=cut
+sub create_initial_pipedata
+{
+  my $self = shift;
+  my $config = shift;
+  my $sequencing_run = shift;
+  my $file_name = shift;
+  my $molecule_type = shift;
+  my $biosamples = shift;
+
+  my @biosamples = @$biosamples;
+
+  my ($pipedata, $pipeprocess) =
+    $self->add_sequencing_run_pipedata($config, $sequencing_run,
+                                       $file_name, $molecule_type);
+
+  $sequencing_run->initial_pipedata($pipedata);
+  $sequencing_run->initial_pipeprocess($pipeprocess);
+
+  map { $pipedata->add_to_biosamples($_); } @biosamples;
+
+  $sequencing_run->update();
+  $pipedata->update();
+
+  return $pipedata;
+}
+
+
 =head2
 
  Usage   : my $project = $loader->create_with_prefix('Pipeproject',

@@ -332,29 +332,6 @@ sub create_sequencing_run
   return $sequencing_run;
 }
 
-sub create_pipedata
-{
-  my $sequencing_run = shift;
-  my $file_name = shift;
-  my $molecule_type = shift;
-  my $biosamples = shift;
-
-  my @biosamples = @$biosamples;
-
-  my ($pipedata, $pipeprocess) =
-    $loader->add_sequencing_run_pipedata($config, $sequencing_run,
-                                        $file_name, $molecule_type);
-
-  $sequencing_run->initial_pipedata($pipedata);
-  $sequencing_run->initial_pipeprocess($pipeprocess);
-
-  map { $pipedata->add_to_biosamples($_); } @biosamples;
-
-  $sequencing_run->update();
-
-  return $pipedata;
-}
-
 sub fix_date
 {
   my $date = shift;
@@ -762,8 +739,9 @@ sub process_row
           create_sequencing_run($sequencing_run_identifier, $seq_centre_name,
                                 $sequencing_sample, $date_submitted, $date_received);
 
-        my $pipedata = create_pipedata($sequencing_run, $file_name, $molecule_type,
-                                       \@all_biosamples);
+        my $pipedata =
+          $loader->create_initial_pipedata($config, $sequencing_run, $file_name,
+                                           $molecule_type, \@all_biosamples);
 
         $pipedata->update();
 
