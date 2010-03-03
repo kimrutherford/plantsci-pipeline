@@ -19,27 +19,65 @@ use strict;
 use Carp;
 use DateTime;
 use FindBin qw($Bin);
-use Cwd qw(realpath);
+use Cwd qw(realpath getcwd);
 use Time::HiRes qw(usleep);
 use Getopt::Long;
 use POSIX ":sys_wait_h";
+use Getopt::Std;
+#use File::Path qw(make_path);
 
 use SmallRNA::DB;
 use SmallRNA::Config;
 use SmallRNA::DBLayer::Loader;
 use SmallRNA::ProcessManager;
 
-my $max_jobs = $ENV{'PIPESERV_MAX_JOBS'} || 0;
+my $RUN_DIR = 'pipeserv-run';
 
-my $exec_host = undef;
+# set defaults
+my %options = (
+               max_jobs => undef,
+               use_torque => undef,
+               exec_host => undef,
+              );
 
-if (@ARGV && $ARGV[0] eq '-h') {
-  shift;
-  $exec_host = $ARGV[0];
-  shift;
+my $option_parser = new Getopt::Long::Parser;
+$option_parser->configure("gnu_getopt");
+
+my %opt_config = (
+                  "max-jobs|m=i" => \$options{max_jobs},
+                  "torque|t" => \$options{use_torque},
+                  "host|h=s" => \$options{exec_host},
+                 );
+
+sub usage
+{
+  my $message = shift;
+
+  if (defined $message) {
+    $message .= "\n";
+  } else {
+    $message = '';
+  }
+
+  die <<"USAGE";
+${message}
+usage:
+  $0 [-t | -h host ] [-m <num>] config_file_name
+
+options:
+  -t run using torque
+  -h run on the given host with ssh and exec
+  -m maximum simultaneous jobs
+USAGE
 }
 
-my $run_locally = defined $exec_host;
+if (!$option_parser->getoptions(%opt_config)) {
+  usage();
+}
+
+my $run_locally = defined $options{exec_host};
+
+my $use_condor = !$run_locally && !$options{use_torque};
 
 my $config_file_name = shift;
 
@@ -56,9 +94,47 @@ my $queued_status = $schema->find_with_type('Cvterm', name => 'queued');
 my $not_started_status = $schema->find_with_type('Cvterm', name => 'not_started');
 
 my $test_mode = $ENV{SMALLRNA_PIPELINE_TEST} || 0;
-my $pipework_path = "$Bin/pipework.pl";
+my $pipework_path = "./pipework.pl";
 
-$pipework_path =~ s:/export/:/:;
+#  mkpath($RUN_DIR);
+
+sub submit_condor_job {
+  my $pipeprocess = shift;
+  my $pipeprocess_id = $pipeprocess->pipeprocess_id();
+
+  my $process_conf_detail = $pipeprocess->process_conf()->detail();
+  my $condor_flags = '';
+
+  if (defined $process_conf_detail) {
+    if ($process_conf_detail =~ /condor_flags:\s*([^,]+)/) {
+      $condor_flags = $1;
+    }
+  }
+
+  my $command = "condor_submit $pipework_path";
+
+  open my $condor_subhandle, '-|', $command
+    or die "couldn't open pipe from qsub: $!\n";
+
+  my $condor_subjobid = <$condor_subhandle>;
+
+  chomp $condor_subjobid;
+
+  if (!defined $condor_subhandle) {
+    die "failed to read the job id from qsub command: $!\n";
+  }
+
+  chomp $condor_subhandle;
+
+  # finish reading everything from the pipe so that qsub doesn't get a SIGPIPE
+  1 while (<$condor_subhandle>);
+
+  warn "started job with pipeprocess_id: $pipeprocess_id and job id: $condor_subjobid\n";
+
+  close $condor_subhandle or die "couldn't close pipe from qsub: $!\n";
+
+  return $condor_subjobid;
+}
 
 sub submit_torque_job {
   my $pipeprocess = shift;
@@ -109,12 +185,12 @@ my $child_count = 0;
 
 sub _get_exec_host
 {
-  if ($exec_host =~ /^(.*?),(.*)/) {
+  if ($options{exec_host} =~ /^(.*?),(.*)/) {
     # hack to rotate the exec hosts:
-    $exec_host = "$2,$1";
+    $options{exec_host} = "$2,$1";
     return $1;
   } else {
-    return $exec_host;
+    return $options{exec_host};
   }
 }
 
@@ -136,9 +212,13 @@ sub submit_local_job {
       $ENV{CONFIG_FILE_PATH} = $config_file_full_path;
       $ENV{SMALLRNA_PIPELINE_TEST} = $test_mode;
 
-      my $command = "PIPEPROCESS_ID=$pipeprocess_id CONFIG_FILE_PATH=$config_file_full_path SMALLRNA_PIPELINE_TEST=$test_mode $pipework_path";
+      my $cwd = getcwd();
 
-      if ($exec_host && $exec_host ne 'localhost') {
+      $cwd =~ s:/export/:/:;
+
+      my $command = "PIPEPROCESS_ID=$pipeprocess_id CONFIG_FILE_PATH=$config_file_full_path SMALLRNA_PIPELINE_TEST=$test_mode $cwd/$pipework_path";
+
+      if ($options{exec_host} && $options{exec_host} ne 'localhost') {
         my $real_exec_host = _get_exec_host();
         my $ssh_command = qq(ssh $real_exec_host $command);
         warn "execuiting $ssh_command\n";
@@ -208,11 +288,11 @@ while (1) {
 
     $schema->txn_do($code);
 
-    if ($max_jobs > 0) {
+    if ($options{max_jobs} > 0) {
       for (1..1000) { # don't do it forever, in case there's a problem
         my $count = count_current_jobs();
 
-        if ($count >= $max_jobs) {
+        if ($count >= $options{max_jobs}) {
           warn "$count jobs running - sleeping\n";
           if ($test_mode) {
             sleep (1);
