@@ -171,11 +171,12 @@ sub add_sequencing_run
 
 =head2 add_sequencing_run_pipedata
 
- Usage   : my $pipedata =
+ Usage   : my ($pipedata, $pipeprocess) =
              $loader->add_sequencing_run_pipedata($smallrna_config,
-                                                 $sequencing_run,
-                                                 $file_name, 'RNA');
- Function: Create and return a new Pipedata object for the given sequencing_run
+                                                  $sequencing_run,
+                                                  $file_name, 'RNA');
+ Function: Create and return a new Pipedata object and corresponding Pipeprocess
+           for the given sequencing_run
  Args    : config - a SmallRNA::Config object
            sequencing_run - a SequencingRun object
            file_name - a file name of a fastq file from the sequencing run
