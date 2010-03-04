@@ -3,7 +3,7 @@ package SmallRNA::Process::TrimProcess;
 =head1 NAME
 
 SmallRNA::Process::TrimProcess - Code for removing adaptors and
-                                  de-muliplexing fastq sequence
+                                 de-muliplexing fastq sequence
 
 =head1 SYNOPSIS
 
@@ -86,7 +86,7 @@ sub _get_file_for_code
                    - 'remove_adaptors' will remove the sequence adaptor
                    - 'trim' will trim reads to 25 bases (by default)
                    - 'passthrough' will do no processing apart from (optional)
-                      de-multiplexing, just produce a FASTA file or files
+                      de-multiplexing, just produce a FASTA file
            trim_bases - the maximum number of bases to output when trimming,
                         default 25
            trim_offset - offset from start of read to start trimming, eg. with
