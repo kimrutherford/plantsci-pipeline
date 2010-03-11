@@ -777,7 +777,7 @@ if ($@) {
   die "ROLLBACK called: $@\n";
 }
 
-print "SL identifiers missing from the spreadsheet:\n";
-for my $sl (sort keys %sl_to_slx) {
-  print "$sl\n" if not exists $used_sl_slx_ids{$sl};
-}
+# print "SL identifiers missing from the spreadsheet:\n";
+# for my $sl (sort keys %sl_to_slx) {
+#   print "$sl\n" if not exists $used_sl_slx_ids{$sl};
+# }
