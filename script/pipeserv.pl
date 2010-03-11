@@ -103,37 +103,44 @@ sub submit_condor_job {
   my $pipeprocess_id = $pipeprocess->pipeprocess_id();
 
   my $process_conf_detail = $pipeprocess->process_conf()->detail();
-  my $condor_flags = '';
+  my $max_process_size = 1_000;
 
   if (defined $process_conf_detail) {
-    if ($process_conf_detail =~ /condor_flags:\s*([^,]+)/) {
-      $condor_flags = $1;
+    if ($process_conf_detail =~ /max_process_size:\s*([^,]+)/) {
+      $max_process_size = $1;
     }
   }
 
-  my $command = "condor_submit $pipework_path";
+  my $env = "PIPEPROCESS_ID=$pipeprocess_id "
+    . "CONFIG_FILE_PATH=$config_file_full_path "
+    . "SMALLRNA_PIPELINE_TEST=$test_mode "
+    . "MAX_PROCESS_SIZE=$max_process_size";
+
+
+  my $command = "$env condor_submit -v submit_file";
+
+  warn "starting: $command\n";
 
   open my $condor_subhandle, '-|', $command
     or die "couldn't open pipe from qsub: $!\n";
 
-  my $condor_subjobid = <$condor_subhandle>;
+  my $condor_jobid;
 
-  chomp $condor_subjobid;
-
-  if (!defined $condor_subhandle) {
-    die "failed to read the job id from qsub command: $!\n";
+  while (defined (my $line = <$condor_subhandle>)) {
+    if ($line =~ /\*\*\s*Proc\s*(\d+\.\d+)/) {
+      $condor_jobid = $1;
+    }
   }
 
-  chomp $condor_subhandle;
+  if (!defined $condor_jobid) {
+    die "failed to read the job id from condor_submit command: $!\n";
+  }
 
-  # finish reading everything from the pipe so that qsub doesn't get a SIGPIPE
-  1 while (<$condor_subhandle>);
+  warn "started job with pipeprocess_id: $pipeprocess_id and job id: $condor_jobid\n";
 
-  warn "started job with pipeprocess_id: $pipeprocess_id and job id: $condor_subjobid\n";
+  close $condor_subhandle or die "couldn't close pipe from condor_submit: $!\n";
 
-  close $condor_subhandle or die "couldn't close pipe from qsub: $!\n";
-
-  return $condor_subjobid;
+  return $condor_jobid;
 }
 
 sub submit_torque_job {
@@ -241,15 +248,19 @@ sub count_current_jobs
   if ($run_locally) {
     return $child_count;
   } else {
-    my $count = 0;
-    open PIPE, "qstat|" or die "can't open pipe to qstat: $?\n";
+    if ($use_condor) {
+      return 0;
+    } else {
+      my $count = 0;
+      open PIPE, "qstat|" or die "can't open pipe to qstat: $?\n";
 
-    while (defined (my $line = <PIPE>)) {
-      $count++ if $line =~ / [QR] batch/;
+      while (defined (my $line = <PIPE>)) {
+        $count++ if $line =~ / [QR] batch/;
+      }
+
+      close PIPE or die "can't close pipe to qstat: $?\n";
+      return $count;
     }
-
-    close PIPE or die "can't close pipe to qstat: $?\n";
-    return $count;
   }
 }
 
@@ -277,9 +288,12 @@ while (1) {
         $job_id = submit_local_job($pipeprocess);
 
         push @local_jobs, $job_id;
-
       } else {
-        $job_id = submit_torque_job($pipeprocess);
+        if ($use_condor) {
+          $job_id = submit_condor_job($pipeprocess);
+        } else {
+          $job_id = submit_torque_job($pipeprocess);
+        }
       }
 
       $pipeprocess->job_identifier($job_id);
