@@ -1,10 +1,10 @@
-# params file for deploy.pl for use on node3 (the pipeline server)
+# params file for deploy.pl for use on the production pipeline server
 'template-file': 'pipeline.yaml.template'
 'config-file': 'pipeline.yaml'
 'pipeline-directory': /data/pipeline
-'pipeline-process-directory': results/node3_test_data
-'database-name': pipeline-node3-proto
+'pipeline-process-directory': prod
+'database-name': pipeline-prod
 'database-host': hydrogen
-'database-user-name': kmr44
-'database-password': kmr
+'database-user-name': pipe
+'database-password': pipe
 
