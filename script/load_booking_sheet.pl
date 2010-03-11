@@ -653,7 +653,7 @@ sub process_row
         my $sequencing_run_identifier;
 
         if ($file_name =~ /\.(CRIRUN_\d+)\./) {
-          $sequencing_run_identifier = $1;
+          $sequencing_run_identifier = $1 . '_' . $solexa_library;
         } else {
           $sequencing_run_identifier = 'RUN_' . $solexa_library;
         }
