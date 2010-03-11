@@ -1039,7 +1039,7 @@ my @analyses = (
                 },
                 {
                  type_term_name => 'patman alignment',
-                 detail => 'component: genome, torque_flags: -l pmem=5gb',
+                 detail => 'component: genome-old, torque_flags: -l pmem=5gb',
                  runable_name => 'SmallRNA::Runable::PatmanAlignmentRunable',
                  inputs => [
                      {

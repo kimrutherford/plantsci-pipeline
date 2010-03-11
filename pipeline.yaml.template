@@ -33,14 +33,9 @@ databases:
         mirbase-mature: PipelinePublicData/mirBASE_release_14.0/split/mature/Arabidopsis_thaliana.fa
         mirbase-maturestar: PipelinePublicData/mirBASE_release_14.0/split/maturestar/Arabidopsis_thaliana.fa
         mrna: arabidopsis/TAIR_8_cdna/TAIR8_cdna_20080412
-    Lycopersicon_esculentum:
-      database_files:
-        genome: tomato/v340/bacs.v340.seq.20081007121008.reformatted
-        ests: /data/public_data/tomato/est_sequences/solanum_lycopersicum_mRNA_2008_10_21.seq
-        concat_ests: tomato/est_sequences/solanum_lycopersicum_mRNA_2008_10_21_concatenated.dna
     Solanum_lycopersicon:
       database_files:
-        genome: tomato/v340/bacs.v340.seq.20081007121008.reformatted
+        genome-old: tomato/v340/bacs.v340.seq.20081007121008.reformatted
         genome-20091201: tomato/pre_release_assembly_20091201/S_lycopersicum_scaffolds_20091201.reformatted.fa
         ests: tomato/est_sequences/solanum_lycopersicum_mRNA_2008_10_21.seq
         concat_ests: tomato/est_sequences/solanum_lycopersicum_mRNA_2008_10_21_concatenated.dna
