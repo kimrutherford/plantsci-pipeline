@@ -390,8 +390,16 @@ sub find_real_file_name
 #      warn "found file: ", $dir_files{$test_file_name}, " - $test_file_name\n";
         return $dir_files{$test_file_name};
       } else {
-        warn "can't find file for $booking_sheet_file_name ($test_file_name)\n";
-        return undef;
+        $test_file_name = fix_name($booking_sheet_file_name);
+        $test_file_name =~ s/\.srf/.fq/;
+
+        if (exists $dir_files{$test_file_name}) {
+#          warn "found file: ", $dir_files{$test_file_name}, " - $test_file_name\n";
+          return $dir_files{$test_file_name};
+        } else {
+          warn "can't find file for $booking_sheet_file_name\n";
+          return undef;
+        }
       }
     }
   }
