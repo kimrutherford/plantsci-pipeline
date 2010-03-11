@@ -2,5 +2,11 @@ executable = ./pipework.pl
 universe = vanilla
 output = host.$ENV(PIPEPROCESS_ID).out
 error = error.$ENV(PIPEPROCESS_ID).out
+log = log.$ENV(PIPEPROCESS_ID).out
 environment = PIPEPROCESS_ID=$ENV(PIPEPROCESS_ID);SMALLRNA_PIPELINE_TEST=$ENV(SMALLRNA_PIPELINE_TEST);CONFIG_FILE_PATH=$ENV(CONFIG_FILE_PATH)
+nice_user = true
+image_size = $ENV(MAX_PROCESS_SIZE)
+should_transfer_files = YES
+when_to_transfer_output = ON_EXIT
+notification = error
 queue
