@@ -103,7 +103,7 @@ sub submit_condor_job {
   my $pipeprocess_id = $pipeprocess->pipeprocess_id();
 
   my $process_conf_detail = $pipeprocess->process_conf()->detail();
-  my $max_process_size = 1_000;
+  my $max_process_size = 1_500_000;
 
   if (defined $process_conf_detail) {
     if ($process_conf_detail =~ /max_process_size:\s*([^,]+)/) {
@@ -302,7 +302,7 @@ while (1) {
 
     $schema->txn_do($code);
 
-    if ($options{max_jobs} > 0) {
+    if (defined $options{max_jobs} && $options{max_jobs} > 0) {
       for (1..1000) { # don't do it forever, in case there's a problem
         my $count = count_current_jobs();
 
