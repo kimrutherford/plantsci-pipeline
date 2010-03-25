@@ -271,10 +271,10 @@ sub _create_biosample_proc
   return @retlist;
 }
 
-# Create pipeprocess entries for pipedatas that have a biosample (via the
-# biosample_pipedata table).  We look at the problem biosample by biosample because if
-# a process_conf has two inputs configured, they both must come from the same
-# biosample.
+# Create pipeprocess entries for pipedatas that have a biosample (via
+# the biosample_pipedata table).  We look at the problem biosample by
+# biosample because if a process_conf has two inputs configured, they
+# both must come from the same biosample.
 sub _process_biosample_pipedata
 {
   my $schema = shift;
