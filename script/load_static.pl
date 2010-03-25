@@ -1121,30 +1121,30 @@ my @analyses = (
                 #      }
                 #     ]
                 # },
-                {
-                 type_term_name => 'patman alignment',
-                 detail => 'component: genome, target: "Arabidopsis thaliana", mismatches: 1, torque_flags: -l pmem=20gb',
-                 runable_name => 'SmallRNA::Runable::PatmanAlignmentRunable',
-                 inputs => [
-                     {
-                       ecotype_name => 'unspecified Cleome gynandra',
-                       format_type => 'fasta',
-                       content_type => 'non_redundant_reads',
-                     }
-                    ]
-                },
-                {
-                 type_term_name => 'patman alignment',
-                 detail => 'component: mrna, target: "Arabidopsis thaliana", mismatches: 1, torque_flags: -l pmem=20gb',
-                 runable_name => 'SmallRNA::Runable::PatmanAlignmentRunable',
-                 inputs => [
-                     {
-                       ecotype_name => 'unspecified Cleome gynandra',
-                       format_type => 'fasta',
-                       content_type => 'non_redundant_reads',
-                     }
-                    ]
-                },
+                # {
+                #  type_term_name => 'patman alignment',
+                #  detail => 'component: genome, target: "Arabidopsis thaliana", mismatches: 1, torque_flags: -l pmem=20gb',
+                #  runable_name => 'SmallRNA::Runable::PatmanAlignmentRunable',
+                #  inputs => [
+                #      {
+                #        ecotype_name => 'unspecified Cleome gynandra',
+                #        format_type => 'fasta',
+                #        content_type => 'non_redundant_reads',
+                #      }
+                #     ]
+                # },
+                # {
+                #  type_term_name => 'patman alignment',
+                #  detail => 'component: mrna, target: "Arabidopsis thaliana", mismatches: 1, torque_flags: -l pmem=20gb',
+                #  runable_name => 'SmallRNA::Runable::PatmanAlignmentRunable',
+                #  inputs => [
+                #      {
+                #        ecotype_name => 'unspecified Cleome gynandra',
+                #        format_type => 'fasta',
+                #        content_type => 'non_redundant_reads',
+                #      }
+                #     ]
+                # },
                 {
                  type_term_name => 'genome aligned reads filter',
                  runable_name => 'SmallRNA::Runable::GenomeMatchingReadsRunable',
