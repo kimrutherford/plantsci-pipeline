@@ -348,7 +348,7 @@ sub fix_name
 
 my %dir_files = ();
 
-my @sub_dirs = qw(srf fastq T1 T2 SL4 SL9 SL11 SL12 SL18 SL19 SL21 SL22 SL1000 SL1001 SL1002 SL1007 SL1008 SL1009 SL1010);
+my @sub_dirs = qw(srf fasta fastq T1 T2 SL4 SL9 SL11 SL12 SL18 SL19 SL21 SL22 SL1000 SL1001 SL1002 SL1007 SL1008 SL1009 SL1010);
 
 for my $sub_dir (@sub_dirs) {
   my $dir_name = $config->data_directory() . "/$sub_dir";
@@ -539,7 +539,7 @@ sub process_row
     my $gex_adaptor = find('Cvterm', name => 'GEX adaptor');
 
     # match SL + (_num)? + (_letters)?
-    if ($solexa_library =~ /((?:T|SL)\d+)(?:_([A-Z]+))?(?:_(\d+))?/) {
+    if ($solexa_library =~ /((?:T|SL|GSM)\d+)(?:_([A-Z]+))?(?:_(\d+))?/) {
       my $biosample_prefix = $1;
       if (defined $barcodes) {
         croak "barcodes set in the library name ($solexa_library) and in the "
@@ -650,7 +650,8 @@ sub process_row
           } else {
             if ($sheet_seq_centre_name eq 'BGI' ||
                 $sheet_seq_centre_name eq 'CSHL' ||
-                $sheet_seq_centre_name eq 'Edinburgh') {
+                $sheet_seq_centre_name eq 'Edinburgh' ||
+                $sheet_seq_centre_name eq 'Unknown') {
               $seq_centre_name = $sheet_seq_centre_name;
             } else {
               croak "unknown sequencing centre name: $sheet_seq_centre_name\n";
@@ -772,6 +773,23 @@ sub process
   while (my $columns_ref = $csv->getline($io)) {
     process_row(@$columns_ref);
   }
+
+  # geo
+  opendir DIR, "/data/pipeline/data/fasta/" or die;
+
+  while (defined (my $filename = readdir(DIR))) {
+    next if ($filename eq '.' or $filename eq '..');
+
+    (my $geo_id = $filename) =~ s/geo_(.*).txt.fasta/$1/;
+
+    process_row($filename, $geo_id, '', '', 'NO', '', 'Unknown',
+                "GEO entry $geo_id", 'Arabidosis thaliana', '',
+                '', '', '', 'Unknown Unknown', 'Unknown', '',
+                '', '', '', '', '', 'smallRNA', '', '', '');
+  }
+
+  closedir(DIR);
+
 }
 
 # test data

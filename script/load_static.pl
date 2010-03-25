@@ -402,6 +402,8 @@ my @orgs = ({ name => "DCB",
               description => 'Cold Spring Harbor Laboratory' },
             { name => 'Edinburgh',
               description => 'The University of Edinburgh' },
+            { name => 'Unknown',
+              description => 'Catch-all organisation for external samples' },
            );
 
 $schema->txn_do(sub {
@@ -593,6 +595,7 @@ my @people = (
               ['Krys Kelly', 'krys_kelly', 'DCB'],
               ['Hannes V', 'hannes_v', 'DCB'],
               ['Antonis Giakountis', 'ag1', 'DCB'],
+              ['Unknown Unknown', 'unknown', 'Unknown'],
              );
 
 $schema->txn_do(sub {
@@ -652,6 +655,11 @@ my @analyses = (
                 {
                  type_term_name => 'sequencing run',
                  detail => 'Edinburgh',
+                 inputs => []
+                },
+                {
+                 type_term_name => 'sequencing run',
+                 detail => 'Unknown',
                  inputs => []
                 },
                 {

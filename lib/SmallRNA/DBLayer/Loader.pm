@@ -211,7 +211,8 @@ sub add_sequencing_run_pipedata
     } else {
       if ($seq_centre_name eq 'BGI' ||
           $seq_centre_name eq 'CSHL' ||
-          $seq_centre_name eq 'Edinburgh') {
+          $seq_centre_name eq 'Edinburgh' ||
+          $seq_centre_name eq 'Unknown') {
         $process_conf = $self->_find('ProcessConf',
                                      detail => $seq_centre_name);
       } else {
