@@ -26,8 +26,8 @@ databases:
   organisms:
     Arabidopsis_thaliana:
       database_files:
-        genome: arabidopsis/TAIR_8/arabidopsis_nuclear_genome
-        genome-tair9: arabidopsis/TAIR_9/arabidopsis_nuclear_genome
+        genome: arabidopsis/TAIR_8/arabidopsis_genome
+        genome-tair9: arabidopsis/TAIR_9/arabidopsis_genome
         trna: PipelinePublicData/genomic_tRNA_database/genomic_tRNA_database_20080929/Athal-tRNAs.fa
         mirbase-hairpin: PipelinePublicData/mirBASE_release_14.0/split/hairpin/Arabidopsis_thaliana.fa
         mirbase-mature: PipelinePublicData/mirBASE_release_14.0/split/mature/Arabidopsis_thaliana.fa
