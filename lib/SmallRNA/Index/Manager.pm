@@ -120,7 +120,7 @@ sub create_index
       my $name = $1;
       push @{$name_hash{uc $name}}, $current_offset;
     } else {
-      croak "can't parse sequence from: $line\n";
+      carp "can't parse sequence from: $line\n";
     }
   } continue {
     $current_offset = tell $input_file;
