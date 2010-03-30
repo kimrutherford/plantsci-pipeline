@@ -49,12 +49,13 @@ sub _get_file_for_code
   my $output_file_base = shift;
   my $code_from_seq = shift;
   my $barcodes_map_ref = shift;
+  my $type = shift;
 
   for my $code (keys %$barcodes_map_ref) {
     if ($code_from_seq eq $code) {
       if (!exists $code_out_files->{$code}) {
         my $code_name = $barcodes_map_ref->{$code};
-        my $new_fasta_file_name = "${output_file_base}.$code_name.fasta";
+        my $new_fasta_file_name = "${output_file_base}.$code_name.$type";
 
         if (-e $new_fasta_file_name) {
           croak "won't overwrite: $new_fasta_file_name\n";
@@ -71,6 +72,15 @@ sub _get_file_for_code
   }
 
   return undef;
+}
+
+sub _trim_quality
+{
+  my $quality_string = shift;
+  my $trimmed_seq = shift;
+  my $seq_offset = shift;
+
+  return substr($quality_string, $seq_offset, length($trimmed_seq));
 }
 
 =head2 run
@@ -100,6 +110,10 @@ sub _get_file_for_code
                               and the adaptor, "5-prime" otherwise
            adaptor_sequence - if processing_type is remove_adaptors, this
                               specifies the adaptor sequence to trim
+           create_fastq - if the barcodes map is set, this options forcing the
+                          creation of a FastQ file for each barcode.  The
+                          quality string will be trimmed to match the
+                          de-multiplexed sequence
 
 This method a two modes - multiplexed and non-multiplexed.
 
@@ -118,11 +132,13 @@ The four files contain the following:
 
 If there is a barcodes argument, run() attempts to de-multiplex while
 removing the adaptor.  The result in this case is an array with four
-elements.  The first three files are the same as those from the
-non-multiplexed mode described above.  The fourth argument is a map
-from the barcode identifier (from the barcodes map) to FASTA file
+or five elements.  The first three elements are the same as those from
+the non-multiplexed mode described above.  The fourth argument is a
+map from the barcode identifier (from the barcodes map) to FASTA file
 name.  There will be an entry in the map for each barcode seen during
-de-multiplexing.
+de-multiplexing.  There will be a fifth argument if the create_fastq
+flag is true, in which case it will map from the barcode identifier to
+FastQ file name.
 
 =cut
 sub run
@@ -131,7 +147,7 @@ sub run
                               processing_type => 1, trim_bases => 0,
                               trim_offset => 0,
                               barcodes => 0, barcode_position => 0,
-                              adaptor_sequence => 0 });
+                              adaptor_sequence => 0, create_fastq => 0 });
 
   my $input_file_name = $params{input_file_name};
   my $output_dir_name = $params{output_dir_name};
@@ -141,13 +157,31 @@ sub run
   my $barcodes_map_ref = $params{barcodes};
   my $barcode_position = $params{barcode_position};
   my $adaptor_sequence = $params{adaptor_sequence};
+  my $create_fastq = $params{create_fastq};
 
   if (defined $barcodes_map_ref && !defined $barcode_position) {
     croak "barcode_position must be passed as an argument if barcodes "
       . "argument is passed";
   }
 
-  my $_trim_file = sub {
+  my $barcode_length = undef;
+
+  if (defined $barcodes_map_ref) {
+    my @barcodes = keys %$barcodes_map_ref;
+    my $first_barcode = shift @barcodes;
+
+    $barcode_length = length $first_barcode;
+
+    for my $barcode (@barcodes) {
+      if (defined $barcode_length) {
+        if ($barcode_length != length $barcode) {
+          croak "barcodes must be the same length: '$barcode' vs '$first_barcode'"
+        }
+      }
+    }
+  }
+
+  my $_trim_filename = sub {
     my $file_name = shift;
     if (!($file_name =~ s|^$output_dir_name/||)) {
       croak "pattern match failed for $file_name, searching for $output_dir_name/\n";
@@ -186,6 +220,7 @@ sub run
 
   # used when there is multiplexing
   my $out_files_by_code = {};
+  my $out_fastq_files_by_code = {};
 
   # for reads that contain 'N's
   open my $n_rej_file, '>', $n_reject_file_name
@@ -266,6 +301,10 @@ sub run
           . " barcode position: $barcode_position\n";
       }
 
+      # the start index in the original sequence of the sequence that we're
+      # keeping
+      my $seq_offset = $trim_offset + length($1);
+
         if ($trimmed_seq =~ m/^([ACGT]*$)/i) { # i.e. has no Ns
           if ($multiplexed && $trim_offset == 0) {
             if (length $trimmed_seq == 0) {
@@ -273,15 +312,31 @@ sub run
               print $rej_file "$sequence\n";
             } else {
               if (length $trimmed_seq > 0) {
-                my $out_file_fasta = _get_file_for_code($out_files_by_code,
-                                                        $output_file_base,
-                                                        $code_from_seq,
-                                                        $barcodes_map_ref);
-
+                my $out_file_fasta =
+                  _get_file_for_code($out_files_by_code,
+                                     $output_file_base,
+                                     $code_from_seq,
+                                     $barcodes_map_ref,
+                                     'fasta');
                 if (defined $out_file_fasta) {
                   print $out_file_fasta ">$id\n";
                   print $out_file_fasta "$trimmed_seq\n";
-                  $good_sequence_count++;
+
+                  if ($create_fastq) {
+                    my $out_file_fastq =
+                      _get_file_for_code($out_fastq_files_by_code,
+                                         $output_file_base,
+                                         $code_from_seq,
+                                         $barcodes_map_ref,
+                                         'fastq');
+                    my $trimmed_quality =
+                      _trim_quality($seq_obj->{quality},
+                                    $trimmed_seq, $seq_offset);
+                    print $out_file_fastq "\@$id\n";
+                    print $out_file_fastq "$trimmed_seq\n";
+                    print $out_file_fastq "+$id\n";
+                    print $out_file_fastq "$trimmed_quality\n";
+                  }
                 } else {
                   print $rej_file ">$id Does not match any barcodes, code: $code_from_seq\n";
                   print $rej_file "$sequence\n";
@@ -331,25 +386,33 @@ sub run
   for my $barcode_file (values %$out_files_by_code) {
     close $barcode_file->{file} or croak "can't close file: $!\n";
   }
+  for my $fastq_barcode_file (values %$out_fastq_files_by_code) {
+    close $fastq_barcode_file->{file} or croak "can't close file: $!\n";
+  }
 
   close $rej_file or croak "can't close $reject_file_name: $!\n";
   close $n_rej_file or croak "can't close $n_reject_file_name: $!\n";
   close $fasta_file or croak "can't close $fasta_file_name: $!\n";
 
   if ($multiplexed && $trim_offset == 0) {
-    return ($_trim_file->($reject_file_name),
-            $_trim_file->($n_reject_file_name),
-            $_trim_file->($fasta_file_name),
+    return ($_trim_filename->($reject_file_name),
+            $_trim_filename->($n_reject_file_name),
+            $_trim_filename->($fasta_file_name),
             {
               map {
-                ($_ => $_trim_file->($out_files_by_code->{$_}{name}))
+                ($_ => $_trim_filename->($out_files_by_code->{$_}{name}))
               } keys %$out_files_by_code
+            },
+            {
+              map {
+                ($_ => $_trim_filename->($out_fastq_files_by_code->{$_}{name}))
+              } keys %$out_fastq_files_by_code
             });
   } else {
-    return ($_trim_file->($reject_file_name),
-            $_trim_file->($n_reject_file_name),
-            $_trim_file->($fasta_file_name),
-            $_trim_file->($default_out_file_name));
+    return ($_trim_filename->($reject_file_name),
+            $_trim_filename->($n_reject_file_name),
+            $_trim_filename->($fasta_file_name),
+            $_trim_filename->($default_out_file_name));
   }
 }
 
