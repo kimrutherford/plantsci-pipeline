@@ -378,6 +378,10 @@ sub find_real_file_name
   my $config = shift;
   my $booking_sheet_file_name = shift;
 
+  if (length $booking_sheet_file_name == 0) {
+    return;
+  }
+
   if ($test_mode && $booking_sheet_file_name =~ /SL136.080901.30677AAXX.s_3/) {
     $booking_sheet_file_name = 'SL136.080807.306AKAAXX.s_2.srf';
   }
@@ -636,6 +640,9 @@ sub process_row
         push @file_names, '';
       }
 
+      my $biosample = undef;
+      my $sequencing_sample = undef;
+
       for my $file_name (@file_names) {
         $file_name =~ s/\s+$//;
         $file_name =~ s/^\s+//;
@@ -661,8 +668,6 @@ sub process_row
         }
 
         my @all_biosamples = ();
-
-        my $sequencing_sample = undef;
 
         if ($multiplexed) {
           my @barcode_identifiers;
@@ -711,21 +716,24 @@ sub process_row
             $new_biosample_name =~ s/SL342_2\.(\d+)/"SL34" . ($1 + 1)/e;
 
             if (biosample_exists($new_biosample_name)) {
-              warn "a biosample exists for $solexa_library - skipping\n";
+              warn "a biosample exists for $new_biosample_name - skipping\n";
               return;
             }
 
-            my $biosample = create_biosample($proj, $new_biosample_name,
-                                             $desc_with_barcode, $molecule_type,
-                                             [@ecotypes], $do_processing, $biosample_type);
+            if (!defined $sequencing_sample) {
+              $sequencing_sample =
+                create_sequencing_sample($solexa_library, $person_obj);
+            }
+
+            $biosample =
+              create_biosample($proj, $new_biosample_name,
+                               $desc_with_barcode, $molecule_type,
+                               [@ecotypes], $do_processing, $biosample_type);
 
             push @all_biosamples, $biosample;
 
-            $sequencing_sample =
-              create_sequencing_sample($solexa_library, $person_obj);
-
-
-            create_library($biosample, $sequencing_sample, $is_replicate, $barcode, $adaptor);
+            create_library($biosample, $sequencing_sample,
+                           $is_replicate, $barcode, $adaptor);
           }
         } else {
           my $biosample_name = $biosample_prefix;
