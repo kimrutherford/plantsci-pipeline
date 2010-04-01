@@ -33,6 +33,8 @@ databases:
         mirbase-mature: PipelinePublicData/mirBASE_release_14.0/split/mature/Arabidopsis_thaliana.fa
         mirbase-maturestar: PipelinePublicData/mirBASE_release_14.0/split/maturestar/Arabidopsis_thaliana.fa
         mrna: arabidopsis/TAIR_8_cdna/TAIR8_cdna_20080412
+        c24-genome: arabidopsis/detlef_weigel_c24/C24_Contigs_release_0.1/all.fa
+        ler-genome: arabidopsis/Landsberg_collection_TAIR_Monsanto_24_02_06/Landsberg_collection_TAIR_Monsanto_24_02_06.fasta
     Solanum_lycopersicon:
       database_files:
         genome-old: tomato/v340/bacs.v340.seq.20081007121008.reformatted
