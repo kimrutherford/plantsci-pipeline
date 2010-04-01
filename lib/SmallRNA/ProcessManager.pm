@@ -112,16 +112,14 @@ sub _make_bit
   # biosamples where there is a pipedata of the appropriate type for this
   # input, but there isn't an existing pipeprocess for the process_conf
 
-  my $org_constraint = '';
+  my $ecotype_constraint = '';
 
   if (defined $input->ecotype()) {
-    my $organism_full_name = $input->ecotype()->organism()->full_name();
-    $org_constraint =
+    my $ecotype_id = $input->ecotype()->ecotype_id();
+    $ecotype_constraint =
       "AND me.biosample_id IN
-        (SELECT biosample FROM biosample_ecotype, ecotype, organism
-          WHERE biosample_ecotype.ecotype = ecotype.ecotype_id
-            AND ecotype.organism = organism.organism_id
-            AND organism.genus || ' ' || organism.species = '$organism_full_name')";
+        (SELECT biosample FROM biosample_ecotype
+          WHERE biosample_ecotype.ecotype = $ecotype_id)";
   }
 
   my $biosample_type_constraint = '';
@@ -141,7 +139,7 @@ sub _make_bit
         FROM biosample_pipedata, pipedata
        WHERE biosample_pipedata.pipedata = pipedata.pipedata_id
          AND $pipedata_constraint
-         $org_constraint
+         $ecotype_constraint
          $biosample_type_constraint
     )
   };
@@ -387,6 +385,31 @@ sub create_new_pipeprocesses
   $schema->txn_do($code);
 
   return @retlist;
+}
+
+sub remove_failed_pipeprocesses
+{
+  my ($self) = validate_pos(@_, 1);
+  my $schema = $self->{schema};
+
+  my $failed_status = $schema->find_with_type('Cvterm', name => 'failed');
+
+  my $failed_count = 0;
+
+  my $code = sub {
+    my $conf_rs =
+      $schema->resultset('Pipeprocess')->search({ status => $failed_status->cvterm_id() });
+
+    $failed_count = $conf_rs->count();
+
+    while (my $pipeprocess = $conf_rs->next()) {
+      $pipeprocess->delete();
+    }
+  };
+
+  $schema->txn_do($code);
+
+  return $failed_count;
 }
 
 1;
