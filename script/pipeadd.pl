@@ -86,7 +86,7 @@ if ($options{add_project}) {
 if ($options{add_biosample}) {
   if (@ARGV < 5 || @ARGV > 6) {
     usage("--add-biosample needs 3 or 4 arguments");
-  } else { 
+  } else {
     my $project = $schema->find_with_type('Pipeproject', 'name', $ARGV[0]);
     my ($genus, $species) = split / /, $ARGV[2];
     my $organism = $schema->find_with_type('Organism', { genus => $genus,
@@ -109,6 +109,8 @@ if ($options{add_biosample}) {
 if ($options{add_pipedata}) {
   if (@ARGV == 4) {
     my $biosample = $schema->find_with_type('Biosample', 'name', $ARGV[0]);
+    my $ecotype = $schema->find_with_type('Ecotype', { description => $ARGV[1],
+                                                       organism => $organism });
     my $content_type = $schema->find_with_type('Cvterm', 'name', $ARGV[2]);
     my $format_type = $schema->find_with_type('Cvterm', 'name', $ARGV[3]);
 
@@ -121,6 +123,6 @@ if ($options{add_pipedata}) {
                                               });
     print $project->name(), "\n";
   } else {
-    usage("--add-pipedata needs two arguments");
+    usage("--add-data needs 4 arguments");
   }
 }
