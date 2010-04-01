@@ -99,6 +99,7 @@ my %opt_config = (
                   "config-file|C=s" => undef,
                   "pipeline-directory|d=s" => undef,
                   "pipeline-process-directory|p=s" => undef,
+                  "define=s" => \%options,
                   "help|?" => \$need_help,
                  );
 
