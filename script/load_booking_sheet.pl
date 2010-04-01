@@ -306,6 +306,16 @@ sub run_exists
   }
 }
 
+sub biosample_exists
+{
+  my $biosample_name = shift;
+
+  my $existing_sample =
+    $schema->resultset('Biosample')->find({name => $biosample_name});
+
+  return defined $existing_sample;
+}
+
 # process a file and make a sequencing_run object for it
 sub create_sequencing_run
 {
@@ -335,8 +345,11 @@ sub create_sequencing_run
 sub fix_date
 {
   my $date = shift;
-  $date =~ s|(\d+)/(\d+)/(0\d)|20$3-$2-${1}T00:00:00|;
-  return $date;
+  if ($date =~ s|(\d+)/(\d+)/(0\d)|20$3-$2-${1}T00:00:00|) {
+    return $date;
+  } else {
+    return undef;
+  }
 }
 
 sub fix_name
@@ -619,49 +632,19 @@ sub process_row
         $multiplexed = 0;
       }
 
-      for my $file_name (@file_names) {
-        if ($file_name =~ /unusable/) {
-          warn "skipping: $file_name\n";
-          return;
-        }
+      if (@file_names == 0) {
+        push @file_names, '';
+      }
 
+      for my $file_name (@file_names) {
         $file_name =~ s/\s+$//;
         $file_name =~ s/^\s+//;
 
-        if (length $file_name == 0) {
-          return;
-        }
-
         $file_name = find_real_file_name($config, $file_name);
-
-        if (!defined $file_name) {
-          return;
-        }
-
-        die "$file_name\n" unless -e $config->data_directory() . '/' . $file_name;
-
-        my $seq_centre_name;
-
-        if ($sheet_seq_centre_name eq 'CRI' || $sheet_seq_centre_name eq 'Sirocco') {
-          $seq_centre_name = 'CRUK CRI';
-        } else {
-          if ($sheet_seq_centre_name eq 'Norwich') {
-            $seq_centre_name = 'Sainsbury';
-          } else {
-            if ($sheet_seq_centre_name eq 'BGI' ||
-                $sheet_seq_centre_name eq 'CSHL' ||
-                $sheet_seq_centre_name eq 'Edinburgh' ||
-                $sheet_seq_centre_name eq 'Unknown') {
-              $seq_centre_name = $sheet_seq_centre_name;
-            } else {
-              croak "unknown sequencing centre name: $sheet_seq_centre_name\n";
-            }
-          }
-        }
 
         my $sequencing_run_identifier;
 
-        if ($file_name =~ /\.(CRIRUN_\d+)\./) {
+        if (defined $file_name && $file_name =~ /\.(CRIRUN_\d+)\./) {
           $sequencing_run_identifier = $1 . '_' . $solexa_library;
         } else {
           $sequencing_run_identifier = 'RUN_' . $solexa_library;
@@ -672,10 +655,14 @@ sub process_row
           return;
         }
 
-        my $sequencing_sample =
-          create_sequencing_sample($solexa_library, $person_obj);
+        if (biosample_exists($solexa_library)) {
+          warn "a biosample exists for $solexa_library - skipping\n";
+          return;
+        }
 
         my @all_biosamples = ();
+
+        my $sequencing_sample = undef;
 
         if ($multiplexed) {
           my @barcode_identifiers;
@@ -723,11 +710,21 @@ sub process_row
             # big hack for Becky's samples
             $new_biosample_name =~ s/SL342_2\.(\d+)/"SL34" . ($1 + 1)/e;
 
+            if (biosample_exists($new_biosample_name)) {
+              warn "a biosample exists for $solexa_library - skipping\n";
+              return;
+            }
+
             my $biosample = create_biosample($proj, $new_biosample_name,
                                              $desc_with_barcode, $molecule_type,
                                              [@ecotypes], $do_processing, $biosample_type);
 
             push @all_biosamples, $biosample;
+
+            $sequencing_sample =
+              create_sequencing_sample($solexa_library, $person_obj);
+
+
             create_library($biosample, $sequencing_sample, $is_replicate, $barcode, $adaptor);
           }
         } else {
@@ -741,27 +738,50 @@ sub process_row
                                            $molecule_type,
                                            [@ecotypes], $do_processing, $biosample_type);
           push @all_biosamples, $biosample;
+          $sequencing_sample =
+            create_sequencing_sample($solexa_library, $person_obj);
           create_library($biosample, $sequencing_sample, $is_replicate, undef, $adaptor);
         }
 
-        my $sequencing_run =
-          create_sequencing_run($sequencing_run_identifier, $seq_centre_name,
-                                $sequencing_sample, $date_submitted, $date_received);
+        if (defined $file_name) {
+          my $seq_centre_name;
 
-        my $pipedata =
-          $loader->create_initial_pipedata($config, $sequencing_run, $file_name,
-                                           $molecule_type, \@all_biosamples);
+          if ($sheet_seq_centre_name eq 'CRI' || $sheet_seq_centre_name eq 'Sirocco') {
+            $seq_centre_name = 'CRUK CRI';
+          } else {
+            if ($sheet_seq_centre_name eq 'Norwich') {
+              $seq_centre_name = 'Sainsbury';
+            } else {
+              if ($sheet_seq_centre_name eq 'BGI' ||
+                    $sheet_seq_centre_name eq 'CSHL' ||
+                      $sheet_seq_centre_name eq 'Edinburgh' ||
+                        $sheet_seq_centre_name eq 'Unknown') {
+                $seq_centre_name = $sheet_seq_centre_name;
+              } else {
+                croak "unknown sequencing centre name: $sheet_seq_centre_name\n";
+              }
+            }
+          }
 
-        $pipedata->update();
+          my $sequencing_run =
+            create_sequencing_run($sequencing_run_identifier, $seq_centre_name,
+                                  $sequencing_sample, $date_submitted, $date_received);
 
-        my $pipeprocess = $pipedata->generating_pipeprocess();
+          my $pipedata =
+            $loader->create_initial_pipedata($config, $sequencing_run, $file_name,
+                                             $molecule_type, \@all_biosamples);
 
-        my $biosamples_str = join ', ', map { $_->name() } @all_biosamples;
+          $pipedata->update();
 
-        my $new_description =
-          $pipeprocess->description() . ' for: ' . $biosamples_str;
-        $pipeprocess->description($new_description);
-        $pipeprocess->update();
+          my $pipeprocess = $pipedata->generating_pipeprocess();
+
+          my $biosamples_str = join ', ', map { $_->name() } @all_biosamples;
+
+          my $new_description =
+            $pipeprocess->description() . ' for: ' . $biosamples_str;
+          $pipeprocess->description($new_description);
+          $pipeprocess->update();
+        }
       }
     } else {
       warn "library identifier doesn't match expected: $solexa_library from line: @columns\n";
