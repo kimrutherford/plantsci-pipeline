@@ -120,7 +120,7 @@ SL101.080630_HWI-EAS350_306BGAAXX.s_6.fq,SL101,,,YES,,CRI,Cardamine Hirusta seed
 SL102.080630_HWI-EAS350_306BGAAXX.s_7.fq,SL102,,,YES,,CRI,Cardamine Hirusta floral total small RNA,Cardamine hirsuta,,,,,Iain S,DCB,09/06/08,08/07/08,4.1,,,,smallRNA,Single end,"36 (default), 26, 18, >36",,,,,,,,,,,,,
 SL103_1_AG05.080430_HWI-EAS202_208APAAXX.s_6.fq.gz,SL103_1,,,YES,,CRI,AGO5IP Arabidopsis floral,Arabidopsis thaliana,,,,,Paola F,DCB,,09/06/08,,Pass,,,,,,,,,,,,,,,,,,
 SL103_2_AG05.080515_HWI-EAS202_207L9AAXXX.s_2.fq.gz,SL103_2,,,YES,,CRI,AGO5IP Arabidopsis floral_ technical replicate to SL103_1,Arabidopsis thaliana,,,,,Paola F,DCB,,09/06/08,,Re-Run,,,,,,,,,,,,,,,,,,
-,SL104_1,,NO,YES,,CRI,Justin Pachebat (Jim Haseloff Group) Ax4S - submitted by Justin,Dictyostelium discoideum,,,,,Kanu P,Guest,26/03/08,Never received,,Pass,,,DNA,Single end,"36 (default), 26, 18, >36",,,,,,,,,,,,,
+,SL104_1,,NO,YES,,CRI,Justin Pachebat (Jim Haseloff Group) Ax4S - submitted by Justin - Ax4S - 26/3/2008 -  we haven't seen the data,Dictyostelium discoideum,,,,,Kanu P,Guest,26/03/08,Never received,,Pass,,,DNA,Single end,"36 (default), 26, 18, >36",,,,,,,,,,,,,
 SL104_2_Ax4S.081202.30P28AAXX.s_7.fq.gz,SL104_2,,NO,YES,,CRI,Justin Pachebat (Jim Haseloff Group) Ax4S - submitted by Justin,Dictyostelium discoideum,,,,,Kanu P,Guest,25/11/08,18/12/08,3.3,,,,DNA,Single end,>36,,,,,,,,,,,,,
 SL105_AM1.080412_HWI-EAS202_201MUAAXX.s_6.fq.gz,SL105,,,YES,,CRI,wt/wt N. benthamiana,Nicotiana benthamiana,,,,,Attila M,DCB,,09/06/08,,,,,,,,,,,,,,,,,,,,
 SL106_AM2.080412_HWI-EAS202_201MUAAXX.s_7.fq.gz ,SL106,,,YES,,CRI,wt/16cGFIR N. benthamiana,Nicotiana benthamiana,,,,,Attila M,DCB,,09/06/08,,,,,,,,,,,,,,,,,,,,
