@@ -430,7 +430,7 @@ sub get_ecotype_object
   my $ecotype = $schema->resultset('Ecotype')->find(
       {
         organism => $org_obj->organism_id(),
-        description => 'unspecified'
+        description => $ecotype_name
       }
     );
 
