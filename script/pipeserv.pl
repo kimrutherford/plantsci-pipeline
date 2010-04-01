@@ -267,6 +267,10 @@ sub count_current_jobs
 my @local_jobs = ();
 
 while (1) {
+  my $failed_count = $proc_manager->remove_failed_pipeprocesses();
+
+  warn "deleted $failed_count failed jobs\n";
+
   warn "creating new Pipeprocess objects\n";
 
   my @pipeprocesses = $proc_manager->create_new_pipeprocesses();
