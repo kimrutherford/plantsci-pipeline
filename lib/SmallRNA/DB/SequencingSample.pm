@@ -15,6 +15,13 @@ __PACKAGE__->add_columns(
     is_nullable => 0,
     size => 4,
   },
+  "created_stamp",
+  {
+    data_type => "timestamp without time zone",
+    default_value => "now()",
+    is_nullable => 0,
+    size => 8,
+  },
   "identifier",
   {
     data_type => "text",
@@ -57,7 +64,7 @@ __PACKAGE__->belongs_to(
 
 
 # Created by DBIx::Class::Schema::Loader v0.04006
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:PQJPI9cJ7JJjNlu7GL0JEQ
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:UErrj81DhFjKdrxsIGvkCg
 
 =head2 display_name
 

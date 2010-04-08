@@ -364,6 +364,7 @@ CREATE TABLE pipeprocess (
 );
 CREATE TABLE barcode_set (
        barcode_set_id serial CONSTRAINT barcode_set_id_pk PRIMARY KEY,
+       created_stamp timestamp NOT NULL DEFAULT now(),
        position_in_read integer REFERENCES cvterm(cvterm_id) DEFERRABLE INITIALLY DEFERRED NOT NULL,
        name text NOT NULL UNIQUE
 );
@@ -378,6 +379,7 @@ CREATE TABLE barcode (
 );
 CREATE TABLE protocol (
        protocol_id serial CONSTRAINT protocol_id_pk PRIMARY KEY,
+       created_stamp timestamp NOT NULL DEFAULT now(),
        name text UNIQUE NOT NULL,
        description text NOT NULL
 );
@@ -397,6 +399,7 @@ CREATE TABLE biosample (
 );
 CREATE TABLE biosample_dbxref (
     biosample_dbxref_id integer NOT NULL,
+    created_stamp timestamp NOT NULL DEFAULT now(),
     biosample_id integer NOT NULL,
     dbxref_id integer NOT NULL
 );
@@ -409,6 +412,7 @@ ALTER TABLE ONLY biosample_dbxref
 
 CREATE TABLE biosample_pipeproject (
        biosample_pipeproject_id serial CONSTRAINT biosample_pipeproject_id_pk PRIMARY KEY,
+       created_stamp timestamp NOT NULL DEFAULT now(),
        biosample integer REFERENCES biosample(biosample_id) DEFERRABLE INITIALLY DEFERRED NOT NULL,
        pipeproject integer REFERENCES pipeproject(pipeproject_id) DEFERRABLE INITIALLY DEFERRED NOT NULL,
        CONSTRAINT biosample_pipeproject_constraint UNIQUE(biosample, pipeproject)
@@ -424,6 +428,7 @@ CREATE TABLE pipedata (
 );
 CREATE TABLE pipedata_property (
        pipedata_property_id serial CONSTRAINT pipedata_property_id_pk PRIMARY KEY,
+       created_stamp timestamp NOT NULL DEFAULT now(),
        pipedata integer REFERENCES pipedata(pipedata_id) DEFERRABLE INITIALLY DEFERRED NOT NULL,
        type integer REFERENCES cvterm(cvterm_id) DEFERRABLE INITIALLY DEFERRED NOT NULL,
        value text NOT NULL
@@ -452,6 +457,7 @@ CREATE TABLE biosample_ecotype (
 );
 CREATE TABLE sequencing_sample (
        sequencing_sample_id serial CONSTRAINT sequencing_sample_id_pk PRIMARY KEY,
+       created_stamp timestamp NOT NULL DEFAULT now(),
        identifier text NOT NULL UNIQUE,
        sequencing_centre_identifier text UNIQUE,
        sample_creator integer REFERENCES person(person_id) DEFERRABLE INITIALLY DEFERRED NOT NULL
@@ -487,6 +493,7 @@ CREATE TABLE library (
 );
 CREATE TABLE pipeprocess_pub (
        pipeprocess_pub_id serial CONSTRAINT pipeprocess_pub_id_pk PRIMARY KEY,
+       created_stamp timestamp NOT NULL DEFAULT now(),
        pipeprocess_id integer NOT NULL,
        pub_id integer NOT NULL
 );

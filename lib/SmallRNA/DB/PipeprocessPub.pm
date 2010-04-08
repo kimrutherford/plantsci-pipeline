@@ -15,6 +15,13 @@ __PACKAGE__->add_columns(
     is_nullable => 0,
     size => 4,
   },
+  "created_stamp",
+  {
+    data_type => "timestamp without time zone",
+    default_value => "now()",
+    is_nullable => 0,
+    size => 8,
+  },
   "pipeprocess_id",
   { data_type => "integer", default_value => undef, is_nullable => 0, size => 4 },
   "pub_id",
@@ -31,7 +38,7 @@ __PACKAGE__->belongs_to("pub", "SmallRNA::DB::Pub", { pub_id => "pub_id" });
 
 
 # Created by DBIx::Class::Schema::Loader v0.04006
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:LY1B0NTa8nqSbAoe3rUV1Q
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:SGkTzFn3/M7oyot04L5qlA
 
 
 # You can replace this text with custom content, and it will be preserved on regeneration
