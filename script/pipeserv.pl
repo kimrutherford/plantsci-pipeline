@@ -86,7 +86,6 @@ my $config = SmallRNA::Config->new($config_file_name);
 my $config_file_full_path = realpath($config_file_name);
 
 my $schema = SmallRNA::DB->new($config);
-my $pipedata_rs = $schema->resultset('Pipedata')->search();
 
 my $proc_manager = SmallRNA::ProcessManager->new(schema => $schema);
 
