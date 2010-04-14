@@ -122,16 +122,22 @@ sub submit_condor_job {
   open my $condor_subhandle, '-|', $command
     or die "couldn't open pipe from qsub: $!\n";
 
+  my $saved_output = '';
+
   my $condor_jobid;
 
   while (defined (my $line = <$condor_subhandle>)) {
     if ($line =~ /\*\*\s*Proc\s*(\d+\.\d+)/) {
       $condor_jobid = $1;
     }
+
+    $saved_output .= $line;
   }
 
   if (!defined $condor_jobid) {
-    die "failed to read the job id from condor_submit command: $!\n";
+    die "failed to read the job id from condor_submit command, output was:
+
+$saved_output\n";
   }
 
   warn "started job with pipeprocess_id: $pipeprocess_id and job id: $condor_jobid\n";
