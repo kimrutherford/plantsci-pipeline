@@ -96,8 +96,6 @@ my $not_started_status = $schema->find_with_type('Cvterm', name => 'not_started'
 my $test_mode = $ENV{SMALLRNA_PIPELINE_TEST} || 0;
 my $pipework_path = "./pipework.pl";
 
-#  mkpath($RUN_DIR);
-
 sub submit_condor_job {
   my $pipeprocess = shift;
   my $pipeprocess_id = $pipeprocess->pipeprocess_id();
