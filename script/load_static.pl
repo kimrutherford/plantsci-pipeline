@@ -447,6 +447,10 @@ my @organisms = ({ genus => "Arabidopsis", species => "thaliana",
                    abbreviation => "tcv", common_name => "tcv" },
                  { genus => "Benyvirus", species => "rice stripe virus",
                    abbreviation => "rsv", common_name => "rsv" },
+                 { genus => "Cyperus", species => "luzulae",
+                   abbreviation => "rsv", common_name => "rsv" },
+                 { genus => "Cyperus", species => "longus",
+                   abbreviation => "rsv", common_name => "rsv" },
                  { genus => "Unknown", species => "unknown",
                    abbreviation => "none", common_name => "none" },
                 );
@@ -492,6 +496,8 @@ my @ecotypes = (
     { description => "unspecified", org => "Carmovirus turnip crinkle virus" },
     { description => "unspecified", org => "Benyvirus rice stripe virus" },
     { description => "unspecified", org => "Unknown unknown" },
+    { description => "unspecified", org => "Cyperus luzulae" },
+    { description => "unspecified", org => "Cyperus longus" },
    );
 
 my %ecotype_objs = ();
