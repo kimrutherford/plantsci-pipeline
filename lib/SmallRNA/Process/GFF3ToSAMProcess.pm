@@ -50,26 +50,22 @@ use warnings;
  Usage   : SmallRNA::Process::GFF3ToSAMProcess::run(input_file_name =>
                                                        $in_file_name,
                                                      output_file_name =>
-                                                       $out_file_name,
-                                                     biosample_name =>
-                                                       $biosample_name);
+                                                       $out_file_name);
  Function: Convert a GFF3 file to a SAM file
  Args    : input_file_name - the input file name
            output_file_name - the name of the file to write the SAM output to
-           biosample_name - the name of the biosample that generated this file
  Returns : nothing - either succeeds or calls croak()
 
 =cut
 sub run
 {
-  my %params = validate(@_, { input_file_name => 1, output_file_name => 1,
-                              biosample_name => 1 });
+  my %params = validate(@_, { input_file_name => 1, output_file_name => 1 });
 
   if (!-e $params{input_file_name}) {
     croak "can't find input file: $params{input_file_name}";
   }
 
-  open my $in_file, '<', $params{input_file_name}
+(cd ~/vc/tracking; DBIC_TRACE=1 PERL5LIB=/home/kmr44/cri-lims/workspace/cri-lims-business/perl-soap-clients:~/vc/pipeline/lib ./script/cri_mirror.pl smallrna_web.yaml)  open my $in_file, '<', $params{input_file_name}
     or croak "can't open $params{input_file_name} for reading: $!";
 
   open my $out_file, '>', $params{output_file_name}
@@ -80,7 +76,7 @@ sub run
 
     my @bits = split (/\t/, $line);
 
-    my ($ref_name, $source, $type, $start, $end, $score, $strand, $phase, 
+    my ($ref_name, $source, $type, $start, $end, $score, $strand, $phase,
         $attributes) = @bits;
 
     my $id;
