@@ -21,6 +21,7 @@ requires 'Data::Compare';
 requires 'Pod::Usage';
 requires 'Text::CSV';
 requires 'Set::CrossProduct';
+requires 'Bio::SeqIO';
 
 requires 'parent';
 requires 'Config::General'; # This should reflect the config file format you've chosen
