@@ -71,7 +71,7 @@ sub _write
 
 =head2
 
- Usage   : SmallRNA::Process::PatmanAlignmentProcess(input_file_name =>
+ Usage   : SmallRNA::Process::PatmanAlignmentProcess::run(input_file_name =>
                                                    $in_file_name,
                                                  output_gff_file_name =>
                                                    $out_gff_file_name,
@@ -143,7 +143,7 @@ sub run
 
   while (defined (my $match = $parser->next())) {
     my $seq_length = length $match->{qid};
-    
+
     if ($ignore_poly_a && $match->{qid} =~ /^a+\b/i) {
       next;
     }
@@ -151,7 +151,7 @@ sub run
     if ($match->{qstart} != 1 || $match->{qend} != $seq_length) {
       next;
     }
-    
+
     if ($params{non_aligned_file_name}) {
       $matching_sequences{$match->{qid}}++;
     }
