@@ -10,7 +10,7 @@ University of Cambridge Department of Plant Sciences NGS processing pipeline
 The document describes the University of Cambridge Department of Plant
 Sciences small read processing pipeline.
 
-It has the folling features:
+It has the following features:
   - it's relatively generic
   - it handles dependencies between jobs
   - results are stored in a database
@@ -27,7 +27,7 @@ It has the folling features:
   - An alignment program.  The default is [[http://bioinf.eva.mpg.de/patman/][PatMaN]].
   - SAMtools for generating BAM files, see: http://samtools.sourceforge.net/
 * Getting the code
-  Currently the easiest way to get the code is via Github.  Run this command
+  Currently the easiest way to get the code is via GitHub.  Run this command
   to get a copy of the code:
 #+BEGIN_SRC sh
   git clone git://github.com/kimrutherford/plantsci-pipeline.git pipeline
