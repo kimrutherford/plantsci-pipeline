@@ -65,7 +65,7 @@ sub run
     croak "can't find input file: $params{input_file_name}";
   }
 
-(cd ~/vc/tracking; DBIC_TRACE=1 PERL5LIB=/home/kmr44/cri-lims/workspace/cri-lims-business/perl-soap-clients:~/vc/pipeline/lib ./script/cri_mirror.pl smallrna_web.yaml)  open my $in_file, '<', $params{input_file_name}
+  open my $in_file, '<', $params{input_file_name}
     or croak "can't open $params{input_file_name} for reading: $!";
 
   open my $out_file, '>', $params{output_file_name}
