@@ -48,12 +48,12 @@ use SmallRNA::Process::Utils qw(do_system);
 
 =head2 run
 
- Usage   : SmallRNA::Process::SAMToBAMProcess(input_file_name => $in_file_name,
-                                              output_file_name =>
-                                                 $output_file_name,
-                                              samtools_path => $samtools_path,
-                                              database_file_name =>
-                                                 $database_file_name);
+ Usage   : SmallRNA::Process::SAMToBAMProcess::run(input_file_name => $in_file_name,
+                                                   output_file_name =>
+                                                      $output_file_name,
+                                                   samtools_path => $samtools_path,
+                                                   database_file_name =>
+                                                      $database_file_name);
  Function: Run a BWA search for the given input file against a fasta database
  Args    : input_file_name - the SAM file name
            output_file_name - the output BAM file name
