@@ -183,9 +183,7 @@ sub run
 
   my $_trim_filename = sub {
     my $file_name = shift;
-    if (!($file_name =~ s|^$output_dir_name/||)) {
-      croak "pattern match failed for $file_name, searching for $output_dir_name/\n";
-    }
+    $file_name =~ s|^$output_dir_name/||);
     return $file_name;
   };
 
