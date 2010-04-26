@@ -151,7 +151,7 @@ sub run_alignment
 
       my @non_aligned_args = ();
 
-      if ($component eq 'genome') {
+      if ($component =~ /genome/) {
         @non_aligned_args =
           (non_aligned_file_name => "$data_dir/$non_aligned_file_name");
       }
@@ -181,7 +181,7 @@ EVAL_BLOCK
                                             'alignment ecotype' => $org_full_name,
                                             'alignment program' => $alignment_program});
 
-      if ($component eq 'genome') {
+      if ($component =~ /genome/) {
         $self->store_pipedata(generating_pipeprocess => $self->pipeprocess(),
                               file_name => $non_aligned_file_name,
                               format_type_name => 'fasta',
