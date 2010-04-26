@@ -3,7 +3,7 @@
 use inc::Module::Install;
 
 name 'SmallRNA-Pipeline';
-all_from 'lib/SmallRNA/DB.pm';
+all_from 'lib/SmallRNA/Config.pm';
 
 requires 'DBIx::Class::ResultSet::Data::Pageset';
 requires 'Params::Validate';

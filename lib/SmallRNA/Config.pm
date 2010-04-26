@@ -41,6 +41,12 @@ use Params::Validate qw(:all);
 use YAML qw(LoadFile);
 use Carp;
 
+use v5.005;
+
+use vars qw($VERSION);
+
+$VERSION = '0.01';
+
 my @config_dirs = ('.', $ENV{HOME}, '/etc/');
 my $default_file_name = 'smallrna_web.yaml';
 
