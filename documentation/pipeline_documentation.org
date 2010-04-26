@@ -6,7 +6,6 @@
 University of Cambridge Department of Plant Sciences NGS processing pipeline
 
 * Introduction
-# <<Introduction>>
 The document describes the University of Cambridge Department of Plant
 Sciences small read processing pipeline.
 
@@ -76,9 +75,9 @@ package dependencies suck as BioPerl.
   ./script/pipeinit.pl -f etc/example_deploy_params
 #+END_SRC
   This will create a file named =pipeline-example-config.yaml=.
-*** =example_deploy_params"
+*** =example_deploy_params=
     The settings in this file should be changed to match local conditions.  In
-    particular the database settings will need 
+    particular the database parameters will need to be set.
 *** Configuration options
 # <<Configuration options>>
 **** =pipeline_directory=
@@ -286,7 +285,7 @@ package dependencies suck as BioPerl.
 # <<tissue>>
     Columns of this table:
 * Operation
-  The pipeline is run a [[The pipeline server][server process]] which starts [[The pipeline worker][worker processes]] to do the
+  The pipeline is run by a [[The pipeline server][server process]] which starts [[The pipeline worker][worker processes]] to do the
   processing.  The server and workers coordinate using a database.  Input
   data, temporary data and output data are stored in the file system, with
   file paths stored in the database.
@@ -304,9 +303,9 @@ package dependencies suck as BioPerl.
    performing these actions:
    - tries to create new processes (ie. entries in the =pipeprocess= table) using
      the [[SmallRNA_ProcessManager][ProcessManager]] class
-   - queues new jobs using [[http://en.wikipedia.org/wiki/Portable_Batch_System][Torque]] or [[http://www.cs.wisc.edu/condor/][Condor]]
+   - [[Job queuing][queues new jobs]] using [[http://en.wikipedia.org/wiki/Portable_Batch_System][Torque]] or [[http://www.cs.wisc.edu/condor/][Condor]]
    - sleeps, then starts again
-
+** Job queuing
 ** Pipeline processes
 # <<Pipeline processes>>
    Each process / job that the pipeline runs will have an entry in the
