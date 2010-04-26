@@ -515,6 +515,11 @@ sub process_row
       return;
     }
 
+    if ($solexa_library =~ /SL37[2345678]/) {
+      # ugly special case - there is a row for each library, so just use the first
+      return;
+    }
+
     my @file_names = split m|/|, $file_names_column;
 
     @file_names = grep { ! /^failed/i } @file_names;
@@ -585,8 +590,22 @@ sub process_row
         $barcodes = 'B';
       }
 
+      my %sl342_codes = ();
       if ($solexa_library eq 'SL342') {
-        $barcodes = '2.1 2.2 2.3 2.4 2.5 2.6 2.7 2.8';
+        my @codes = qw(2.1 2.8 2.2 2.7 2.3 2.6 2.4 2.5);
+        $barcodes = join ' ', @codes;
+        for (my $i = 0; $i < 8; $i++) {
+          $sl342_codes{$codes[$i]} = 'SL34' . (2 + $i);
+        }
+      }
+
+      my %sl371_codes = ();
+      if ($solexa_library eq 'SL371') {
+        my @codes = qw(2.5 2.4 2.6 2.3 2.7 2.2 2.8 2.1);
+        $barcodes = join ' ', @codes;
+        for (my $i = 0; $i < 8; $i++) {
+          $sl371_codes{$codes[$i]} = 'SL37' . (1 + $i);
+        }
       }
 
       $smallrna_adaptor =~ s/^\s+//;
@@ -687,7 +706,7 @@ sub process_row
               if ($solexa_library =~ /^(SL322)/) {
                 $barcode_set_name = "Natasha's barcode set";
               } else {
-                if ($solexa_library eq 'SL342') {
+                if ($solexa_library eq 'SL342' || $solexa_library eq 'SL371') {
                   $barcode_set_name = "GEX Adaptor barcodes";
                 } else {
                   $barcode_set_name = "DCB small RNA barcode set";
@@ -713,7 +732,8 @@ sub process_row
               $description . ' - barcode ' . $barcode->identifier();
 
             # big hack for Becky's samples
-            $new_biosample_name =~ s/SL342_2\.(\d+)/"SL34" . ($1 + 1)/e;
+            $new_biosample_name =~ s/SL342_(2\.\d+)/$sl342_codes{$1}/e;
+            $new_biosample_name =~ s/SL371_(2\.\d+)/$sl371_codes{$1}/e;
 
             if (biosample_exists($new_biosample_name)) {
               warn "a biosample exists for $new_biosample_name - skipping\n";
