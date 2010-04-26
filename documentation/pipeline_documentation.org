@@ -92,10 +92,10 @@ package dependencies suck as BioPerl.
 # <<"Model::SmallRNAModel">>
      This section configures the connection from =DBIx::Class= to the
      database.  These options need to be set:
-  - =dbname= - the database name
-  - =host=
-  - 'some_user'
-  - 'user_password'
+  - =dbname= :: the database name
+  - =host= :: the database host
+  - =some_user= :: database user name
+  - =user_password= :: password for that user
 **** =programs=
      Each external program needs a =path= setting - the path to the executable
      for this program.
@@ -103,14 +103,16 @@ package dependencies suck as BioPerl.
      A program that is run from the [[SmallRNA_Runable_AlignmentRunable][AlignmentRunable]] will need a
      =process_class= setting to specify the class to use to run the program.
 **** =databases=
-     This section configures the sequence databases used in the pipeline,
-     mainly by the alignment programs.
+     This section configures the FASTA sequence databases used in the
+     pipeline, mainly by the alignment programs.
 ***** =root=
       All paths in this section are relative to the =root=, which can be =/=
 ***** =organisms= / =database_files=
       There may be multiple database files for each organism.  Each file has a
       tag like =genome= or =mrna=.  These tags are referred to as "components"
-      in other parts of the code.
+      in other parts of the code.  In particular the "component" is used in
+      the [[proces_conf][=process_conf=]] table to configure which database to use for the
+      process.
 ** Configuration in the database
 # <<Configuration in the database>>
    Settings that may need to be configured after the pipeline is running are
@@ -284,6 +286,10 @@ package dependencies suck as BioPerl.
 # <<tissue>>
     Columns of this table:
 * Operation
+  The pipeline is run a [[The pipeline server][server process]] which starts [[The pipeline worker][worker processes]] to do the
+  processing.  The server and workers coordinate using a database.  Input
+  data, temporary data and output data are stored in the file system, with
+  file paths stored in the database.
 # <<Operation>>
 ** Pipeline data
 # <<Pipeline data>>
@@ -301,25 +307,26 @@ package dependencies suck as BioPerl.
    - queues new jobs using [[http://en.wikipedia.org/wiki/Portable_Batch_System][Torque]] or [[http://www.cs.wisc.edu/condor/][Condor]]
    - sleeps, then starts again
 
-*** Process states
-# <<Process states>>
-    - not_started :: Process has not been queued yet - there is an entry in
-      the database, but no Torque/Condor job has been created (set by
-      =pipeserv.pl=)
-    - queued :: A job is queued to run this process - a Torque/Condor job has
-      been created (set by =pipeserv.pl=)
-    - started :: Processing has started - Torque/Condor has started running
-      this process (set by =pipework.pl=)
-    - finished :: Processing is done - the process finished and succeeded (set
-      by =pipework.pl=)
-    - failed :: Processing failed - the process finished and failed (set by
-      =pipework.pl=)
 ** Pipeline processes
 # <<Pipeline processes>>
    Each process / job that the pipeline runs will have an entry in the
    [[=pipeprocess=][pipeprocess]] table.  These entries are initially created by the pipeline
    server (=pipeserv.pl=) and are updated by the pipeline worker
    (=pipework.pl=).
+*** Process states
+# <<Process states>>
+    Entries in the =pipeprocess= table can have the following states:
+    - not_started :: Process has not been queued yet - there is an entry in
+      the database, but no Torque/Condor job has been created (set by
+      =pipeserv.pl=)
+    - queued :: A job is queued to run this process - a Torque/Condor job has
+      been created (set by =pipeserv.pl=) and is waiting to run
+    - started :: Processing has started - Torque/Condor has started running
+      this process (set by =pipework.pl=)
+    - finished :: Processing is done - the process finished and succeeded (set
+      by =pipework.pl=)
+    - failed :: Processing failed - the process finished and failed (set by
+      =pipework.pl=)
 ** The pipeline worker
 # <<The pipeline worker>>
    Each job is run by =pipework.pl=.  It receives the ID of a [[pipeprocess][=pipeprocess=]] and
