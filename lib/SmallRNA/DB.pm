@@ -3,10 +3,6 @@ package SmallRNA::DB;
 use strict;
 use warnings;
 
-use vars qw($VERSION);
-
-$VERSION = '0.01';
-
 use base 'DBIx::Class::Schema';
 
 __PACKAGE__->load_classes;
