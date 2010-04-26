@@ -1022,6 +1022,18 @@ my @analyses = (
                  runable_name => 'SmallRNA::Runable::PatmanAlignmentRunable',
                  inputs => [
                      {
+                       ecotype_name => 'Col-0 (seed stock: 3541) Arabidopsis thaliana',
+                       format_type => 'fasta',
+                       content_type => 'non_redundant_reads',
+                     }
+                    ]
+                },
+                {
+                 type_term_name => 'patman alignment',
+                 detail => 'component: genome, torque_flags: -l pmem=5gb',
+                 runable_name => 'SmallRNA::Runable::PatmanAlignmentRunable',
+                 inputs => [
+                     {
                        ecotype_name => 'Col-0 (seed stock: 3541) x C24 (seed stock: 3539) Arabidopsis thaliana',
                        format_type => 'fasta',
                        content_type => 'non_redundant_reads',
