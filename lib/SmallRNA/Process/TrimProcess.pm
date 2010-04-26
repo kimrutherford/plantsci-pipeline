@@ -114,6 +114,9 @@ sub _trim_quality
                           creation of a FastQ file for each barcode.  The
                           quality string will be trimmed to match the
                           de-multiplexed sequence
+           keep_reads_with_n - if false (0), any read containing a non-ATGC
+                               base will be filtered into a separate file, if
+                               true they will be kept in the main output file
 
 This method a two modes - multiplexed and non-multiplexed.
 
@@ -147,7 +150,8 @@ sub run
                               processing_type => 1, trim_bases => 0,
                               trim_offset => 0,
                               barcodes => 0, barcode_position => 0,
-                              adaptor_sequence => 0, create_fastq => 0 });
+                              adaptor_sequence => 0, create_fastq => 0,
+                              keep_reads_with_n => 0 });
 
   my $input_file_name = $params{input_file_name};
   my $output_dir_name = $params{output_dir_name};
@@ -158,6 +162,7 @@ sub run
   my $barcode_position = $params{barcode_position};
   my $adaptor_sequence = $params{adaptor_sequence};
   my $create_fastq = $params{create_fastq};
+  my $keep_reads_with_n = $params{keep_reads_with_n} || 0;
 
   if (defined $barcodes_map_ref && !defined $barcode_position) {
     croak "barcode_position must be passed as an argument if barcodes "
@@ -303,7 +308,7 @@ sub run
       # keeping
       my $seq_offset = $trim_offset + length($1);
 
-        if ($trimmed_seq =~ m/^([ACGT]*$)/i) { # i.e. has no Ns
+        if ($keep_reads_with_n || $trimmed_seq =~ m/^([ACGT]*$)/i) {
           if ($multiplexed && $trim_offset == 0) {
             if (length $trimmed_seq == 0) {
               print $rej_file ">$id No sequence after removing bar code $code_from_seq\n";
