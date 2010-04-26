@@ -288,9 +288,14 @@ package dependencies suck as BioPerl.
 ** Pipeline processes
 # <<Pipeline processes>>
    Each process / job that the pipeline runs will have an entry in the
-   [[=pipeprocess=][pipeprocess]] table.
+   [[=pipeprocess=][pipeprocess]] table.  These entries are initially created by the pipeline
+   server (=pipeserv.pl=) and are updated by the pipeline worker
+   (=pipework.pl=).
 ** Pipeline data
 # <<Pipeline data>>
+   Files for the pipeline are stored relative to the directory given by the
+   =pipeline_directory= configuration options, in the sub-directory given by
+   the =data_sub_directory= option.
 ** The pipeline server
 # <<The pipeline server>>
    The script that controls the pipeline is =pipeserv.pl=.
@@ -317,6 +322,7 @@ package dependencies suck as BioPerl.
    the path to the configuration file as environment variables.
 * Implementation
 # <<Implementation>>
+
 ** Runables
 # <<Runables>>
 ** SmallRNA::Runable::AlignmentRunable
