@@ -183,7 +183,7 @@ sub run
 
   my $_trim_filename = sub {
     my $file_name = shift;
-    $file_name =~ s|^$output_dir_name/||);
+    $file_name =~ s|^$output_dir_name/||;
     return $file_name;
   };
 
