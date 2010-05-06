@@ -245,7 +245,7 @@ sub get_pipeprocess_details
 
 sub run
 {
-  croak "you must implement this method\n";
+  croak "you must implement this method in a sub-class\n";
 }
 
 1;
