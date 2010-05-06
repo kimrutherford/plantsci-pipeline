@@ -120,6 +120,10 @@ package dependencies suck as BioPerl.
    [[process_conf][=process_conf=]] and [[process_conf_input][=process_conf_input=]]
 * Database structure
 # <<Database structure>>
+** Schema
+   The SQL to create the schema is in =etc/schema.sql= of the pipeline source
+   code and there are two diagrams of the schema (with different layouts),
+   =etc/pipeline_schema_hierachy.ps= and =etc/pipeline_schema_orth.ps=.
 ** Tables
 # <<Database tables>>
 *** =barcode=
