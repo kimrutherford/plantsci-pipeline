@@ -100,7 +100,7 @@ sub submit_condor_job {
   my $pipeprocess_id = $pipeprocess->pipeprocess_id();
 
   my $process_conf_detail = $pipeprocess->process_conf()->detail();
-  my $max_process_size = 4_000_000;
+  my $max_process_size = 1_800_000;
 
   if (defined $process_conf_detail) {
     if ($process_conf_detail =~ /max_process_size:\s*([^,]+)/) {
