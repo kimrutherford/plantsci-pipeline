@@ -141,6 +141,8 @@ package dependencies suck as BioPerl.
  - =name= :: The user friendly name for this =barcode_set=
 *** =biosample=
 # <<biosample>>
+    Each row corresponds to one biological sample.  More than one library can
+    be created from one biosample.
     Columns of this table:
 *** =biosample_dbxref=
 # <<biosample_dbxref>>
@@ -156,10 +158,12 @@ package dependencies suck as BioPerl.
     Link table that allows many to many relations between projects and biosamples.
 *** =cv=
 # <<cv>>
-    Controlled vocabulary table copied from the [[http://gmod.org/wiki/Chado][Chado]] [[http://gmod.org/wiki/Chado_CV_Module][CV Module]].
+    This table holds the controlled vocabulary names.  The table structure is
+    copied from the [[http://gmod.org/wiki/Chado][Chado]] [[http://gmod.org/wiki/Chado_CV_Module][CV Module]].
 *** =cvterm=
 # <<cvterm>>
-    Controlled vocabulary term table from the [[http://gmod.org/wiki/Chado][Chado]] [[http://gmod.org/wiki/Chado_CV_Module][CV Module]].
+    This table contains controlled vocabulary terms.  The table structure is
+    copied from the [[http://gmod.org/wiki/Chado][Chado]] [[http://gmod.org/wiki/Chado_CV_Module][CV Module]].
 *** =cvterm_dbxref=
 # <<cvterm_dbxref>>
     A link table connecting references to cvterms.
