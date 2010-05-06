@@ -1268,6 +1268,39 @@ my @analyses = (
                      {
                        format_type => 'sam',
                        content_type => 'aligned_reads',
+                       ecotype_name => 'Col-0 (seed stock: 3541) Arabidopsis thaliana',
+                     }
+                   ]
+                },
+                {
+                 type_term_name => 'sam to bam converter',
+                 runable_name => 'SmallRNA::Runable::SAMToBAMRunable',
+                 inputs => [
+                     {
+                       format_type => 'sam',
+                       content_type => 'aligned_reads',
+                       ecotype_name => 'Col-0 (seed stock: 3541) x C24 (seed stock: 3539) Arabidopsis thaliana',
+                     }
+                   ]
+                },
+                {
+                 type_term_name => 'sam to bam converter',
+                 runable_name => 'SmallRNA::Runable::SAMToBAMRunable',
+                 inputs => [
+                     {
+                       format_type => 'sam',
+                       content_type => 'aligned_reads',
+                       ecotype_name => 'C24 (seed stock: 3539) Arabidopsis thaliana',
+                     }
+                   ]
+                },
+                {
+                 type_term_name => 'sam to bam converter',
+                 runable_name => 'SmallRNA::Runable::SAMToBAMRunable',
+                 inputs => [
+                     {
+                       format_type => 'sam',
+                       content_type => 'aligned_reads',
                        ecotype_name => 'unspecified Solanum lycopersicon',
                      }
                    ]
