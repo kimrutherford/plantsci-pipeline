@@ -81,7 +81,7 @@ package dependencies suck as BioPerl.
 *** Configuration options
 # <<Configuration options>>
 **** =pipeline_directory=
-# <<=pipeline_directory=>>
+# <<pipeline_directory>>
      This is the root directory for pipeline operation.  It needs to be
      writable by the user that will run the [[The pipeline server][pipeline server]].
 **** =data_sub_directory=
@@ -261,10 +261,18 @@ package dependencies suck as BioPerl.
 *** =pipeproject=
 # <<pipeproject>>
     A pipeproject is a (potentially loose) collection of biosamples that has a
-    name, a description and an owner.
+    name, a description and an owner.  It is linked to the biosample table via
+    the biosample_pipeproject table.
 *** =process_conf=
 # <<process_conf>>
+    This table stores configuration for each type of job that can run in the
+    pipeline. 
+
     Columns of this table:
+    - =type= :: a cvterm giving the type of this configuration
+    - =detail= :: extra details to pass to the [[runables][Runable]]
+    - =runable_name= :: The name of the Perl module containing the code to
+      perform this process (see [[runables][Runable]])
 *** =process_conf_input=
 # <<process_conf_input>>
     Columns of this table:
@@ -306,9 +314,9 @@ package dependencies suck as BioPerl.
    - [[Job queuing][queues new jobs]] using [[http://en.wikipedia.org/wiki/Portable_Batch_System][Torque]] or [[http://www.cs.wisc.edu/condor/][Condor]]
    - sleeps, then starts again
 ** Job queuing
-** Pipeline processes
-# <<Pipeline processes>>
-   Each process / job that the pipeline runs will have an entry in the
+** Pipeline jobs
+# <<Pipeline jobs>>
+   Each job that the pipeline runs will have an entry in the
    [[=pipeprocess=][pipeprocess]] table.  These entries are initially created by the pipeline
    server (=pipeserv.pl=) and are updated by the pipeline worker
    (=pipework.pl=).
@@ -334,12 +342,20 @@ package dependencies suck as BioPerl.
 # <<Implementation>>
 
 ** Runables
-# <<Runables>>
+# <<runables>>
+   Each pipe_process is executed by a Perl module that is a sub-class of
+   =SmallRNA::Runable::SmallRNARunable=.  The [[The pipeline worker][pipeline worker script]] calls
+   the =run()= method on the =SmallRNARunable= which does all processing for
+   the job.  The =run()= method of the runable should do its processing, write
+   its output files to the [[pipeline_directory][=pipeline_directory=]] then call 
+   =SmallRNARunable->store_pipedata()= to write the information to the database.
+
 ** SmallRNA::Runable::AlignmentRunable
-# <<SmallRNA_Runable_AlignmentRunable>>
-   - configured using the =process_class= setting in the config file
+# <<smallrna_runable_alignmentrunable>>
+   The Perl module to run to do the alignment is configured using the
+   =process_class= setting in the config file
 ** SmallRNA::ProcessManager
-# <<SmallRNA_ProcessManager>>
+# <<smallrna_processManager>>
    - code for creating [[pipeprocess][=pipeprocess=]] entries
    - looks at dependencies
 
