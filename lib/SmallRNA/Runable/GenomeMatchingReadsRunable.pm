@@ -88,63 +88,7 @@ sub run
     $new_suffix = ".$out_content_type.$tsv_term_name";
     $tsv_out_file_name =~ s/(\Q$old_suffix\E)?$/$new_suffix/;
 
-    my %read_counts = ();
 
-    open my $gff_file, '<', $gff_file_name
-      or croak "can't open $gff_file_name for reading: $!\n";
-
-    while (my $line = <$gff_file>) {
-      next if $line =~ /^\s*#/;
-
-      my @bits = split /\t/, $line;
-      my $count = $bits[5];
-      my $attributes = $bits[8];
-
-      if ($attributes =~ /Name=(\w+)/) {
-        my $seq = $1;
-        if (exists $read_counts{$seq}) {
-          if ($read_counts{$seq} != $count) {
-            croak "inconsistent counts in gff file, line: $line\n";
-          }
-        } else {
-          $read_counts{$seq} = $count;
-        }
-      } else {
-        croak "can't find Name in gff3 line: $line\n";
-      }
-    }
-
-    close $gff_file or croak "can't close $gff_file_name: $!";
-
-    open my $fasta_out_file, '>', $fasta_out_file_name
-      or die "can't open $fasta_out_file_name: $!\n";
-
-    open my $redundant_fasta_out_file, '>', $redundant_fasta_out_file_name
-      or die "can't open $redundant_fasta_out_file_name: $!\n";
-
-    open my $tsv_out_file, '>', $tsv_out_file_name
-      or die "can't open $tsv_out_file_name: $!\n";
-
-    for my $sequence (sort keys %read_counts) {
-      my $count = $read_counts{$sequence};
-
-      print $fasta_out_file <<"END";
->$sequence count:$count
-$sequence
-END
-      print $tsv_out_file "$sequence\t$count\n";
-
-      for (my $i = 0; $i < $count; $i++) {
-        print $redundant_fasta_out_file <<"END";
->$sequence-$i
-$sequence
-END
-      }
-    }
-
-    close $fasta_out_file or die "can't close $fasta_out_file_name: $!\n";
-    close $redundant_fasta_out_file or die "can't close $redundant_fasta_out_file_name: $!\n";
-    close $tsv_out_file or die "can't close $tsv_out_file_name: $!\n";
 
     my @gff_properties = $gff_data->pipedata_properties();
 
