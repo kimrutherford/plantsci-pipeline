@@ -45,6 +45,13 @@ use Bio::SeqIO;
 
 extends 'SmallRNA::Runable::SmallRNARunable';
 
+=head2
+
+ Function: Run GenomeMatchingReadsProcess for this Runable/pipeprocess
+           and store the name of the resulting files in the pipedata table.
+ Returns : nothing - either succeeds or calls die()
+
+=cut
 sub run
 {
   my $self = shift;
