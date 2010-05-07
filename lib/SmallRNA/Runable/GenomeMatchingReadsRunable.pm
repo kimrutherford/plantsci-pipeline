@@ -95,7 +95,12 @@ sub run
     $new_suffix = ".$out_content_type.$tsv_term_name";
     $tsv_out_file_name =~ s/(\Q$old_suffix\E)?$/$new_suffix/;
 
-
+    SmallRNA::Process::GenomeMatchingReadsProcess::run(
+                     input_gff3_file_name => $gff_file_name,
+                     fasta_output_file_name => $fasta_out_file_name,
+                     redundant_fasta_output_file_name =>
+                       $redundant_fasta_out_file_name,
+                     tsv_output_file_name => $tsv_out_file_name);
 
     my @gff_properties = $gff_data->pipedata_properties();
 
