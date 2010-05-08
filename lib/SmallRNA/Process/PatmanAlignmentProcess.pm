@@ -136,7 +136,7 @@ sub run
   my $patman_command =
     "$params{executable_path} --edits=$mismatches --gaps=$mismatches -P $in_file -D $params{database_file_name}";
 
-  open my $patman_out, "$patman_command 2>> /tmp/PatmanAlignmentProcess.log|"
+  open my $patman_out, "$patman_command|"
     or croak "can't open pipe to $params{executable_path}: $!";
 
   my $parser = SmallRNA::Parse::Patman->new(input_file_handle => $patman_out);
