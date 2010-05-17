@@ -43,6 +43,8 @@ use Carp;
 
 use Bio::SeqIO;
 
+use SmallRNA::Process::GenomeMatchingReadsProcess;
+
 extends 'SmallRNA::Runable::SmallRNARunable';
 
 =head2
