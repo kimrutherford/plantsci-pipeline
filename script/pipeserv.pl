@@ -133,13 +133,15 @@ sub submit_condor_job {
     $saved_output .= $line;
   }
 
-  if (!defined $condor_jobid) {
-    die "failed to read the job id from condor_submit command, output was:
+  if (defined $condor_jobid) {
+    warn "started job with pipeprocess_id: $pipeprocess_id and job id: $condor_jobid\n";
+  } else {
+    warn "failed to read the job id from condor_submit command, output was:
 
-$saved_output\n";
+$saved_output
+
+The job will be retried later\n";
   }
-
-  warn "started job with pipeprocess_id: $pipeprocess_id and job id: $condor_jobid\n";
 
   close $condor_subhandle or die "couldn't close pipe from condor_submit: $!\n";
 
@@ -287,6 +289,8 @@ while (1) {
     my $code = sub {
       my $pipeprocess_id = $pipeprocess->pipeprocess_id();
 
+      my $prev_status = $pipeprocess->status();
+
       $pipeprocess->time_queued(DateTime->now());
       $pipeprocess->status($queued_status);
 
@@ -303,8 +307,13 @@ while (1) {
         }
       }
 
-      $pipeprocess->job_identifier($job_id);
-      $pipeprocess->update();
+      if (defined $job_id) {
+        $pipeprocess->job_identifier($job_id);
+        $pipeprocess->update();
+      } else {
+        $pipeprocess->status($prev_status);
+        $pipeprocess->time_queued(undef);
+      }
     };
 
     $schema->txn_do($code);
