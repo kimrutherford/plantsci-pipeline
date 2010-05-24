@@ -24,7 +24,6 @@ use Time::HiRes qw(usleep);
 use Getopt::Long;
 use POSIX ":sys_wait_h";
 use Getopt::Std;
-#use File::Path qw(make_path);
 
 use SmallRNA::DB;
 use SmallRNA::Config;
@@ -322,6 +321,7 @@ while (1) {
       for (1..1000) { # don't do it forever, in case there's a problem
         my $count = count_current_jobs();
 
+        # sleep if there are too many jobs running
         if ($count >= $options{max_jobs}) {
           warn "$count jobs running - sleeping\n";
           if ($test_mode) {
@@ -348,6 +348,6 @@ while (1) {
   if ($test_mode || $run_locally) {
     sleep (5);
   } else {
-    sleep (60);
+    sleep (180);
   }
 }
