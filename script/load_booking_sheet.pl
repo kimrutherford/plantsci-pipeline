@@ -483,6 +483,8 @@ sub create_sequencing_sample
                                       sample_creator => $sample_creator });
 }
 
+my %becky_hack_seq_samples = ();
+
 sub process_row
 {
     my @columns = @_;
@@ -598,6 +600,18 @@ sub process_row
         $barcodes = 'B';
       }
 
+      if ($solexa_library =~ /SL381/) {
+        $barcodes = 'AC';
+      }
+
+      if ($solexa_library =~ /SL382/) {
+        $barcodes = 'HBG';
+      }
+
+      if ($solexa_library =~ /SL383/) {
+        $barcodes = 'FDE';
+      }
+
       my %sl342_codes = ();
       if ($solexa_library eq 'SL342') {
         my @codes = qw(2.1 2.8 2.2 2.7 2.3 2.6 2.4 2.5);
@@ -699,10 +713,14 @@ sub process_row
         if ($multiplexed) {
           my @barcode_identifiers;
 
-          if ($barcodes =~ /2.\d /) {
-            @barcode_identifiers = ($barcodes =~ /(2\.\d)/g);
+          if ($solexa_library =~ /SL38[123]_([A-Z])/) {
+            @barcode_identifiers = $1;
           } else {
-            @barcode_identifiers = ($barcodes =~ /(\w)/g);
+            if ($barcodes =~ /2.\d /) {
+              @barcode_identifiers = ($barcodes =~ /(2\.\d)/g);
+            } else {
+              @barcode_identifiers = ($barcodes =~ /(\w)/g);
+            }
           }
 
           for my $barcode_identifier (@barcode_identifiers) {
@@ -749,8 +767,18 @@ sub process_row
             }
 
             if (!defined $sequencing_sample) {
-              $sequencing_sample =
-                create_sequencing_sample($solexa_library, $person_obj);
+              if ($solexa_library =~ /(SL38[123])/) {
+                if (exists $becky_hack_seq_samples{$1}) {
+                  $sequencing_sample = $becky_hack_seq_samples{$1};
+                } else {
+                  $sequencing_sample =
+                    create_sequencing_sample($1, $person_obj);
+                  $becky_hack_seq_samples{$1} = $sequencing_sample;
+                }
+              } else {
+                $sequencing_sample =
+                  create_sequencing_sample($solexa_library, $person_obj);
+              }
             }
 
             $biosample =
