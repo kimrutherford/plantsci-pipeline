@@ -29,6 +29,8 @@ __PACKAGE__->add_columns(
     is_nullable => 0,
     size => undef,
   },
+  "biosample_creator",
+  { data_type => "integer", default_value => undef, is_nullable => 0, size => 4 },
   "genotype",
   {
     data_type => "text",
@@ -66,17 +68,7 @@ __PACKAGE__->belongs_to(
   "SmallRNA::DB::Cvterm",
   { cvterm_id => "processing_requirement" },
 );
-__PACKAGE__->belongs_to(
-  "treatment_type",
-  "SmallRNA::DB::Cvterm",
-  { cvterm_id => "treatment_type" },
-);
 __PACKAGE__->belongs_to("tissue", "SmallRNA::DB::Tissue", { tissue_id => "tissue" });
-__PACKAGE__->belongs_to(
-  "biosample_type",
-  "SmallRNA::DB::Cvterm",
-  { cvterm_id => "biosample_type" },
-);
 __PACKAGE__->belongs_to(
   "protocol",
   "SmallRNA::DB::Protocol",
@@ -91,6 +83,21 @@ __PACKAGE__->belongs_to(
   "fractionation_type",
   "SmallRNA::DB::Cvterm",
   { cvterm_id => "fractionation_type" },
+);
+__PACKAGE__->belongs_to(
+  "biosample_creator",
+  "SmallRNA::DB::Person",
+  { person_id => "biosample_creator" },
+);
+__PACKAGE__->belongs_to(
+  "biosample_type",
+  "SmallRNA::DB::Cvterm",
+  { cvterm_id => "biosample_type" },
+);
+__PACKAGE__->belongs_to(
+  "treatment_type",
+  "SmallRNA::DB::Cvterm",
+  { cvterm_id => "treatment_type" },
 );
 __PACKAGE__->has_many(
   "biosample_dbxrefs",
@@ -120,7 +127,7 @@ __PACKAGE__->has_many(
 
 
 # Created by DBIx::Class::Schema::Loader v0.04006
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:KjpTnsitonYdaZcbWBICnA
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:j8KzJA5ja5nJVh/iKk7tqg
 
 __PACKAGE__->many_to_many('pipedatas' => 'biosample_pipedatas', 'pipedata');
 __PACKAGE__->many_to_many('ecotypes' => 'biosample_ecotypes', 'ecotype');

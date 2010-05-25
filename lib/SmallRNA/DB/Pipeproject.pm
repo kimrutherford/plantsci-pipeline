@@ -48,16 +48,16 @@ __PACKAGE__->has_many(
   "SmallRNA::DB::BiosamplePipeproject",
   { "foreign.pipeproject" => "self.pipeproject_id" },
 );
+__PACKAGE__->belongs_to("owner", "SmallRNA::DB::Person", { person_id => "owner" });
 __PACKAGE__->belongs_to(
   "funder",
   "SmallRNA::DB::Organisation",
   { organisation_id => "funder" },
 );
-__PACKAGE__->belongs_to("owner", "SmallRNA::DB::Person", { person_id => "owner" });
 
 
 # Created by DBIx::Class::Schema::Loader v0.04006
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:zBckvqQYwXoBWnelrLWF1w
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:IR5Kws1QlOuz7ztzV5EHqg
 
 __PACKAGE__->many_to_many('biosamples' => 'biosample_pipeprojects', 'biosample');
 

@@ -62,6 +62,11 @@ __PACKAGE__->add_unique_constraint(
   ["sequencing_centre_identifier"],
 );
 __PACKAGE__->belongs_to(
+  "biosample",
+  "SmallRNA::DB::Biosample",
+  { biosample_id => "biosample" },
+);
+__PACKAGE__->belongs_to(
   "sequencing_sample",
   "SmallRNA::DB::SequencingSample",
   { sequencing_sample_id => "sequencing_sample" },
@@ -76,16 +81,11 @@ __PACKAGE__->belongs_to(
   "SmallRNA::DB::Barcode",
   { barcode_id => "barcode" },
 );
-__PACKAGE__->belongs_to(
-  "biosample",
-  "SmallRNA::DB::Biosample",
-  { biosample_id => "biosample" },
-);
 __PACKAGE__->belongs_to("adaptor", "SmallRNA::DB::Cvterm", { cvterm_id => "adaptor" });
 
 
 # Created by DBIx::Class::Schema::Loader v0.04006
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:7RflMs7LCIcdtSbJ7x5JiA
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:7dcWP3sUCt2CS917fB3Cig
 
 
 # You can replace this text with custom content, and it will be preserved on regeneration

@@ -30,18 +30,18 @@ __PACKAGE__->add_columns(
 __PACKAGE__->set_primary_key("biosample_pipedata_id");
 __PACKAGE__->add_unique_constraint("biosample_pipedata_id_pk", ["biosample_pipedata_id"]);
 __PACKAGE__->belongs_to(
-  "pipedata",
-  "SmallRNA::DB::Pipedata",
-  { pipedata_id => "pipedata" },
-);
-__PACKAGE__->belongs_to(
   "biosample",
   "SmallRNA::DB::Biosample",
   { biosample_id => "biosample" },
 );
+__PACKAGE__->belongs_to(
+  "pipedata",
+  "SmallRNA::DB::Pipedata",
+  { pipedata_id => "pipedata" },
+);
 
 
 # Created by DBIx::Class::Schema::Loader v0.04006
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:Fwj8StKxUfTipo/9vRpBrg
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:wBJAx0YSSzPYfgfX68Wb1Q
 
 1;

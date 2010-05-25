@@ -58,11 +58,6 @@ __PACKAGE__->belongs_to(
 );
 __PACKAGE__->belongs_to("quality", "SmallRNA::DB::Cvterm", { cvterm_id => "quality" });
 __PACKAGE__->belongs_to(
-  "sequencing_type",
-  "SmallRNA::DB::Cvterm",
-  { cvterm_id => "sequencing_type" },
-);
-__PACKAGE__->belongs_to(
   "sequencing_centre",
   "SmallRNA::DB::Organisation",
   { organisation_id => "sequencing_centre" },
@@ -77,10 +72,15 @@ __PACKAGE__->belongs_to(
   "SmallRNA::DB::Pipedata",
   { pipedata_id => "initial_pipedata" },
 );
+__PACKAGE__->belongs_to(
+  "sequencing_type",
+  "SmallRNA::DB::Cvterm",
+  { cvterm_id => "sequencing_type" },
+);
 
 
 # Created by DBIx::Class::Schema::Loader v0.04006
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:pScTuIJ8DjCgk9exUKLuyg
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:iUaa+jq5tuER+IGre/Smrg
 
 
 # You can replace this text with custom content, and it will be preserved on regeneration

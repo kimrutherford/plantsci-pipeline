@@ -52,14 +52,14 @@ __PACKAGE__->belongs_to(
   { pipeprocess_id => "generating_pipeprocess" },
 );
 __PACKAGE__->belongs_to(
-  "format_type",
-  "SmallRNA::DB::Cvterm",
-  { cvterm_id => "format_type" },
-);
-__PACKAGE__->belongs_to(
   "content_type",
   "SmallRNA::DB::Cvterm",
   { cvterm_id => "content_type" },
+);
+__PACKAGE__->belongs_to(
+  "format_type",
+  "SmallRNA::DB::Cvterm",
+  { cvterm_id => "format_type" },
 );
 __PACKAGE__->has_many(
   "pipedata_properties",
@@ -79,7 +79,7 @@ __PACKAGE__->has_many(
 
 
 # Created by DBIx::Class::Schema::Loader v0.04006
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:zHSZu2ycs40knkAsc4yWcg
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:1SZOGzj4b4Ur7lzOVe+g1Q
 
 __PACKAGE__->many_to_many(next_pipeprocesses => 'pipeprocess_in_pipedatas',
                           'pipeprocess');

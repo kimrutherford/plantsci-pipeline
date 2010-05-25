@@ -46,14 +46,14 @@ __PACKAGE__->belongs_to(
   { cvterm_id => "biosample_type" },
 );
 __PACKAGE__->belongs_to(
-  "process_conf",
-  "SmallRNA::DB::ProcessConf",
-  { process_conf_id => "process_conf" },
-);
-__PACKAGE__->belongs_to(
   "content_type",
   "SmallRNA::DB::Cvterm",
   { cvterm_id => "content_type" },
+);
+__PACKAGE__->belongs_to(
+  "process_conf",
+  "SmallRNA::DB::ProcessConf",
+  { process_conf_id => "process_conf" },
 );
 __PACKAGE__->belongs_to(
   "ecotype",
@@ -63,7 +63,7 @@ __PACKAGE__->belongs_to(
 
 
 # Created by DBIx::Class::Schema::Loader v0.04006
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:OkJhd5JXiLOxVy/rAxJflA
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:S0SXGpFmAyKcN5ByqSGl/g
 
 sub description
 {

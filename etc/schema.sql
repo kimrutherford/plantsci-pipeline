@@ -387,6 +387,7 @@ CREATE TABLE biosample (
        biosample_id serial CONSTRAINT biosample_id_pk PRIMARY KEY,
        created_stamp timestamp NOT NULL DEFAULT now(),
        name text NOT NULL UNIQUE,
+       biosample_creator integer NOT NULL REFERENCES person(person_id) DEFERRABLE INITIALLY DEFERRED,
        genotype text,
        description text NOT NULL,
        protocol integer NOT NULL REFERENCES protocol(protocol_id) DEFERRABLE INITIALLY DEFERRED,

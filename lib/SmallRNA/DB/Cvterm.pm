@@ -53,16 +53,6 @@ __PACKAGE__->has_many(
   { "foreign.processing_requirement" => "self.cvterm_id" },
 );
 __PACKAGE__->has_many(
-  "biosample_treatment_types",
-  "SmallRNA::DB::Biosample",
-  { "foreign.treatment_type" => "self.cvterm_id" },
-);
-__PACKAGE__->has_many(
-  "biosample_biosample_types",
-  "SmallRNA::DB::Biosample",
-  { "foreign.biosample_type" => "self.cvterm_id" },
-);
-__PACKAGE__->has_many(
   "biosample_molecule_types",
   "SmallRNA::DB::Biosample",
   { "foreign.molecule_type" => "self.cvterm_id" },
@@ -71,6 +61,16 @@ __PACKAGE__->has_many(
   "biosample_fractionation_types",
   "SmallRNA::DB::Biosample",
   { "foreign.fractionation_type" => "self.cvterm_id" },
+);
+__PACKAGE__->has_many(
+  "biosample_biosample_types",
+  "SmallRNA::DB::Biosample",
+  { "foreign.biosample_type" => "self.cvterm_id" },
+);
+__PACKAGE__->has_many(
+  "biosample_treatment_types",
+  "SmallRNA::DB::Biosample",
+  { "foreign.treatment_type" => "self.cvterm_id" },
 );
 __PACKAGE__->belongs_to("cv", "SmallRNA::DB::Cv", { cv_id => "cv_id" });
 __PACKAGE__->belongs_to("dbxref", "SmallRNA::DB::Dbxref", { dbxref_id => "dbxref_id" });
@@ -95,14 +95,14 @@ __PACKAGE__->has_many(
   { "foreign.role" => "self.cvterm_id" },
 );
 __PACKAGE__->has_many(
-  "pipedata_format_types",
-  "SmallRNA::DB::Pipedata",
-  { "foreign.format_type" => "self.cvterm_id" },
-);
-__PACKAGE__->has_many(
   "pipedata_content_types",
   "SmallRNA::DB::Pipedata",
   { "foreign.content_type" => "self.cvterm_id" },
+);
+__PACKAGE__->has_many(
+  "pipedata_format_types",
+  "SmallRNA::DB::Pipedata",
+  { "foreign.format_type" => "self.cvterm_id" },
 );
 __PACKAGE__->has_many(
   "pipedata_properties",
@@ -152,7 +152,7 @@ __PACKAGE__->has_many(
 
 
 # Created by DBIx::Class::Schema::Loader v0.04006
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:4O7X77Z/ABLfs+cbtm6k6g
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:RRqFjH1YEPkrNr+vpVNAkw
 
 __PACKAGE__->many_to_many(dbxrefs => 'cvterm_dbxrefs', 'dbxref');
 

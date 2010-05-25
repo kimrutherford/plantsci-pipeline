@@ -190,6 +190,7 @@ sub create_biosample
 {
   my $project = shift;
   my $biosample_name = shift;
+  my $submitter_obj = shift;
   my $description = shift;
   my $molecule_type = shift;
   my $ecotypes_ref = shift;
@@ -232,6 +233,7 @@ sub create_biosample
   my $biosample_args = {
                      name => $biosample_name,
                      description => $description,
+                     biosample_creator => $submitter_obj,
                      molecule_type => $molecule_type_term,
                      processing_requirement => $processing_type_term,
                      protocol => $protocol,
@@ -785,7 +787,7 @@ sub process_row
             }
 
             $biosample =
-              create_biosample($proj, $new_biosample_name,
+              create_biosample($proj, $new_biosample_name, $person_obj,
                                $desc_with_barcode, $molecule_type,
                                [@ecotypes], $do_processing, $biosample_type);
 
@@ -801,8 +803,8 @@ sub process_row
             $biosample_name .= '_' . $replicate_identifier;
           }
 
-          my $biosample = create_biosample($proj, $biosample_name, $description,
-                                           $molecule_type,
+          my $biosample = create_biosample($proj, $biosample_name, $person_obj,
+                                           $description, $molecule_type,
                                            [@ecotypes], $do_processing, $biosample_type);
           push @all_biosamples, $biosample;
           $sequencing_sample =
