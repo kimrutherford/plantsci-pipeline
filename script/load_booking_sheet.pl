@@ -163,20 +163,23 @@ sub find
 
 sub get_project
 {
-  my $project_name = shift;
+  my $solexa_library_name = shift;
+  my $project_desc = shift;
   my $owner = shift;
 
-  $project_name = 'P_' . $project_name;
+  if (!$project_name) {
+    $project_name = 'P_' . $solexa_library_name;
+  }
 
   if (!defined $owner) {
     croak "no owner passed to get_project()\n";
   }
 
-  if (!exists $projects{$project_name}) {
+  if (!exists $projects{$project_desc}) {
     $projects{$project_name} =
       create('Pipeproject', {
-                             name => $project_name,
-                             description => $project_name,
+                             identifier => $project_name,
+                             description => '',
                              owner => $owner
                            });
   }
@@ -667,7 +670,7 @@ sub process_row
         $is_replicate = 1;
       }
 
-      my $proj = get_project($solexa_library, $person_obj);
+      my $proj = get_project($solexa_library, $project_desc, $person_obj);
 
       my $multiplexed;
 
