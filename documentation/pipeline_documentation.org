@@ -14,6 +14,7 @@ It has the following features:
   - it handles dependencies between jobs
   - results are stored in a database
   - handles sRNA, SAGE, mRNA expression (non-SAGE)
+
 * Requirements
 # <<Requirements>>
   - Linux (or UNIX)
@@ -25,6 +26,7 @@ It has the following features:
     should work.
   - An alignment program.  The default is [[http://bioinf.eva.mpg.de/patman/][PatMaN]].
   - SAMtools for generating BAM files, see: http://samtools.sourceforge.net/
+
 * Getting the code
   Currently the easiest way to get the code is via GitHub.  Run this command
   to get a copy of the code:
@@ -321,6 +323,12 @@ package dependencies suck as BioPerl.
      the [[SmallRNA_ProcessManager][ProcessManager]] class
    - [[Job queuing][queues new jobs]] using [[http://en.wikipedia.org/wiki/Portable_Batch_System][Torque]] or [[http://www.cs.wisc.edu/condor/][Condor]]
    - sleeps, then starts again
+*** Executing the pipeserv.pl command
+    The pipeline server is run with this command:
+#+BEGIN_SRC sh
+  PERL5LIB=/path/to/libs ./scripts/pipeserv.pl
+#+END_SRC
+
 ** Job queuing
 ** Pipeline jobs
 # <<Pipeline jobs>>
