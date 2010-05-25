@@ -871,7 +871,7 @@ sub process
 
     (my $geo_id = $filename) =~ s/geo_(.*).txt.fasta/$1/;
 
-    process_row($filename, $geo_id, '', '', 'NO', '', 'Unknown',
+    process_row($filename, $geo_id, 'GEO data', '', 'NO', '', 'Unknown',
                 "GEO entry $geo_id", 'Arabidosis thaliana', '',
                 '', '', '', 'Unknown Unknown', 'Unknown', '',
                 '', '', '', '', '', 'smallRNA', '', '', '');
