@@ -350,7 +350,7 @@ sub create_sequencing_run
 sub fix_date
 {
   my $date = shift;
-  if ($date =~ s|(\d+)/(\d+)/(0\d)|20$3-$2-${1}T00:00:00|) {
+  if ($date =~ s|(\d+)/(\d+)/([01]\d)|20$3-$2-${1}T00:00:00|) {
     return $date;
   } else {
     return undef;
