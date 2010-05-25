@@ -167,8 +167,8 @@ sub get_project
   my $project_desc = shift;
   my $owner = shift;
 
-  if (!$project_name) {
-    $project_name = 'P_' . $solexa_library_name;
+  if (!$project_desc) {
+    $project_desc = 'P_' . $solexa_library_name;
   }
 
   if (!defined $owner) {
@@ -176,14 +176,14 @@ sub get_project
   }
 
   if (!exists $projects{$project_desc}) {
-    $projects{$project_name} =
+    $projects{$project_desc} =
       create('Pipeproject', {
-                             identifier => $project_name,
+                             name => $project_desc,
                              description => '',
                              owner => $owner
                            });
   }
-  return $projects{$project_name};
+  return $projects{$project_desc};
 }
 
 sub create_biosample
@@ -882,8 +882,10 @@ sub process
 }
 
 # test data
-process_row('T1.test_data.fasta', 'T1', '', '', 'NO', '', 'CRI', 'Test data', 'Arabidosis thaliana', '', 'Kim Rutherford', 'DCB', '', '', '', '', '', 'smallRNA', '', '', '');
-process_row('T2.test_data.fasta', 'T2', '', '', 'NO', '', 'CRI', 'Test data', 'Arabidosis thaliana', '', 'Kim Rutherford', 'DCB', '', '', '', '', '', 'smallRNA', '', '', '');
+if ($test_mode) {
+  process_row('T1.test_data.fasta', 'T1', '', '', 'NO', '', 'CRI', 'Test data', 'Arabidosis thaliana', '', 'Kim Rutherford', 'DCB', '', '', '', '', '', 'smallRNA', '', '', '');
+  process_row('T2.test_data.fasta', 'T2', '', '', 'NO', '', 'CRI', 'Test data', 'Arabidosis thaliana', '', 'Kim Rutherford', 'DCB', '', '', '', '', '', 'smallRNA', '', '', '');
+}
 
 eval {
   $schema->txn_do(\&process);
