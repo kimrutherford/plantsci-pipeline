@@ -22,7 +22,7 @@ __PACKAGE__->add_columns(
     is_nullable => 0,
     size => 8,
   },
-  "name",
+  "identifier",
   {
     data_type => "text",
     default_value => undef,
@@ -57,7 +57,7 @@ __PACKAGE__->belongs_to(
 
 
 # Created by DBIx::Class::Schema::Loader v0.04006
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:IR5Kws1QlOuz7ztzV5EHqg
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:2+RofNmQ1eBKC8nobKjgfQ
 
 __PACKAGE__->many_to_many('biosamples' => 'biosample_pipeprojects', 'biosample');
 

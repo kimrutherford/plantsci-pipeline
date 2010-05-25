@@ -164,26 +164,26 @@ sub find
 sub get_project
 {
   my $solexa_library_name = shift;
-  my $project_desc = shift;
+  my $project_identifier = shift;
   my $owner = shift;
 
-  if (!$project_desc) {
-    $project_desc = 'P_' . $solexa_library_name;
+  if (!$project_identifier) {
+    $project_identifier = 'P_' . $solexa_library_name;
   }
 
   if (!defined $owner) {
     croak "no owner passed to get_project()\n";
   }
 
-  if (!exists $projects{$project_desc}) {
-    $projects{$project_desc} =
+  if (!exists $projects{$project_identifier}) {
+    $projects{$project_identifier} =
       create('Pipeproject', {
-                             name => $project_desc,
+                             identifier => $project_identifier,
                              description => '',
                              owner => $owner
                            });
   }
-  return $projects{$project_desc};
+  return $projects{$project_identifier};
 }
 
 sub create_biosample
