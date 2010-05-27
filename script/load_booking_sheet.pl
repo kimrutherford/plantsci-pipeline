@@ -506,6 +506,16 @@ sub process_row
         $quality, $quality_note, $smallrna_adaptor, $biosample_type, $run_type,
         $require_number_of_reads, $sample_concentration) = @columns;
 
+    if ($project_desc eq 'Arabidosis grafting' || $project_desc eq 'Arabidopsis grafts') {
+      $project_desc = 'Arabidopsis grafting';
+    }
+
+    if (length $project_desc == 0 && $submitter =~ /susi/i) {
+      $project_desc = q(Susi's samples);
+    }
+
+    $project_desc =~ s/Suzi/Susi/g;
+
     $date_submitted = fix_date($date_submitted);
     $date_received = fix_date($date_received);
 
