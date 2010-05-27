@@ -74,10 +74,10 @@ package dependencies suck as BioPerl.
    The configuration file is created by the =pipeinit.pl= script and
    contains global configuration.  Other configuration is [[Configuration%20in%20the%20database][stored in the database]].
 #+BEGIN_SRC sh
-  ./script/pipeinit.pl -f etc/example_deploy_params
+  pipeinit.pl -T pipeline.yaml.template -C pipeline.yaml -f prod_deploy_params
 #+END_SRC
-  This will create a file named =pipeline-example-config.yaml=.
-*** =example_deploy_params=
+  This will create a file named =pipeline.yaml=.
+*** =prod_deploy_params=
     The settings in this file should be changed to match local conditions.  In
     particular the database parameters will need to be set.
 *** Configuration options
@@ -303,15 +303,15 @@ package dependencies suck as BioPerl.
 # <<tissue>>
     Columns of this table:
 * Operation
-  The pipeline is run by a [[The pipeline server][server process]] which starts [[The pipeline worker][worker processes]] to do the
-  processing.  The server and workers coordinate using a database.  Input
-  data, temporary data and output data are stored in the file system, with
-  file paths stored in the database.
+  The pipeline is run by a [[The pipeline server][server process]] which starts [[The pipeline worker][worker processes]] to do
+  the processing.  The server and workers coordinate using a database
+  ([[Configuration][configured]] in [[The configuration file][pipeline.yaml]].  Input data, temporary data and output data
+  are stored in the file system, with file paths stored in the database.
 # <<Operation>>
 ** Pipeline data
 # <<Pipeline data>>
    Files for the pipeline are stored relative to the directory given by the
-   [[=pipeline_directory=][=pipeline_directory=]] configuration options, in the sub-directory given by
+   [[=pipeline_directory=][=pipeline_directory=]] configuration option, in the sub-directory given by
    the =data_sub_directory= option.  The =file_name= field of the
    [[=pipedata=][=pipedata=]] table will only ever contain paths relative to
    "=<pipeline_directory>/<data_sub_directory>/=".
@@ -326,7 +326,7 @@ package dependencies suck as BioPerl.
 *** Executing the pipeserv.pl command
     The pipeline server is run with this command:
 #+BEGIN_SRC sh
-  PERL5LIB=/path/to/libs ./scripts/pipeserv.pl
+  PERL5LIB=/path/to/libs pipeserv.pl pipeline.yaml
 #+END_SRC
 
 ** Job queuing
