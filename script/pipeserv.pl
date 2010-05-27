@@ -140,6 +140,8 @@ sub submit_condor_job {
 $saved_output
 
 The job will be retried later\n";
+
+    sleep 5;
   }
 
   close $condor_subhandle or warn "couldn't close pipe from condor_submit: $!\n";
