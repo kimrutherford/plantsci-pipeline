@@ -142,7 +142,7 @@ $saved_output
 The job will be retried later\n";
   }
 
-  close $condor_subhandle or die "couldn't close pipe from condor_submit: $!\n";
+  close $condor_subhandle or warn "couldn't close pipe from condor_submit: $!\n";
 
   return $condor_jobid;
 }
