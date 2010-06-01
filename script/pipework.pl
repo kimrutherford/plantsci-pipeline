@@ -66,11 +66,12 @@ my $current_status;
 
 $schema->txn_do(sub {
                   my $time_started = $pipeprocess->time_started();
+                  $current_status = $pipeprocess->status()->name();
+
                   if (defined $time_started) {
-                    warn "error: process $pipeprocess_id already started at: $time_started\n";
+                    warn "error: process $pipeprocess_id (status: $current_status) already started at: $time_started\n";
                   }
 
-                  $current_status = $pipeprocess->status()->name();
                   if ($current_status eq 'queued') {
                     $pipeprocess->time_started(DateTime->now());
                     $pipeprocess->status($started_status);
