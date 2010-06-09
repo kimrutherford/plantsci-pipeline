@@ -16,14 +16,13 @@ It has the following features:
   - handles sRNA, SAGE, mRNA expression (non-SAGE)
 
 * Requirements
-# <<Requirements>>
   - Linux (or UNIX)
   - Perl
-  - [[http://www.bioperl.org][BioPerl]] and other Perl modules.  These will be [[Installation][installed automatically]] by
-    the build system.
   - PostgreSQL and its development libraries.
     The pipeline was developed using [[http://www.postgresql.org/][PostgreSQL]] 8.3, but any recent version
     should work.
+  - [[http://www.bioperl.org][BioPerl]] and other Perl modules.  These will be [[Installation][installed automatically]] by
+    the build system.
   - An alignment program.  The default is [[http://bioinf.eva.mpg.de/patman/][PatMaN]].
   - SAMtools for generating BAM files, see: http://samtools.sourceforge.net/
 
@@ -39,9 +38,7 @@ It has the following features:
   git pull
 #+END_SRC
 * Installation
-# <<Installation>>
 ** PostgreSQL libraries
-# <<PostgreSQL libraries>>
    The [[http://www.postgresql.org/][PostgreSQL]] server and development libraries need to be installed first.
 
    On a Debian system the command is:
@@ -50,7 +47,6 @@ It has the following features:
 #+END_SRC
 
 ** Perl code
-# <<Perl code>>
 Install with the usual Perl installation commands.  This will probably need to
 be done as root.  The "make install" step will install any necessary Perl
 package dependencies suck as BioPerl.
@@ -61,16 +57,13 @@ package dependencies suck as BioPerl.
 #+END_SRC
 
 ** Database initialisation
-# <<Database initialisation>>
 #+BEGIN_SRC sh
   createuser pipe
   createdb -U pipe -h localhost pipeline
   psql -U pipe -h localhost pipeline < etc/schema.sql
 #+END_SRC
 * Configuration
-# <<Configuration>>
 ** The configuration file
-# <<The configuration file>>
    The configuration file is created by the =pipeinit.pl= script and
    contains global configuration.  Other configuration is [[Configuration%20in%20the%20database][stored in the database]].
 #+BEGIN_SRC sh
@@ -135,6 +128,7 @@ package dependencies suck as BioPerl.
     Columns of this table:
  - =identifier= :: the user friendly identifier of this barcode
  - =code= :: the barcode
+ - =barcode_set= :: the [[barcode_set][barcode set]] that this barcode comes from
 *** =barcode_set=
 # <<barcode_set>>
     A collection of barcodes that are used together.
@@ -210,7 +204,8 @@ package dependencies suck as BioPerl.
     This table records information about users of the database.
     Notable columns of this table:
     - =role= :: the role is used by the tracking application to control
-      capabilities.
+      capabilities - see the terms in the cvterm table for the "tracking users
+      types" controlled vocabulary
 *** =pipedata=
 # <<pipedata>>
     The pipeline creates a row in this table for each file that a
@@ -280,7 +275,8 @@ package dependencies suck as BioPerl.
 
     Columns of this table:
     - =type= :: a cvterm giving the type of this configuration
-    - =detail= :: extra details to pass to the [[runables][Runable]]
+    - =detail= :: extra details used by the [[runables][Runable]] - this a text string whose
+      format depends on the Runable
     - =runable_name= :: The name of the Perl module containing the code to
       perform this process (see [[runables][Runable]])
 *** =process_conf_input=
@@ -305,7 +301,7 @@ package dependencies suck as BioPerl.
 * Operation
   The pipeline is run by a [[The pipeline server][server process]] which starts [[The pipeline worker][worker processes]] to do
   the processing.  The server and workers coordinate using a database
-  ([[Configuration][configured]] in [[The configuration file][pipeline.yaml]].  Input data, temporary data and output data
+  ([[Configuration][configured]] in [[The configuration file][pipeline.yaml]]).  Input data, temporary data and output data
   are stored in the file system, with file paths stored in the database.
 # <<Operation>>
 ** Pipeline data
@@ -358,17 +354,17 @@ package dependencies suck as BioPerl.
 # <<Implementation>>
 
 ** Runables
-# <<runables>>
-   Each pipe_process is executed by a Perl module that is a sub-class of
-   =SmallRNA::Runable::SmallRNARunable=.  The [[The pipeline worker][pipeline worker script]] calls
+   Each pipeline task is implemented by a Perl module that is a sub-class of
+   =SmallRNA::Runable::SmallRNARunable=.  The [[The pipeline worker][pipeline worker script]] creates
+   an object for the Runable and then calls
    the =run()= method on the =SmallRNARunable= which does all processing for
    the job.  The =run()= method of the runable should do its processing, write
    its output files to the [[pipeline_directory][=pipeline_directory=]] then call 
    =SmallRNARunable->store_pipedata()= to write the information to the database.
-
 ** SmallRNA::Runable::AlignmentRunable
 # <<smallrna_runable_alignmentrunable>>
-   The Perl module to run to do the alignment is configured using the
+   This =Runable= has gerneic code for running an alignment.  The name of the
+   actual Perl module to do the alignment is configured using the
    =process_class= setting in the config file
 ** SmallRNA::ProcessManager
 # <<smallrna_processManager>>
