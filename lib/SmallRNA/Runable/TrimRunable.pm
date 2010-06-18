@@ -305,7 +305,10 @@ sub run
           $content_type_name = $unknown_barcode_term_name;
         }
 
-        move("$temp_output_dir/$temp_file_name", "$output_dir/$new_file_name");
+        if (!move("$temp_output_dir/$temp_file_name", "$output_dir/$new_file_name")) {
+          die "failed to move to $output_dir/$new_file_name: $!\n";
+        }
+
         $self->store_pipedata(generating_pipeprocess => $self->pipeprocess(),
                               file_name => $new_file_name,
                               format_type_name => 'fasta',
@@ -336,7 +339,9 @@ sub run
       $new_output_name =~ s|(.*)\.fasta$|$biosample_name/$biosample_name.$kept_term_name.fasta|;
 
       mkpath("$data_dir/$biosample_name");
-      move($temp_dir_output_file_name, "$data_dir/$new_output_name");
+      if (!move($temp_dir_output_file_name, "$data_dir/$new_output_name")) {
+        die "failed to move to $data_dir/$new_output_name: $!\n";
+      }
 
       $self->store_pipedata(generating_pipeprocess => $self->pipeprocess(),
                             file_name => $new_output_name,
@@ -357,7 +362,9 @@ sub run
 
     die unless -e "$temp_output_dir/$reject_file_name";
 
-    move("$temp_output_dir/$reject_file_name", "$data_dir/$new_reject_file_name");
+    if (!move("$temp_output_dir/$reject_file_name", "$data_dir/$new_reject_file_name")) {
+      die "failed to move to $data_dir/$new_reject_file_name: $!\n";
+    }
 
     $self->store_pipedata(generating_pipeprocess => $self->pipeprocess(),
                           file_name => $new_reject_file_name,
@@ -377,7 +384,9 @@ sub run
 
     die unless -e "$temp_output_dir/$n_reject_file_name";
 
-    move("$temp_output_dir/$n_reject_file_name", "$data_dir/$new_n_reject_file_name");
+    if (!move("$temp_output_dir/$n_reject_file_name", "$data_dir/$new_n_reject_file_name")) {
+      die "failed to move to $data_dir/$new_n_reject_file_name: $!\n";
+    }
 
     $self->store_pipedata(generating_pipeprocess => $self->pipeprocess(),
                           file_name => $new_n_reject_file_name,
@@ -396,7 +405,9 @@ sub run
 
     die unless -e "$temp_output_dir/$fasta_file_name";
 
-    move("$temp_output_dir/$fasta_file_name", "$data_dir/$new_fasta_file_name");
+    if (!move("$temp_output_dir/$fasta_file_name", "$data_dir/$new_fasta_file_name")) {
+      die "failed to move to $data_dir/$new_fasta_file_name: $!\n";
+    }
 
     $self->store_pipedata(generating_pipeprocess => $self->pipeprocess(),
                           file_name => $new_fasta_file_name,
