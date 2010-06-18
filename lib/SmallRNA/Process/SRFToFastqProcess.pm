@@ -66,7 +66,8 @@ sub run
   my $infile_name = $params{input_file_name};
   my $outfile_name = $params{output_file_name};
 
-  my $log_file_name = "/tmp/srf2fastq_process.log";
+  my $username = getlogin();
+  my $log_file_name = "/tmp/srf2fastq_process.$username.log";
 
   if (!-e $infile_name) {
     croak "can't find input file: $infile_name}";

@@ -133,7 +133,8 @@ sub run
   my $ssaha_command =
     "$params{executable_path} $in_file $params{database_file_name} $SSAHA_ARGS";
 
-  open my $ssaha_out, "$ssaha_command 2>> /tmp/SSAHASearchProcess.log|"
+  my $username = getlogin();
+  open my $ssaha_out, "$ssaha_command 2>> /tmp/SSAHASearchProcess.$username.log |"
     or die "can't open pipe to $params{executable_path}: $!";
 
   my $parser = SmallRNA::Parse::SSAHA->new(input_file_handle => $ssaha_out,
@@ -144,7 +145,7 @@ sub run
     if ($match->{qstart} != 1 || $match->{qend} != $seq_length) {
       next;
     }
-    
+
     if ($params{non_aligned_file_name}) {
       $matching_sequences{$match->{qid}}++;
     }

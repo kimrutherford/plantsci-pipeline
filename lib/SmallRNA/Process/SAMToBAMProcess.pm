@@ -73,7 +73,8 @@ sub run
   my $infile_name = $params{input_file_name};
   my $outfile_name = $params{output_file_name};
 
-  my $log_file_name = "/tmp/samtools_process.log";
+  my $username = getlogin();
+  my $log_file_name = "/tmp/samtools_process.$username.log";
 
   my $samtools_command =
     "$params{samtools_path} view -bt $params{database_file_name}.fai $infile_name";

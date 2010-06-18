@@ -46,7 +46,7 @@ use SmallRNA::Process::Utils qw(do_system);
 my $BWA_ARGS = "";
 
 =head2
- 
+
  Usage   : SmallRNA::Process::BWASearchProcess(input_file_name => $in_file_name,
                                                output_sam_file_name =>
                                                  $out_sam_file_name,
@@ -75,7 +75,8 @@ sub run
   my ($fh, $temp_aln_file_name) =
     tempfile('/tmp/bwa_align_temp.XXXXXX', UNLINK => 1);
 
-  my $log_file_name = "/tmp/BWAProcess.log";
+  my $username = getlogin();
+  my $log_file_name = "/tmp/BWAProcess.$username.log";
 
   my $aln_command =
     "$params{bwa_path} aln $params{database_file_name} $infile_name $BWA_ARGS";
