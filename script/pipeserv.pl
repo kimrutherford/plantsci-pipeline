@@ -283,10 +283,10 @@ while (1) {
 
   warn "created ", scalar(@pipeprocesses), " pipeprocess entries\n";
 
-  my $conf_rs =
+  my $pipeprocess_rs =
     $schema->resultset('Pipeprocess')->search({ status => $not_started_status->cvterm_id() });
 
-  while (my $pipeprocess = $conf_rs->next()) {
+  while (my $pipeprocess = $pipeprocess_rs->next()) {
     my $code = sub {
       my $pipeprocess_id = $pipeprocess->pipeprocess_id();
 
