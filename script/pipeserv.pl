@@ -31,8 +31,7 @@ use SmallRNA::DBLayer::Loader;
 use SmallRNA::ProcessManager;
 
 my $RUN_DIR = 'pipeserv-run';
-
-my $condor_q_command = 'condor_q';
+my $CONDOR_Q_COMMAND = 'condor_q';
 
 # set defaults
 my %options = (
@@ -260,7 +259,7 @@ sub remove_missing_jobs {
   my %current_job_ids = ();
 
   if ($use_condor) {
-    open PIPE, "$condor_q_command|" or die "can't open pipe to $condor_q_command: $?\n";
+    open PIPE, "$CONDOR_Q_COMMAND|" or die "can't open pipe to $CONDOR_Q_COMMAND: $?\n";
 
     while (defined (my $line = <PIPE>)) {
       if ($line =~ /^\s*(\d+.\d+)\s/) {
@@ -268,7 +267,7 @@ sub remove_missing_jobs {
       }
     }
 
-    close PIPE or die "can't close pipe to $condor_q_command: $?\n";
+    close PIPE or die "can't close pipe to $CONDOR_Q_COMMAND: $?\n";
   }
 
   my $pipeprocess_rs =
