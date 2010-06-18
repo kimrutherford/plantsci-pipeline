@@ -331,7 +331,7 @@ CREATE TABLE pipeproject (
        pipeproject_id serial CONSTRAINT pipeproject_id_pk PRIMARY KEY,
        created_stamp timestamp NOT NULL DEFAULT now(),
        identifier text NOT NULL,
-       description text NOT NULL,
+       description text,
        owner integer REFERENCES person(person_id) DEFERRABLE INITIALLY DEFERRED NOT NULL,
        funder integer REFERENCES organisation(organisation_id) DEFERRABLE INITIALLY DEFERRED
 );
