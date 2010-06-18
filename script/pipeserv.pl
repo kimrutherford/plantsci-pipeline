@@ -32,6 +32,8 @@ use SmallRNA::ProcessManager;
 
 my $RUN_DIR = 'pipeserv-run';
 
+my $condor_q_command = 'condor_q';
+
 # set defaults
 my %options = (
                max_jobs => undef,
@@ -89,6 +91,7 @@ my $schema = SmallRNA::DB->new($config);
 my $proc_manager = SmallRNA::ProcessManager->new(schema => $schema);
 
 my $queued_status = $schema->find_with_type('Cvterm', name => 'queued');
+my $started_status = $schema->find_with_type('Cvterm', name => 'started');
 my $not_started_status = $schema->find_with_type('Cvterm', name => 'not_started');
 
 my $test_mode = $ENV{SMALLRNA_PIPELINE_TEST} || 0;
@@ -249,26 +252,47 @@ sub submit_local_job {
   return $pid;
 }
 
-sub count_current_jobs
-{
-  if ($run_locally) {
-    return $child_count;
-  } else {
-    if ($use_condor) {
-      return 0;
-    } else {
-      my $count = 0;
-      open PIPE, "qstat|" or die "can't open pipe to qstat: $?\n";
 
-      while (defined (my $line = <PIPE>)) {
-        $count++ if $line =~ / [QR] batch/;
+# Find and remove jobs that we sent to the job runner (eg. Condor)
+# that have disappeared from Condor, but aren't marked as "finished"
+# or "failed".  That can happen if a job is killed or a machine fails.
+sub remove_missing_jobs {
+  my %current_job_ids = ();
+
+  if ($use_condor) {
+    open PIPE, "$condor_q_command|" or die "can't open pipe to $condor_q_command: $?\n";
+
+    while (defined (my $line = <PIPE>)) {
+      if ($line =~ /^\s*(\d+.\d+)\s/) {
+        $current_job_ids{$1} = 1;
       }
-
-      close PIPE or die "can't close pipe to qstat: $?\n";
-      return $count;
     }
+
+    close PIPE or die "can't close pipe to $condor_q_command: $?\n";
+  }
+
+  my $pipeprocess_rs =
+    $schema->resultset('Pipeprocess')->
+      search({ -or => [
+        status => $started_status->cvterm_id(),
+        status => $queued_status->cvterm_id()
+       ]});
+
+  while (my $pipeprocess = $pipeprocess_rs->next()) {
+    my $code = sub {
+      my $pipeprocess_id = $pipeprocess->pipeprocess_id();
+
+      my $job_identifier = $pipeprocess->job_identifier();
+
+      if (!exists $current_job_ids{$job_identifier}) {
+        warn "WARNING: job missing: $job_identifier for $pipeprocess_id\n";
+      }
+    };
+
+    $schema->txn_do($code);
   }
 }
+
 
 my @local_jobs = ();
 
@@ -276,6 +300,8 @@ while (1) {
   my $failed_count = $proc_manager->remove_failed_pipeprocesses();
 
   warn "deleted $failed_count failed jobs\n";
+
+  remove_missing_jobs($schema);
 
   warn "creating new Pipeprocess objects\n";
 
@@ -321,11 +347,9 @@ while (1) {
 
     if (defined $options{max_jobs} && $options{max_jobs} > 0) {
       for (1..1000) { # don't do it forever, in case there's a problem
-        my $count = count_current_jobs();
-
         # sleep if there are too many jobs running
-        if ($count >= $options{max_jobs}) {
-          warn "$count jobs running - sleeping\n";
+        if ($child_count >= $options{max_jobs}) {
+          warn "$child_count jobs running - sleeping\n";
           if ($test_mode) {
             sleep (1);
           } else {
