@@ -2,8 +2,7 @@ package SmallRNA::ProcessManager;
 
 =head1 NAME
 
-SmallRNA::ProcessManager - An in-memory store of the ProcessConf
-                           configuration
+SmallRNA::ProcessManager - Helper functions for creating processes
 
 =head1 SYNOPSIS
 
