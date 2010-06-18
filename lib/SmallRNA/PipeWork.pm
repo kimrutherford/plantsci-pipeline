@@ -2,7 +2,7 @@ package SmallRNA::PipeWork;
 
 =head1 NAME
 
-SmallRNA::PipeWork - Code used by the worker script
+SmallRNA::PipeWork - Helper code used by the worker process
 
 =head1 SYNOPSIS
 
