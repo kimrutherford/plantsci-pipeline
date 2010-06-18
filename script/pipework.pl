@@ -1,6 +1,6 @@
 #!/usr/bin/perl -w
 
-# Main work process called through Torque
+# Main work process called through Condor or Torque
 #
 # The id of the Pipeprocess for this worker to run is passed in the
 # PIPEPROCESS_ID environment variable
