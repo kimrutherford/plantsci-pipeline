@@ -211,16 +211,11 @@ $schema->txn_do(sub {
     my %cvterms = %{$terms{$term_cv_name}};
 
     for my $cvterm_name (sort keys %cvterms) {
-      my $dbxref = $schema->find_or_create_with_type('Dbxref',
-                                             { accession => $cvterm_name,
-                                               db => $pipeline_db });
-
       my $definition = $cvterms{$cvterm_name};
       my $rs = $schema->resultset('Cvterm');
       my $obj = $rs->find_or_create({name => $cvterm_name,
                              definition => $definition,
-                             cv => $cv,
-                             dbxref => $dbxref});
+                             cv => $cv});
 
       $cvterm_objs{$cvterm_name} = $obj;
     }

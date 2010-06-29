@@ -48,11 +48,6 @@ __PACKAGE__->has_many(
   { "foreign.dbxref_id" => "self.dbxref_id" },
 );
 __PACKAGE__->has_many(
-  "cvterms",
-  "SmallRNA::DB::Cvterm",
-  { "foreign.dbxref_id" => "self.dbxref_id" },
-);
-__PACKAGE__->has_many(
   "cvterm_dbxrefs",
   "SmallRNA::DB::CvtermDbxref",
   { "foreign.dbxref_id" => "self.dbxref_id" },
@@ -71,7 +66,7 @@ __PACKAGE__->has_many(
 
 
 # Created by DBIx::Class::Schema::Loader v0.04006
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:ODt2nqHzrUAkaocSYh/SbA
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:SwBYTfW2Hxzs+fqppweokA
 
 __PACKAGE__->many_to_many(extra_cvterms => 'cvterm_dbxrefs', 'cvterm');
 

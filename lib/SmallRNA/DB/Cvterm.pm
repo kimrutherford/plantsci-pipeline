@@ -31,17 +31,9 @@ __PACKAGE__->add_columns(
     is_nullable => 1,
     size => undef,
   },
-  "dbxref_id",
-  { data_type => "integer", default_value => undef, is_nullable => 0, size => 4 },
-  "is_obsolete",
-  { data_type => "integer", default_value => 0, is_nullable => 0, size => 4 },
-  "is_relationshiptype",
-  { data_type => "integer", default_value => 0, is_nullable => 0, size => 4 },
 );
 __PACKAGE__->set_primary_key("cvterm_id");
-__PACKAGE__->add_unique_constraint("cvterm_c2", ["dbxref_id"]);
 __PACKAGE__->add_unique_constraint("cvterm_pkey", ["cvterm_id"]);
-__PACKAGE__->add_unique_constraint("cvterm_c1", ["name", "cv_id", "is_obsolete"]);
 __PACKAGE__->has_many(
   "barcode_sets",
   "SmallRNA::DB::BarcodeSet",
@@ -73,7 +65,6 @@ __PACKAGE__->has_many(
   { "foreign.treatment_type" => "self.cvterm_id" },
 );
 __PACKAGE__->belongs_to("cv", "SmallRNA::DB::Cv", { cv_id => "cv_id" });
-__PACKAGE__->belongs_to("dbxref", "SmallRNA::DB::Dbxref", { dbxref_id => "dbxref_id" });
 __PACKAGE__->has_many(
   "cvterm_dbxrefs",
   "SmallRNA::DB::CvtermDbxref",
@@ -152,7 +143,7 @@ __PACKAGE__->has_many(
 
 
 # Created by DBIx::Class::Schema::Loader v0.04006
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:RRqFjH1YEPkrNr+vpVNAkw
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:6EIlTAi2WroZXRZQneYkMw
 
 __PACKAGE__->many_to_many(dbxrefs => 'cvterm_dbxrefs', 'dbxref');
 

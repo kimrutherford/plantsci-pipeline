@@ -110,17 +110,10 @@ create table cvterm (
                      cv_id int not null,
                      foreign key (cv_id) references cv (cv_id) on delete cascade INITIALLY DEFERRED,
                      name varchar(1024) not null,
-                     definition text,
-                     dbxref_id int not null,
-                     foreign key (dbxref_id) references dbxref (dbxref_id) on delete set null INITIALLY DEFERRED,
-                     is_obsolete int not null default 0,
-                     is_relationshiptype int not null default 0,
-                     constraint cvterm_c1 unique (name,cv_id,is_obsolete),
-                     constraint cvterm_c2 unique (dbxref_id)
+                     definition text
                    );
 create index cvterm_idx1 on cvterm (cv_id);
 create index cvterm_idx2 on cvterm (name);
-create index cvterm_idx3 on cvterm (dbxref_id);
 
 COMMENT ON TABLE cvterm IS 'A term, class, universal or type within an
 ontology or controlled vocabulary.  This table is also used for
@@ -135,33 +128,6 @@ label for the cvterm. Uniquely identifies a cvterm within a cv.';
 
 COMMENT ON COLUMN cvterm.definition IS 'A human-readable text
 definition.';
-
-COMMENT ON COLUMN cvterm.dbxref_id IS 'Primary identifier dbxref - The
-unique global OBO identifier for this cvterm.  Note that a cvterm may
-have multiple secondary dbxrefs - see also table: cvterm_dbxref.';
-
-COMMENT ON COLUMN cvterm.is_obsolete IS 'Boolean 0=false,1=true; see
-GO documentation for details of obsoletion. Note that two terms with
-different primary dbxrefs may exist if one is obsolete.';
-
-COMMENT ON COLUMN cvterm.is_relationshiptype IS 'Boolean
-0=false,1=true relations or relationship types (also known as Typedefs
-in OBO format, or as properties or slots) form a cv/ontology in
-themselves. We use this flag to indicate whether this cvterm is an
-actual term/class/universal or a relation. Relations may be drawn from
-the OBO Relations ontology, but are not exclusively drawn from there.';
-
-COMMENT ON INDEX cvterm_c1 IS 'A name can mean different things in
-different contexts; for example "chromosome" in SO and GO. A name
-should be unique within an ontology or cv. A name may exist twice in a
-cv, in both obsolete and non-obsolete forms - these will be for
-different cvterms with different OBO identifiers; so GO documentation
-for more details on obsoletion. Note that occasionally multiple
-obsolete terms with the same name will exist in the same cv. If this
-is a possibility for the ontology under consideration (e.g. GO) then the
-ID should be appended to the name to ensure uniqueness.';
-
-COMMENT ON INDEX cvterm_c2 IS 'The OBO identifier is globally unique.';
 
 create table pub (
     pub_id serial not null,
