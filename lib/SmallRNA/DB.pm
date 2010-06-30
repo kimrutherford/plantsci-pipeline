@@ -148,6 +148,7 @@ sub create_with_type
     $obj = $rs->create($field_data);
   };
   if ($@) {
+    # make a readable version of the hash
     my $data_string = '{' . (join ', ', map {
       "'$_'" . ' => ' . "'" . ($field_data->{$_} // 'undef') . "'"
     } keys %$field_data) . '}';
