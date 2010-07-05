@@ -9,4 +9,5 @@ image_size = $ENV(MAX_PROCESS_SIZE)
 should_transfer_files = YES
 when_to_transfer_output = ON_EXIT
 notification = error
+requirements = Group =?= "PlantSci"
 queue
