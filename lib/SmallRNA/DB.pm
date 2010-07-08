@@ -303,4 +303,29 @@ sub display_name
   return "$arg";
 }
 
+=head2 column_type
+
+ Usage   : my $column_type = SmallRNA::DB::column_type($field_info, $table_name,
+                                                       $column_name);
+ Function: Return 'attribute' if a field is a plain attribute or 'collection'
+           if it is a collection.
+
+=cut
+sub column_type {
+  my $field_info = shift;
+  my $table_name = shift;
+  my $column_name = shift;
+
+  my $class_name = class_name_of_table($table_name);
+
+  my $info_ref = $class_name->relationship_info($column_name);
+
+  if ($field_info->{is_collection} ||
+        (defined $info_ref && $info_ref->{attrs}->{join_type})) {
+    return 'collection';
+  } else {
+    return 'attribute';
+  }
+}
+
 1;
