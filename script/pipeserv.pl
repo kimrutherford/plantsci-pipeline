@@ -277,19 +277,30 @@ sub remove_missing_jobs {
         status => $queued_status->cvterm_id()
        ]});
 
-  while (my $pipeprocess = $pipeprocess_rs->next()) {
-    my $code = sub {
+  my $code = sub {
+    my @jobs_to_remove = ();
+
+    while (my $pipeprocess = $pipeprocess_rs->next()) {
       my $pipeprocess_id = $pipeprocess->pipeprocess_id();
 
       my $job_identifier = $pipeprocess->job_identifier();
 
       if (!exists $current_job_ids{$job_identifier}) {
         warn "WARNING: job missing: $job_identifier for $pipeprocess_id\n";
+        push @jobs_to_remove, $pipeprocess;
       }
     };
 
-    $schema->txn_do($code);
-  }
+    for my $pipeprocess (@jobs_to_remove) {
+      $schema->resultset('PipeprocessInPipedata')->search({
+        pipeprocess_id => $pipeprocess->pipeprocess_id(),
+      })->delete();
+      $pipeprocess->delete();
+
+    }
+  };
+
+  $schema->txn_do($code);
 }
 
 
