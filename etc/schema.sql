@@ -426,6 +426,8 @@ CREATE TABLE sequencing_sample (
        sequencing_sample_id serial CONSTRAINT sequencing_sample_id_pk PRIMARY KEY,
        created_stamp timestamp NOT NULL DEFAULT now(),
        identifier text NOT NULL UNIQUE,
+       read_length integer,
+       end_type integer REFERENCES cvterm(cvterm_id) DEFERRABLE INITIALLY DEFERRED,
        sequencing_centre_identifier text UNIQUE,
        sample_creator integer REFERENCES person(person_id) DEFERRABLE INITIALLY DEFERRED NOT NULL
 );

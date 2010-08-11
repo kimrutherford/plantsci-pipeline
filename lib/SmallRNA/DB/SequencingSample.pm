@@ -38,6 +38,10 @@ __PACKAGE__->add_columns(
   },
   "sample_creator",
   { data_type => "integer", default_value => undef, is_nullable => 0, size => 4 },
+  "read_length",
+  { data_type => "integer", default_value => undef, is_nullable => 1, size => 4 },
+  "end_type",
+  { data_type => "integer", default_value => undef, is_nullable => 1, size => 4 },
 );
 __PACKAGE__->set_primary_key("sequencing_sample_id");
 __PACKAGE__->add_unique_constraint("sequencing_sample_identifier_key", ["identifier"]);
@@ -57,6 +61,11 @@ __PACKAGE__->has_many(
   { "foreign.sequencing_sample" => "self.sequencing_sample_id" },
 );
 __PACKAGE__->belongs_to(
+  "end_type",
+  "SmallRNA::DB::Cvterm",
+  { cvterm_id => "end_type" },
+);
+__PACKAGE__->belongs_to(
   "sample_creator",
   "SmallRNA::DB::Person",
   { person_id => "sample_creator" },
@@ -64,7 +73,7 @@ __PACKAGE__->belongs_to(
 
 
 # Created by DBIx::Class::Schema::Loader v0.04006
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:UErrj81DhFjKdrxsIGvkCg
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:aumvSTU+nTuLp+OhY4J2VQ
 
 =head2 display_name
 

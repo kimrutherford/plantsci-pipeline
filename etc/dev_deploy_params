@@ -3,7 +3,7 @@
 'config-file': 'pipeline.yaml'
 'pipeline-directory': /data/pipeline
 'pipeline-process-directory': process
-'database-name': pipeline-dev-kmr44
+'database-name': pipeline-dev-rishi
 'database-host': hydrogen
-'database-user-name': kmr44
-'database-password': kmr
+'database-user-name': rn202
+'database-password': rn202

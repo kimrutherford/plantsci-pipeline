@@ -140,10 +140,15 @@ __PACKAGE__->has_many(
   "SmallRNA::DB::SequencingRun",
   { "foreign.sequencing_type" => "self.cvterm_id" },
 );
+__PACKAGE__->has_many(
+  "sequencing_samples",
+  "SmallRNA::DB::SequencingSample",
+  { "foreign.end_type" => "self.cvterm_id" },
+);
 
 
 # Created by DBIx::Class::Schema::Loader v0.04006
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:6EIlTAi2WroZXRZQneYkMw
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:Lax0W8VU+Rolw1ikfGHaWA
 
 __PACKAGE__->many_to_many(dbxrefs => 'cvterm_dbxrefs', 'dbxref');
 
