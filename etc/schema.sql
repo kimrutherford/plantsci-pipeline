@@ -429,6 +429,7 @@ CREATE TABLE sequencing_sample (
        read_length integer,
        end_type integer REFERENCES cvterm(cvterm_id) DEFERRABLE INITIALLY DEFERRED,
        sequencing_centre_identifier text UNIQUE,
+       number_of_lanes integer,
        sample_creator integer REFERENCES person(person_id) DEFERRABLE INITIALLY DEFERRED NOT NULL
 );
 CREATE TABLE sequencing_run (

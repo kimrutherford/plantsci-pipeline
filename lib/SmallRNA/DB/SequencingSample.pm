@@ -38,9 +38,11 @@ __PACKAGE__->add_columns(
   },
   "sample_creator",
   { data_type => "integer", default_value => undef, is_nullable => 0, size => 4 },
-  "read_length",
+  "number_of_lanes",
   { data_type => "integer", default_value => undef, is_nullable => 1, size => 4 },
   "end_type",
+  { data_type => "integer", default_value => undef, is_nullable => 1, size => 4 },
+  "read_length",
   { data_type => "integer", default_value => undef, is_nullable => 1, size => 4 },
 );
 __PACKAGE__->set_primary_key("sequencing_sample_id");
